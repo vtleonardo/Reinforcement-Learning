@@ -3,15 +3,14 @@ import os
 import numpy as np
 import random
 import pandas as pd
-from collections import deque
+from ReplayMemory import ReplayMemory
 
+import tensorflow as tf
 seed=1
 random.seed(seed)
 np.random.seed(seed)
-import tensorflow as tf
 from tensorflow import set_random_seed
 set_random_seed(seed)
-
 #Silenciando as mensagens iniciais do tensorflow
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"
@@ -27,94 +26,6 @@ import dqn_wrappers
 import sys
 import imageio
 path_save = "../DQN2/Imagens"
-
-
-
-class ReplayMemory():
-    def __init__(self,num_states_stored = 1000000,batch_size=32):
-        self.batch_size = batch_size
-        self.num_states_stored = num_states_stored
-        self._first_episode = True
-        self._cont_idx = 0
-        self.state_idx = deque(maxlen=self.num_states_stored)
-        self.replay_memory_state_zero = deque(maxlen=self.num_states_stored)
-        self.replay_memory_action = deque(maxlen=self.num_states_stored)
-        self.replay_memory_reward = deque(maxlen=self.num_states_stored)
-        self.replay_memory_state_next = deque(maxlen=self.num_states_stored)
-        self.replay_memory_done = deque(maxlen=self.num_states_stored)
-
-        self.state_to_return = deque(maxlen=self.batch_size)
-        self.action_to_return = deque(maxlen=self.batch_size)
-        self.reward_to_return = deque(maxlen=self.batch_size)
-        self.state_next_to_return = deque(maxlen=self.batch_size)
-        self.done_to_return = deque(maxlen=self.batch_size)
-
-    def append(self,state,action,reward,state_next,done):
-        assert state.dtype == np.uint8,"State deve possuir tipo dtype=numpy.uint8"
-        assert state_next.dtype == np.uint8, "State_next deve possuir tipo dtype=numpy.uint8"
-        if self._first_episode:
-            self._first_episode = False
-            self.replay_memory_state_zero.append(np.copy(state))
-            self.state_idx.append(self._cont_idx)
-        else:
-            self.state_idx.append(-1)
-        self.replay_memory_action.append(action)
-        self.replay_memory_reward.append(reward)
-        self.replay_memory_state_next.append(np.copy(state_next))
-        self.replay_memory_done.append(done*1)
-        #Caso state terminal, o próximo terá um estado inicial
-        if done:
-            self._first_episode=True
-            self._cont_idx+=1
-
-    def sample(self):
-        idx = np.random.choice(len(self.replay_memory_done), self.batch_size)
-        for i in idx:
-            if (self.state_idx[i] == -1):
-                self.state_to_return.append(self.replay_memory_state_next[i-1])
-            else:
-                self.state_to_return.append(self.replay_memory_state_zero[self.state_idx[i]])
-            self.action_to_return.append(self.replay_memory_action[i])
-            self.reward_to_return.append(self.replay_memory_reward[i])
-            self.state_next_to_return.append(self.replay_memory_state_next[i])
-            self.done_to_return.append(self.replay_memory_done[i])
-
-        return (np.array(self.state_to_return,dtype=np.uint8),
-                np.array(self.action_to_return,dtype=np.int32),
-                np.array(self.reward_to_return,dtype=np.float32),
-                np.array(self.state_next_to_return,dtype=np.uint8),
-                np.array(self.done_to_return,dtype=np.float32),
-                idx)
-
-    def size(self):
-        return len(self.replay_memory_reward)
-    def get_state(self,i):
-        if (self.state_idx[i] == -1):
-            return self.replay_memory_state_next[i - 1]
-        else:
-            return self.replay_memory_state_zero[self.state_idx[i]]
-    def get_state_next(self,i):
-        return self.replay_memory_state_next[i]
-    def get_action(self,i):
-        return self.replay_memory_action[i]
-    def get_reward(self,i):
-        return self.replay_memory_reward[i]
-    def get_done(self,i):
-        return self.replay_memory_done[i]
-    def get_itens(self,i):
-        return (self.get_state(i),
-                self.get_action(i),
-                self.get_reward(i),
-                self.get_state_next(i),
-                self.get_done(i))
-
-    def state_next_save(self,i,path_save,name):
-        imageio.mimsave(os.path.join(path_save, "{}{}.gif".format(name,i)),
-                        np.rollaxis(self.get_state_next(i), 2, 0))
-
-    def state_save(self,i,path_save,name):
-        imageio.mimsave(os.path.join(path_save, "{}{}.gif".format(name,i)),
-                        np.rollaxis(self.get_state(i), 2, 0))
 
 """
 Classe que cria um agente que utilizará a arquitetura DQN para o aprendizado em um ambiente.
@@ -232,7 +143,6 @@ class AgentDQN:
         return model
 
     def initialize_tensor(self):
-
         self.state = tf.placeholder(tf.uint8, [None] + list(self.input_shape))
         self.action = tf.placeholder(tf.int32, [None])
         self.reward = tf.placeholder(tf.float32, [None])
