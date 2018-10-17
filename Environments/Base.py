@@ -1,10 +1,14 @@
+########################################################################################################################
+# Created by Leonardo Viana Teixeira at 17/10/2018                                                                     #
+########################################################################################################################
+
 from abc import ABC,abstractmethod
 
-"""
-Base class for all environments especifing what methods they must have! All environments must inherit this class.
-"""
-class Base(ABC):
 
+class Base(ABC):
+    """
+    Base class for all environments specifying what methods they must have! All environments must inherit this class.
+    """
     @abstractmethod
     def getName(self):
         pass

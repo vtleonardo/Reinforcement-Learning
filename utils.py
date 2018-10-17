@@ -1,3 +1,7 @@
+########################################################################################################################
+# Created by Leonardo Viana Teixeira at 17/10/2018                                                                     #
+########################################################################################################################
+
 import os
 #Varibles of the printd Debug function.
 DEBUG = True
@@ -12,5 +16,13 @@ def printd(str, lvl=1):
         print("{}".format(str))
 
 def folder_exists(path_save):
+    """
+    Function that verifies if a folder exist if not it creates the folder.
+
+    :param
+    path_save: str (path)
+        Path to be verified/created
+    :return:
+    """
     if not (os.path.exists(path_save)):
         os.mkdir(path_save)

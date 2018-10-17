@@ -1,3 +1,6 @@
+########################################################################################################################
+# Created by Leonardo Viana Teixeira at 17/10/2018                                                                     #
+########################################################################################################################
 import cv2
 import numpy as np
 from collections import deque
@@ -6,30 +9,81 @@ from gym import spaces
 from Environments.Base import Base
 
 
-"""
-Wrapper for gym environments to match all methods required by the DQN algorithm.
-This class inherit the Base class, therefore it have the methods:
-    getName: returns a string with the environment's name
-    render:  make the environment's rendering
-    reset: resets the environment
-    step: does an action on the environment and returns its consequences 
-                ( the reward, the next state, if the episode has done, and other infos.
-    numberOfActions: returns the number of actions possible on this environmment.
-"""
 class WrapperGym(Base):
+    """
+    Wrapper for gym environments to match all methods required by the DQN algorithm.
+
+    This class inherit the Base class, therefore it have the methods:
+        getName: returns a string with the environment's name
+        render:  make the environment's rendering
+        reset: resets the environment and return the state
+        step: does an action on the environment and returns its consequences
+                    ( the reward, the next state, if the episode has done, and other infos.
+        numberOfActions: returns the number of actions possible on this environmment.
+        set_seed : set the random seed of the environment
+    """
     def __init__(self,env):
+        """
+        Creates the object
+
+        :param
+        env: str
+            Name of the gym environment
+        """
         self.env=wrap_deepmind(gym.make(env))
     def getName(self):
+        """
+        Function that gets the environment's name
+
+        :return: str
+            The name of the environment
+        """
         return self.env.spec.id
+
     def render(self):
+        """
+        Displays the environment on the screen to the user.
+
+        :return:
+            nothing
+        """
         self.env.render()
     def reset(self):
+        """
+        Resets the environment to its initial state.
+
+        :return: numpy.array
+            initial state (frame image) of the environment
+        """
         return self.env.reset()
     def step(self,action):
+        """
+
+        :param
+        action: int
+            Action to be taken in the environment
+        :return: tuple
+            ( the reward, the next state, if the episode has done, and other infos)
+        """
         return self.env.step(action)
     def numberOfActions(self):
+        """
+        Function that returns the number os possible actions for this environment.
+
+        :return: int
+            The number of possible actions for this environment
+        """
         return self.env.action_space.n
     def set_seed(self,seed):
+        """
+        Function that sets the random seed of the environment.
+        :param
+        seed : int
+            Seed to set the random function of this environment
+
+        :return:
+            nothing
+        """
         self.env.seed(seed)
 
 ########################################################################################################################
