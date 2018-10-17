@@ -3,8 +3,40 @@ import numpy as np
 from collections import deque
 import gym
 from gym import spaces
+from Environments.Base import Base
 
 
+"""
+Wrapper for gym environments to match all methods required by the DQN algorithm.
+This class inherit the Base class, therefore it have the methods:
+    getName: returns a string with the environment's name
+    render:  make the environment's rendering
+    reset: resets the environment
+    step: does an action on the environment and returns its consequences 
+                ( the reward, the next state, if the episode has done, and other infos.
+    numberOfActions: returns the number of actions possible on this environmment.
+"""
+class WrapperGym(Base):
+    def __init__(self,env):
+        self.env=wrap_deepmind(gym.make(env))
+    def getName(self):
+        return self.env.spec.id
+    def render(self):
+        self.env.render()
+    def reset(self):
+        return self.env.reset()
+    def step(self,action):
+        return self.env.step(action)
+    def numberOfActions(self):
+        return self.env.action_space.n
+    def set_seed(self,seed):
+        self.env.seed(seed)
+
+########################################################################################################################
+#This wrapper are based on dqn paper (nature) and on the article:                                                      #
+# Speeding up DQN on PyTorch: how to solve Pong in 30 minutes (link below)                                             #
+# https://medium.com/mlreview/speeding-up-dqn-on-pytorch-solving-pong-in-30-minutes-81a1bd2dff55                       #
+########################################################################################################################
 class NoopResetEnv(gym.Wrapper):
     def __init__(self, env=None, noop_max=30):
         """Sample initial states by taking random number of no-ops on reset.
