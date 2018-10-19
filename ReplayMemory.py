@@ -1,14 +1,15 @@
-########################################################################################################################
-# Created by Leonardo Viana Teixeira at 17/10/2018                                                                     #
-########################################################################################################################
+################################################################################################################
+# Created by Leonardo Viana Teixeira at 17/10/2018                                                             #
+################################################################################################################
 
 import numpy as np
 from collections import deque
 import imageio
+from utils import folder_exists
 import os
 
 class ReplayMemory():
-    def __init__(self,num_states_stored = 1000000,batch_size=32):
+    def __init__(self,num_states_stored=1000000,batch_size=32):
         self.path_save=os.path.join(os.path.dirname(os.path.realpath(__file__)),"Imagens")
         self.batch_size = batch_size
         self.num_states_stored = num_states_stored
@@ -77,19 +78,25 @@ class ReplayMemory():
 
     def size(self):
         return len(self.replay_memory_reward)
+
     def get_state(self,i):
         if (self.state_idx[i] == -1):
             return self.replay_memory_state_next[i - 1]
         else:
             return self.replay_memory_state_zero[self.state_idx[i]]
+
     def get_state_next(self,i):
         return self.replay_memory_state_next[i]
+
     def get_action(self,i):
         return self.replay_memory_action[i]
+
     def get_reward(self,i):
         return self.replay_memory_reward[i]
+
     def get_done(self,i):
         return self.replay_memory_done[i]
+
     def get_itens(self,i):
         return (self.get_state(i),
                 self.get_action(i),
@@ -97,15 +104,12 @@ class ReplayMemory():
                 self.get_state_next(i),
                 self.get_done(i))
 
-    def state_next_save(self,i,path_save,name):
-        self.folder_exists()
+    def state_next_save(self,i,name):
+        folder_exists(self.path_save)
         imageio.mimsave(os.path.join(self.path_save, "{}{}.gif".format(name,i)),
                         np.rollaxis(self.get_state_next(i), 2, 0))
 
-    def state_save(self,i,path_save,name):
-        self.folder_exists()
+    def state_save(self,i,name):
+        folder_exists(self.path_save)
         imageio.mimsave(os.path.join(self.path_save, "{}{}.gif".format(name,i)),
                         np.rollaxis(self.get_state(i), 2, 0))
-    def folder_exists(self):
-        if not (os.path.exists(self.path_save)):
-            os.mkdir(self.path_save)
