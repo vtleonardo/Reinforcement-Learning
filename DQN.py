@@ -494,7 +494,7 @@ class AgentDQN:
 
         """
         imageio.mimsave(os.path.join(self.path_save_episodes, "Episode-{}.gif".format(self.i_episode)),
-                        np.rollaxis(saved_episode, 2, 0))
+                        np.rollaxis(saved_episode, 2, 0),fps=60)
 
     def save_weights(self):
         """
@@ -588,7 +588,9 @@ class AgentDQN:
                 self.steps_cont += 1
                 action = self.e_greddy_action(state.reshape((1,) + state.shape))
                 state_next, reward, done, _ = self.env.step(action)
-                if self.save_episodes_flag: saved_episode = np.concatenate((saved_episode,state_next),axis=2)
+                if self.save_episodes_flag and not random_fill and\
+                                                    (self.i_episode % self.steps_save_episodes == 0):
+                    saved_episode = np.concatenate((saved_episode,state_next),axis=2)
                 #Transforming the state_next (image frame) in a volume of n frames (history)
                 state_next = self.refresh_history(np.copy(state), state_next)
                 self.replay_memory.append(state,action,reward,state_next,done)
