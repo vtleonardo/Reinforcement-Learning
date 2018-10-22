@@ -15,6 +15,7 @@ import tensorflow as tf
 from tensorflow import set_random_seed
 from utils import printd, folder_exists
 import utils
+import imageio
 
 #Setting the DEBUG lvl of the function printd (utils.py)
 utils.DEBUG = True
@@ -53,6 +54,9 @@ class AgentDQN:
                  load=False,
                  steps_save_weights = 50000,
                  steps_save_plot=10000,
+                 save_episodes_flag=False,
+                 steps_save_episodes=50,
+                 path_save_episodes="Episodes",
                  weights_load_path="",
                  loss_type="huber",
                  optimizer="rmsprop",
@@ -126,6 +130,15 @@ class AgentDQN:
         :param  steps_save_plot : int (Default: 1 000)
                     Desired number of frames to save the plot variables.
 
+        :param  save_episodes_flag : bool (Default: False)
+                    Flag that controls if it's to save episodes on the disk.
+
+        :param  steps_save_episodes : int (Default: 50)
+                    Each N (steps_save_episodes) episodes an episode will be saved on the disk as .gif.
+
+        :param  path_save_episodes : str (Default: "Episodes")
+                    Path to the folder where will be saved the episode as .gif file.
+
         :param  weights_load_path : str (Default: "")
                     Path of the .h5 file with the weights of the Network to be loaded.
 
@@ -139,10 +152,10 @@ class AgentDQN:
                     DQN paper, the second uses the tensorflow/keras default parameters.
 
         :param  path_save_plot : str (Default: "Plot")
-                    Name of the folder where will be saved the .csv file with the algorithm information.
+                    Folder's path where will be saved the .csv file with the algorithm's information.
 
         :param  path_save_plot : str (Default: "Weights")
-                    Name of the folder where will be saved the .h5 file with the Neural Network Weights.
+                    Folder's path where will be saved the .h5 file with the Neural Network Weights.
 
         :param  silent_mode : bool (Default : False)
                     If it's active no message will be displayed on the prompt.
@@ -220,8 +233,22 @@ class AgentDQN:
 
         self.steps_save_weights = steps_save_weights
         self.steps_save_plot = steps_save_plot
-        self.path_save_plot = os.path.join(os.path.dirname(os.path.realpath(__file__)), path_save_plot)
-        self.path_save_weights = os.path.join(os.path.dirname(os.path.realpath(__file__)), path_save_weights)
+        self.save_episodes_flag = save_episodes_flag
+        self.steps_save_episodes = steps_save_episodes
+        # Checking if the default paths exists.
+        if path_save_episodes == "Episodes":
+            self.path_save_episodes=os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                                                                                    path_save_episodes)
+            folder_exists(self.path_save_episodes)
+        if path_save_plot == "Plot":
+            self.path_save_plot=os.path.join(os.path.dirname(os.path.realpath(__file__)), path_save_plot)
+            folder_exists(self.path_save_plot)
+        if path_save_weights == "Weights":
+            self.path_save_weights=os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                                                                                    path_save_weights)
+            folder_exists(self.path_save_weights)
+
+        # Initializing the graph an its variables.
         self.initialize_graph()
         # Creating a log file
         self.LOG_FILENAME = os.path.join(self.path_save_plot, 'Training-{}.txt'.format(self.env.getName()))
@@ -262,6 +289,9 @@ class AgentDQN:
         strr +="\n\tThe Replay Memory will store: {} state(s)".format(self.replay_memory.num_states_stored)
         strr +="\n\tApproximate number of states from random plays before training: {} state(s)"\
                                                                                 .format(self.num_random_play)
+        if self.save_episodes_flag:
+            strr += "\n\tThe episode will be saved in: {}".format(self.path_save_episodes)
+            strr += "\n\tAn episode will be saved each {} episodes".format(self.steps_save_episodes)
         strr +="\n\tThe information will be saved in: {}".format(self.path_save_plot)
         strr +="\n\tThe plot variables will be saved each: {} frame(s)".format(self.steps_save_plot)
         strr +="\n\tThe NN weights will be saved in: {}".format(self.path_save_weights)
@@ -452,6 +482,19 @@ class AgentDQN:
                              feed_dict={self.state: st, self.action: act, self.reward: r,
                                         self.state_next: st_next, self.done: d})[1]
 
+    def save_episode(self,saved_episode):
+        """
+        Function that saves the episode as .gif file. An episode is saved each N number of episodes
+        (defined by steps_save_episodes on initialization).
+
+        :param  saved_episode : np.array (dtype=np.uint8).
+                    Sequence of frames concatenated in a np.array (dtype=np.uint8).
+
+        :return nothing
+
+        """
+        imageio.mimsave(os.path.join(self.path_save_episodes, "Episode-{}.gif".format(self.i_episode)),
+                        np.rollaxis(saved_episode, 2, 0))
 
     def save_weights(self):
         """
@@ -463,7 +506,6 @@ class AgentDQN:
         :return nothing
 
         """
-        folder_exists(self.path_save_weights)
         self.Q_value.save_weights(os.path.join(self.path_save_weights,
                                     "weights-{}-{}.h5".format(self.env.getName(),self.steps_cont)))
 
@@ -478,7 +520,6 @@ class AgentDQN:
         :return nothing
 
         """
-        folder_exists(self.path_save_plot)
         df = pd.DataFrame.from_dict(self.values_dict)
         self.reward_100 = df["Rewards"].tail(10).mean()
         df.to_csv(os.path.join(self.path_save_plot, '-{}.csv'.format(self.env.getName())), index=False)
@@ -521,12 +562,14 @@ class AgentDQN:
         self.steps_cont=0
         time_it = time.time()
         self.i_episode = 0
+        saved_episode = 0
         while self.steps_cont < self.num_simul_frames:
             self.i_episode += 1
             # Filling the replay memory until it reaches the number num_random_play
             if(random_fill and self.replay_memory.size()>=self.num_random_play):
                 break
             state = self.env.reset()
+            if self.save_episodes_flag: saved_episode = state
             #Transforming the receive state (image frame) in a volume of n frames (history)
             state = np.concatenate((state,state,state,state),axis=2)
             #======Initializing variables====#
@@ -545,6 +588,7 @@ class AgentDQN:
                 self.steps_cont += 1
                 action = self.e_greddy_action(state.reshape((1,) + state.shape))
                 state_next, reward, done, _ = self.env.step(action)
+                if self.save_episodes_flag: saved_episode = np.concatenate((saved_episode,state_next),axis=2)
                 #Transforming the state_next (image frame) in a volume of n frames (history)
                 state_next = self.refresh_history(np.copy(state), state_next)
                 self.replay_memory.append(state,action,reward,state_next,done)
@@ -560,7 +604,11 @@ class AgentDQN:
                         self.save_weights()
                     if (self.steps_cont % self.steps_save_plot == 0):
                         self.save_plot()
-
+            
+            
+            if self.save_episodes_flag and not random_fill and(self.i_episode % self.steps_save_episodes == 0):
+                self.save_episode(saved_episode)
+                
             fps = t / (time.time() - time_it)
             if not random_fill:
                 avg_loss = self.loss / (t + 1)
@@ -594,7 +642,8 @@ class AgentDQN:
 
 if __name__ == "__main__":
     dqn = AgentDQN(env='PongNoFrameskip-v4', lr=1e-4,optimizer="adam",num_states_stored=100000,
-                   num_random_play=10000,e_min=0.02,e_lin_decay=100000,target_update=1000)
+                   num_random_play=10000,e_min=0.02,e_lin_decay=100000,target_update=1000,
+                   save_episodes_flag=True,steps_save_episodes=10)
     dqn.env.set_seed(seed)
     printd("EXECUTING RANDOM PLAYS TO FILL THE REPLAY MEMORY")
     dqn.run(random_fill=True)
