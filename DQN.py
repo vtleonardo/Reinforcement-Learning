@@ -387,7 +387,7 @@ class AgentDQN:
         """
         Function that selects an action with base on the e-greedy police.
 
-        :param  state : input volume of shape input_shape
+        :param  state : input volume (np.array) of shape input_shape (dtype=np.int8)
                     A volume compound of a set of states (images) of depth "history_size".
 
         :return nothing
@@ -411,13 +411,13 @@ class AgentDQN:
         Function that makes the epsilon decay. This decay can be linear if the initialization parameter
         linear_decay_mode is True(default) or exponential otherwise. This function doesn't receives any
         parameter, it only uses the instance parameters (self.):
-            e_min :float
+            e_min : float
                 Minimum value of epsilon
-            e_lin_decay:
+            e_lin_decay: int
                 Number of frames that the function will reach its minimum
-            steps_cont:
+            steps_cont: int
                 Current number of frames
-            i_episode:
+            i_episode: int
                 Current number of episodes
                 
         :param  nothing
@@ -487,13 +487,15 @@ class AgentDQN:
             """
             Function that updates the history (a set of "n" frames that is used as a state of the replay memory)
             taking out the first frame, moving the rest and adding the new frame to end of the history.
-            :param:
-                history : input volume of shape input_shape
-                    The history that will be stored (a set of n frames) as a state on the replay memory.
-                state_next : Image
-                    Frame of the environment current state after a action was take.
-            :return
-                nothing
+
+            :param history : input volume of shape input_shape
+                    The history that will be refreshed (basically a set of n frames concatenated
+                    [np.array dtype=np.int8]) as a state on the replay memory.
+
+            :param state_next : Image (np.array of dtype=np.uint8)
+                    Frame (np.array dtype=np.int8) of the environment current state after a action was take.
+
+            :return nothing
             """
             history[:, :, :-1] = history[:, :, 1:]
             history[:, :, -1] = state_next[:, :, 0]
@@ -507,10 +509,11 @@ class AgentDQN:
                 Variable that decides if it is to fill the replay memory with states that come of 
                 random actions.If false the DQN algorithm will run otherwise it'll only choose random action
                 e get the correspondent states from the environment to fill the replay memory.
+
         :param  to_render : bool (default False)
                 Variable that decides if it's to render on the screen the current episode.
                 OBS: If this variable is true the fps will decrease harshly since it needs to
-                show in reasonable speed the game.
+                show the game in reasonable speed.
 
         :return nothing
 

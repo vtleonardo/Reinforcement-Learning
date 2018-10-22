@@ -1,6 +1,6 @@
-########################################################################################################################
-# Created by Leonardo Viana Teixeira at 17/10/2018                                                                     #
-########################################################################################################################
+################################################################################################################
+# Created by Leonardo Viana Teixeira at 17/10/2018                                                             #
+################################################################################################################
 
 import os
 #Varibles of the printd Debug function.
@@ -19,10 +19,9 @@ def folder_exists(path_save):
     """
     Function that verifies if a folder exist if not it creates the folder.
 
-    :param
-    path_save: str (path)
-        Path to be verified/created
-    :return:
+    :param path_save: str (path)
+            Path to be verified/created
+    :return: nothing
     """
     if not (os.path.exists(path_save)):
         os.mkdir(path_save)
