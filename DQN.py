@@ -494,7 +494,7 @@ class AgentDQN:
 
         """
         imageio.mimsave(os.path.join(self.path_save_episodes, "Episode-{}.gif".format(self.i_episode)),
-                        np.rollaxis(saved_episode, 2, 0),fps=60)
+                        np.rollaxis(saved_episode, 2, 0),fps=600)
 
     def save_weights(self):
         """
@@ -559,6 +559,7 @@ class AgentDQN:
         :return nothing
 
         """
+        if not random_fill: self.env.render(to_render)
         self.steps_cont=0
         time_it = time.time()
         self.i_episode = 0
@@ -581,7 +582,6 @@ class AgentDQN:
             avg_loss = 0
             avg_q_rate = 0
             while not done:
-                if (to_render and not random_fill):self.env.render()
                 #the variable "t" differs from steps_cont on that it is reseted on each loop end
                 t += 1
                 #accomulate the total number of frames
@@ -641,6 +641,8 @@ class AgentDQN:
             printd(strr)
             time_it = time.time()
 
+        self.env.close()
+
 
 if __name__ == "__main__":
     dqn = AgentDQN(env='PongNoFrameskip-v4', lr=1e-4,optimizer="adam",num_states_stored=100000,
@@ -650,4 +652,4 @@ if __name__ == "__main__":
     printd("EXECUTING RANDOM PLAYS TO FILL THE REPLAY MEMORY")
     dqn.run(random_fill=True)
     printd("EXECUTING AND TRAINING DQN ALGORITHM")
-    dqn.run(to_render=False)
+    dqn.run(to_render=True)
