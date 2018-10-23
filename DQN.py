@@ -10,12 +10,13 @@ from keras.layers import Conv2D, Flatten, Dense, Lambda, Input, multiply
 from keras import backend as K
 import time
 import random
-from Environments import WrapperGym#, WrapperDoom
+from Environments import WrapperGym, WrapperDoom
 import tensorflow as tf
 from tensorflow import set_random_seed
 from utils import printd, folder_exists
 import utils
 import imageio
+from collections import deque
 
 #Setting the DEBUG lvl of the function printd (utils.py)
 utils.DEBUG = True
@@ -37,6 +38,7 @@ class AgentDQN:
 
     def __init__(self,
                  env='PongNoFrameskip-v4',
+                 config_file_path="DoomScenarios/labyrinth.cfg",
                  num_simul_frames=10000000,
                  discount_rate=0.99,
                  lr=0.00025,
@@ -71,6 +73,9 @@ class AgentDQN:
         :param  env : str (Default : PongNoFrameskip-v4 (atari gym environment [see gym documentation for more
                 details])
                     The name of the environment where the agent will interact.
+
+        :param config_file_path: str (path) (Default : "DoomScenarios/labyrinth.cfg")
+                    Path to .cfg file that contains the configuration to the Doom's environment.
 
         :param  num_simul_frames : int (Default : 10 000 000)
                     Total number of frames that the agent will be trained.
@@ -167,6 +172,7 @@ class AgentDQN:
                     String with the number of the gpu device that will be used in the case of the multi_gpu
                     variable is False.
         """
+        self.root_path = os.path.dirname(os.path.realpath(__file__))
         #Setting the silent mode
         if silent_mode:
             utils.DEBUG = False
@@ -179,8 +185,7 @@ class AgentDQN:
             os.environ["CUDA_VISIBLE_DEVICES"] = self.gpu_device
 
         if "doom" in env.lower():
-            pass
-            #self.env = WrapperDoom.WrapperDoom(env)
+            self.env = WrapperDoom.WrapperDoom(os.path.join(self.root_path,config_file_path))
         else:
             self.env = WrapperGym.WrapperGym(env)
 
@@ -229,7 +234,6 @@ class AgentDQN:
         self.values_dict = {"Rewards":[],"Loss":[],"Q_value":[],"Num_frames":[],
                                                                             "Time":[], "FPS":[], "Epsion":[]}
         self.image_array=[]
-        self.reward_100 = 0
 
         self.steps_save_weights = steps_save_weights
         self.steps_save_plot = steps_save_plot
@@ -237,15 +241,13 @@ class AgentDQN:
         self.steps_save_episodes = steps_save_episodes
         # Checking if the default paths exists.
         if path_save_episodes == "Episodes":
-            self.path_save_episodes=os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                                                                                    path_save_episodes)
+            self.path_save_episodes=os.path.join(self.root_path,path_save_episodes)
             folder_exists(self.path_save_episodes)
         if path_save_plot == "Plot":
-            self.path_save_plot=os.path.join(os.path.dirname(os.path.realpath(__file__)), path_save_plot)
+            self.path_save_plot=os.path.join(self.root_path, path_save_plot)
             folder_exists(self.path_save_plot)
         if path_save_weights == "Weights":
-            self.path_save_weights=os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                                                                                    path_save_weights)
+            self.path_save_weights=os.path.join(self.root_path, path_save_weights)
             folder_exists(self.path_save_weights)
 
         # Initializing the graph an its variables.
@@ -521,7 +523,6 @@ class AgentDQN:
 
         """
         df = pd.DataFrame.from_dict(self.values_dict)
-        self.reward_100 = df["Rewards"].tail(10).mean()
         df.to_csv(os.path.join(self.path_save_plot, '-{}.csv'.format(self.env.getName())), index=False)
 
     def refresh_history(self, history, state_next):
@@ -570,7 +571,8 @@ class AgentDQN:
             if(random_fill and self.replay_memory.size()>=self.num_random_play):
                 break
             state = self.env.reset()
-            if self.save_episodes_flag: saved_episode = state
+            if self.save_episodes_flag and not random_fill and (self.i_episode % self.steps_save_episodes == 0):
+                saved_episode = state
             #Transforming the receive state (image frame) in a volume of n frames (history)
             state = np.concatenate((state,state,state,state),axis=2)
             #======Initializing variables====#
@@ -610,7 +612,6 @@ class AgentDQN:
             
             if self.save_episodes_flag and not random_fill and(self.i_episode % self.steps_save_episodes == 0):
                 self.save_episode(saved_episode)
-                
             fps = t / (time.time() - time_it)
             if not random_fill:
                 avg_loss = self.loss / (t + 1)
@@ -628,7 +629,6 @@ class AgentDQN:
             strr+="\n\t\t\tTotal Frames: {:d}/{:d},".format(self.steps_cont,self.num_simul_frames,)
             strr+="\n\t\t\tFrames in this episode: {:d},".format(t)
             strr+="\n\t\t\tTotal reward: {:.2f},".format(reward_total_episode)
-            strr+="\n\t\t\tMean reward of 10 episodes: {:.3f}".format(self.reward_100)
             strr+="\n\t\t\tEpsilon: {:.4f},".format(self.epsilon)
             strr+="\n\t\t\tReplay memory size: {:d}/{:d},".format(self.replay_memory.size(),
                                                                 self.replay_memory.num_states_stored)
@@ -645,11 +645,12 @@ class AgentDQN:
 
 
 if __name__ == "__main__":
-    dqn = AgentDQN(env='PongNoFrameskip-v4', lr=1e-4,optimizer="adam",num_states_stored=100000,
-                   num_random_play=10000,e_min=0.02,e_lin_decay=100000,target_update=1000,
-                   save_episodes_flag=True,steps_save_episodes=10)
+    # dqn = AgentDQN(env='Doom', lr=1e-4,optimizer="adam",num_states_stored=100000,
+    #                num_random_play=10000,e_min=0.02,e_lin_decay=100000,target_update=1000,
+    #                save_episodes_flag=True,steps_save_episodes=10)
+    dqn = AgentDQN(env='Doom', save_episodes_flag=True,steps_save_episodes=50,gpu_device="1")
     dqn.env.set_seed(seed)
     printd("EXECUTING RANDOM PLAYS TO FILL THE REPLAY MEMORY")
     dqn.run(random_fill=True)
     printd("EXECUTING AND TRAINING DQN ALGORITHM")
-    dqn.run(to_render=True)
+    dqn.run(to_render=False)
