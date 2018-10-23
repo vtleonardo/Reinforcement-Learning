@@ -1,6 +1,6 @@
-########################################################################################################################
-# Created by Leonardo Viana Teixeira at 17/10/2018                                                                     #
-########################################################################################################################
+################################################################################################################
+# Created by Leonardo Viana Teixeira at 17/10/2018                                                             #
+################################################################################################################
 import cv2
 import numpy as np
 from collections import deque
@@ -18,8 +18,8 @@ class WrapperGym(Base):
         render:  make the environment's rendering
         reset: resets the environment and return the state
         step: does an action on the environment and returns its consequences
-                    ( the reward, the next state, if the episode has done, and other infos.
-        numberOfActions: returns the number of actions possible on this environmment.
+                    ( the reward, the next state, if the episode has done, and other infos).
+        numberOfActions: returns the number of actions possible on this environment.
         set_seed : set the random seed of the environment
     """
     def __init__(self,env):
@@ -31,6 +31,7 @@ class WrapperGym(Base):
             Name of the gym environment
         """
         self.env=wrap_deepmind(gym.make(env))
+        self.is_to_render = False
     def getName(self):
         """
         Function that gets the environment's name
@@ -40,22 +41,26 @@ class WrapperGym(Base):
         """
         return self.env.spec.id
 
-    def render(self):
+    def render(self, is_to_render=False):
         """
-        Displays the environment on the screen to the user.
+        Controls if it's to display the environment on the screen to the user.
 
+        :param is_to_render : bool (Default : False)
+                Flag that controls if it's to display the environment on the screen to the user.
         :return:
             nothing
         """
-        self.env.render()
+        self.is_to_render = is_to_render
+
     def reset(self):
         """
         Resets the environment to its initial state.
 
         :return: numpy.array
-            initial state (frame image) of the environment
+            initial state (frame image [np.array of dtype=uint8]) of the environment
         """
         return self.env.reset()
+
     def step(self,action):
         """
 
@@ -65,7 +70,10 @@ class WrapperGym(Base):
         :return: tuple
             ( the reward, the next state, if the episode has done, and other infos)
         """
+        if self.is_to_render:
+            self.env.render()
         return self.env.step(action)
+
     def numberOfActions(self):
         """
         Function that returns the number os possible actions for this environment.
@@ -77,6 +85,7 @@ class WrapperGym(Base):
     def set_seed(self,seed):
         """
         Function that sets the random seed of the environment.
+
         :param
         seed : int
             Seed to set the random function of this environment
@@ -86,11 +95,21 @@ class WrapperGym(Base):
         """
         self.env.seed(seed)
 
-########################################################################################################################
-#This wrapper are based on dqn paper (nature) and on the article:                                                      #
-# Speeding up DQN on PyTorch: how to solve Pong in 30 minutes (link below)                                             #
-# https://medium.com/mlreview/speeding-up-dqn-on-pytorch-solving-pong-in-30-minutes-81a1bd2dff55                       #
-########################################################################################################################
+    def close(self):
+        """
+        Function that closes the current environment.
+
+        :param nothing
+
+        :return: nothing
+        """
+        self.env.close()
+
+################################################################################################################
+#This wrapper are based on dqn paper (nature) and on the article:                                              #
+# Speeding up DQN on PyTorch: how to solve Pong in 30 minutes (link below)                                     #
+# https://medium.com/mlreview/speeding-up-dqn-on-pytorch-solving-pong-in-30-minutes-81a1bd2dff55               #
+################################################################################################################
 class NoopResetEnv(gym.Wrapper):
     def __init__(self, env=None, noop_max=30):
         """Sample initial states by taking random number of no-ops on reset.

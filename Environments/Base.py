@@ -19,7 +19,7 @@ class Base(ABC):
         pass
 
     @abstractmethod
-    def render(self):
+    def render(self, is_to_render=False):
         pass
 
     @abstractmethod
@@ -31,4 +31,8 @@ class Base(ABC):
         pass
     @abstractmethod
     def set_seed(self, seed):
+        pass
+
+    @abstractmethod
+    def close(self):
         pass
