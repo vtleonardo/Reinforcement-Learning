@@ -37,6 +37,7 @@ class AgentDQN:
     """
 
     def __init__(self,
+                 agent_name="DQN",
                  env='PongNoFrameskip-v4',
                  config_file_path="DoomScenarios/labyrinth.cfg",
                  num_simul_frames=10000000,
@@ -69,6 +70,8 @@ class AgentDQN:
                  gpu_device = "0"
                  ):
         """
+        :param  agent_name : str (Default : "DQN")
+                    Agent's name, it will be passed to the saved files (weights,episodes,plot).
 
         :param  env : str (Default : PongNoFrameskip-v4 (atari gym environment [see gym documentation for more
                 details])
@@ -172,7 +175,10 @@ class AgentDQN:
                     String with the number of the gpu device that will be used in the case of the multi_gpu
                     variable is False.
         """
+        # Setting the root path
         self.root_path = os.path.dirname(os.path.realpath(__file__))
+        # Defining the agent's name
+        self.agent_name = agent_name
         #Setting the silent mode
         if silent_mode:
             utils.DEBUG = False
@@ -253,7 +259,8 @@ class AgentDQN:
         # Initializing the graph an its variables.
         self.initialize_graph()
         # Creating a log file
-        self.LOG_FILENAME = os.path.join(self.path_save_plot, 'Training-{}.txt'.format(self.env.getName()))
+        self.LOG_FILENAME = os.path.join(self.path_save_plot, '{}-Training-{}.txt'.format(self.agent_name,
+                                                                                          self.env.getName()))
         # Just opening and cleaning previous files from another simulations
         with open(self.LOG_FILENAME, "w") as text_file:
             pass
@@ -270,6 +277,7 @@ class AgentDQN:
         strr = ""
         strr += "\n============================================================================================"
         strr +="\nINITIALIZING THE DQN ALGORITHM WITH THE FOLLOWING SETTINGS:"
+        strr +="\n\tStart Time:{}".format(time.strftime("%d %b %Y %H:%M:%S",time.localtime()))
         strr +="\n\tEnvironment: {}".format(self.env.getName())
         strr +="\n\tTotal number of frames to be be simulated: {} frame(s)".format(self.num_simul_frames)
         strr +="\n\tDiscount rate: {}".format(self.discount_rate)
@@ -303,7 +311,7 @@ class AgentDQN:
                                                                                        self.path_save_weights)
         strr +="\n\tThe weights will be saved each: {} frame(s)".format(self.steps_save_weights)
         strr +="\n\tMulti gpu mode : {}".format(self.multi_gpu)
-        if self.multi_gpu:
+        if not self.multi_gpu:
             strr +="\n\tGPU device used : {}".format(self.gpu_device)
         strr +="\n============================================================================================="
         printd(strr)
@@ -495,8 +503,8 @@ class AgentDQN:
         :return nothing
 
         """
-        imageio.mimsave(os.path.join(self.path_save_episodes, "Episode-{}.gif".format(self.i_episode)),
-                        np.rollaxis(saved_episode, 2, 0),fps=600)
+        imageio.mimsave(os.path.join(self.path_save_episodes, "{}-{}-Episode-{}.gif".format(self.agent_name,
+                        self.env.getName(), self.i_episode)),np.rollaxis(saved_episode, 2, 0),fps=60)
 
     def save_weights(self):
         """
@@ -509,7 +517,7 @@ class AgentDQN:
 
         """
         self.Q_value.save_weights(os.path.join(self.path_save_weights,
-                                    "weights-{}-{}.h5".format(self.env.getName(),self.steps_cont)))
+                     "{}-weights-{}-{}.h5".format(self.agent_name,self.env.getName(),self.steps_cont)))
 
 
     def save_plot(self):
@@ -523,7 +531,8 @@ class AgentDQN:
 
         """
         df = pd.DataFrame.from_dict(self.values_dict)
-        df.to_csv(os.path.join(self.path_save_plot, '-{}.csv'.format(self.env.getName())), index=False)
+        df.to_csv(os.path.join(self.path_save_plot, '{}-{}.csv'.format(self.agent_name,
+                                                                       self.env.getName())), index=False)
 
     def refresh_history(self, history, state_next):
             """
@@ -645,10 +654,10 @@ class AgentDQN:
 
 
 if __name__ == "__main__":
-    # dqn = AgentDQN(env='Doom', lr=1e-4,optimizer="adam",num_states_stored=100000,
-    #                num_random_play=10000,e_min=0.02,e_lin_decay=100000,target_update=1000,
-    #                save_episodes_flag=True,steps_save_episodes=10)
-    dqn = AgentDQN(env='Doom', save_episodes_flag=True,steps_save_episodes=50,gpu_device="1")
+
+    dqn = AgentDQN(env='Doom', lr=1e-4, optimizer="adam",num_states_stored=250000,e_lin_decay=250000,
+                   save_episodes_flag=True, steps_save_episodes=50, batch_size=32, num_simul_frames=5000000,
+                   gpu_device="1")
     dqn.env.set_seed(seed)
     printd("EXECUTING RANDOM PLAYS TO FILL THE REPLAY MEMORY")
     dqn.run(random_fill=True)
