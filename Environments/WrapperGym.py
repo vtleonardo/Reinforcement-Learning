@@ -124,7 +124,7 @@ class WrapperGym(Base):
 
 
 ################################################################################################################
-# This wrapper are based on dqn paper (nature) and on the article:                                             #
+# These wrappers are based on dqn paper (nature) and on the article:                                           #
 # Speeding up DQN on PyTorch: how to solve Pong in 30 minutes (link below)                                     #
 # https://medium.com/mlreview/speeding-up-dqn-on-pytorch-solving-pong-in-30-minutes-81a1bd2dff55               #
 ################################################################################################################
