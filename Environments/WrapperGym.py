@@ -100,6 +100,17 @@ class WrapperGym(Base):
         """
         self.env.seed(seed)
 
+    def action_meanings(self):
+        """
+        Function that gets the meaning (name) of each action inside the environment.
+
+        :param nothing
+
+        :return: list of str
+            Name of each action available inside the environment
+        """
+        return self.env.unwrapped.get_action_meanings()
+
     def close(self):
         """
         Function that closes the current environment.
@@ -109,6 +120,8 @@ class WrapperGym(Base):
         :return: nothing
         """
         self.env.close()
+
+
 
 ################################################################################################################
 # This wrapper are based on dqn paper (nature) and on the article:                                             #

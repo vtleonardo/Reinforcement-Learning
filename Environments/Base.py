@@ -90,6 +90,18 @@ class Base(ABC):
         pass
 
     @abstractmethod
+    def action_meanings(self):
+        """
+        Function that gets the meaning (name) of each action inside the environment.
+
+        :param nothing
+
+        :return: list of str
+            Name of each action available inside the environment
+        """
+        pass
+
+    @abstractmethod
     def close(self):
         """
         Function that closes the current environment.
