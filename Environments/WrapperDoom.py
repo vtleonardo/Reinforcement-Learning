@@ -53,7 +53,7 @@ class WrapperDoom(Base):
         aux=re.findall("\w*.cfg",self.config_file_path)[0][:-4]
         return "Doom-{}".format(aux)
 
-    def render(self, is_to_render):
+    def render(self, is_to_render=False):
         """
         Controls if it's to display the environment on the screen to the user.
 
