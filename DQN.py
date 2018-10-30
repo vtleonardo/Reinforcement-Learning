@@ -597,6 +597,15 @@ class AgentDQN:
             return history
 
     def sample_queue(self):
+        """
+        Function that is executed in a separate thread that samples from the replay memory and let the samples
+        ready for the train method (thus, cutting the execution time).
+
+        :param  nothing
+
+        :return nothing
+
+        """
         while self.run_thread:
             self.lock.acquire(blocking=True)
             if not self.queue_ready and self.replay_memory.size() >= self.batch_size:
@@ -607,7 +616,28 @@ class AgentDQN:
             time.sleep(1e-8)
 
     def summary_run(self, t , reward_total_episode, fps, time_it, mode="random_fill"):
+        """
+        Function that computes the plot variables and displays the information of the execution mode
+        to the user.
 
+        :param  t : int
+                Number of time steps of an ended episode.
+
+        :param  reward_total_episode : float
+                Total reward of the episode.
+
+        :param  fps : float
+                Number of frames per second (fps) processed from the episode.
+
+        :param  time_it : float (time)
+                Variable that stores the execution time.
+
+        :param  mode : str (Default "random_fill")
+                Execution mode.
+
+        :return nothing
+
+        """
         avg_loss = 0
         avg_q_rate = 0
         if mode == "train":
@@ -680,7 +710,7 @@ class AgentDQN:
 
     def run_train(self, to_render= False):
         """
-        Function that runs the RL-DQN algorithm as demonstrated in the DQN paper.
+        Function that trains the RL-DQN algorithm as demonstrated in the DQN paper.
 
         :param  to_render : bool (default False)
                 Variable that decides if it's to render on the screen the current episode.
