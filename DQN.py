@@ -16,7 +16,9 @@ from tensorflow import set_random_seed
 from utils import printd, folder_exists
 import utils
 import imageio
-from collections import deque
+import argparse
+import threading
+
 
 #Setting the DEBUG lvl of the function printd (utils.py)
 utils.DEBUG = True
@@ -38,6 +40,7 @@ class AgentDQN:
 
     def __init__(self,
                  agent_name="DQN",
+                 mode="train",
                  env='PongNoFrameskip-v4',
                  config_file_path="DoomScenarios/labyrinth.cfg",
                  num_simul_frames=10000000,
@@ -45,8 +48,8 @@ class AgentDQN:
                  lr=0.00025,
                  epsilon=1.0,
                  e_min=0.1,
+                 decay_mode="linear",
                  e_lin_decay=1000000,
-                 linear_decay_mode=True,
                  e_exp_decay=300,
                  target_update=10000,
                  num_states_stored=1000000,
@@ -54,7 +57,7 @@ class AgentDQN:
                  input_size=(84,84),
                  history_size=4,
                  num_random_play=50000,
-                 load=False,
+                 load_weights=False,
                  steps_save_weights = 50000,
                  steps_save_plot=10000,
                  save_episodes_flag=False,
@@ -67,11 +70,17 @@ class AgentDQN:
                  path_save_weights="Weights",
                  silent_mode = False,
                  multi_gpu = False,
-                 gpu_device = "0"
+                 gpu_device = "0",
+                 multi_threading = False
                  ):
         """
         :param  agent_name : str (Default : "DQN")
                     Agent's name, it will be passed to the saved files (weights,episodes,plot).
+
+        :param mode : str (Default : train)
+                    Execution mode of the algorithm. There are two possible modes: "train" and "test".
+                    The first one trains the DQN agent, training the Neural Netwok (NN) with the experiences,
+                    in an environment, the second tests it without store the experiences and train the NN.
 
         :param  env : str (Default : PongNoFrameskip-v4 (atari gym environment [see gym documentation for more
                 details])
@@ -95,27 +104,25 @@ class AgentDQN:
         :param  e_min : float (Default: 0.1 (10% of exploration))
                     Final value of random actions (exploration) chosen by the agent using the policy e-greedy.
 
+        :param  decay_mode : str (Default: linear - linear decay enable).
+                    Type of epsilon's decay mode. There are two possible types: "linear" and "exponential".
+
         :param  e_lin_decay : int (Default: 1 000 000)
                     Number of frames for epsilon reach its final value linearly (e_min).
 
-        :param  linear_decay_mode : bool (Default: True - linear decay enable).
-                    Enables the linear decay mode of epsilon or disable(thus enabling the exponential
-                    decay mode).
-
         :param  e_exp_decay : int (Default:300 [ie 63.2% of decay in 300 episodes])
-                    Exponential decay rate in EPISODES (Bigger values slowly is the decay
-                    since exp^[-1/e.decay]).
+                    Exponential decay rate in EPISODES (The decay is slowly with bigger values since the
+                    decay equation is exp^[-1/e_exp_decay]).
 
         :param  target_update : int (Default:10 000)
-                    Number of frames that the parameters of Q_hat will be update with the parameters of Q_value
+                    Number of frames that the parameters of Q_target will be updated with the parameters of Q.
                     [See the DQN paper for more details].
 
         :param  num_states_stored : int (Default: 1 000 000)
                     Number of states stored in the replay memory.
 
         :param  batch_size : int (Default: 32)
-                    Number of samples uniformly sampled from the replay memory to do the Neural Network
-                    (NN) training.
+                    The batch's size to train the Neural Network.
 
         :param  input_size : tuple (int) (Default: (84,84))
                     Width x Height of the input frame (image) that will be send to the Neural Network.
@@ -126,9 +133,9 @@ class AgentDQN:
 
         :param  num_random_play : int (Default: 50 000)
                     Number of states generate by actions chosen randomly that will be stored in the
-                    replay memory before the DQN algorithm trains begin.
+                    replay memory before the train of the DQN begins.
 
-        :param  load : bool (Default: False)
+        :param  load_weights : bool (Default: False)
                     Variable that controls if it's to load the weights from a external .h5 file generated
                     by another simulation.
 
@@ -142,7 +149,7 @@ class AgentDQN:
                     Flag that controls if it's to save episodes on the disk.
 
         :param  steps_save_episodes : int (Default: 50)
-                    Each N (steps_save_episodes) episodes an episode will be saved on the disk as .gif.
+                    Number of episodes that an episode will be saved on the disk as .gif.
 
         :param  path_save_episodes : str (Default: "Episodes")
                     Path to the folder where will be saved the episode as .gif file.
@@ -169,12 +176,23 @@ class AgentDQN:
                     If it's active no message will be displayed on the prompt.
 
         :param  multi_gpu : bool (Default : False)
-                    If false, you can select what gpu to use (default: first gpu).
+                    If false, you can select what gpu to use (if there is more than one).
 
-        :param gpu_device : str (Default : "0")
-                    String with the number of the gpu device that will be used in the case of the multi_gpu
-                    variable is False.
+        :param gpu_device : int (Default : 0 [first gpu])
+                    The number of the gpu device that will be used in the case of the multi_gpu variable
+                    is False and there is multiple GPUs.
+
+        :param  multi_threading : bool (Default : False)
+                    If this mode is active the sampling part of the algorithm will be done in parallel with
+                    the main RL-algorithm. Therefore, when we call the train method the sample from the
+                    replay memory will be ready (cutting the execution time of the algorithm thus increasing
+                    the fps).The main drawback of this approach is that we insert a delay of one time step in
+                    the algorithm, in other words, the next time step of a current time step only can be
+                    sampled in the next state. However, tests show that is not perceptible effect on the
+                    learning.
         """
+        #Setting the mode
+        self.mode = mode
         # Setting the root path
         self.root_path = os.path.dirname(os.path.realpath(__file__))
         # Defining the agent's name
@@ -185,10 +203,11 @@ class AgentDQN:
 
         self.multi_gpu = multi_gpu
         self.gpu_device = gpu_device
+        self.multi_threading = multi_threading
         if not self.multi_gpu:
             # The GPU id to use
             os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
-            os.environ["CUDA_VISIBLE_DEVICES"] = self.gpu_device
+            os.environ["CUDA_VISIBLE_DEVICES"] = "{}".format(self.gpu_device)
 
         if "doom" in env.lower():
             self.env = WrapperDoom.WrapperDoom(os.path.join(self.root_path,config_file_path))
@@ -205,7 +224,7 @@ class AgentDQN:
         self.input_size = input_size
         #Defining the input of the network (Input volume shape)
         self.input_shape = self.input_size+(history_size,)
-        self.load = load
+        self.load_weights = load_weights
         self.weights_load_path = weights_load_path
         #=========Learning Parameters===========#
         self.discount_rate = discount_rate
@@ -214,20 +233,29 @@ class AgentDQN:
         self.e_min = e_min
         self.e_exp_decay = e_exp_decay
         self.e_lin_decay = e_lin_decay
-        self.linear_decay_mode = linear_decay_mode
+        self.decay_mode = decay_mode
         self.target_update = target_update
-        self.Q_value = self.initalize_network("Q_value")
-        self.Q_hat = self.initalize_network("Q_hat")
-        self.update_Q_hat()
         self.loss_type = loss_type
         self.optimizer = optimizer
+        self.mask_one_e_greedy = np.ones((1,self.actions_num))
+        self.Q_value = self.initalize_network("Q_value")
+        self.Q_hat = self.initalize_network("Q_hat")
+        # Initializing the graph an its variables.
+        self.initialize_graph()
+        # Loading the weights
+        if(self.load_weights):
+            printd("Loading the Model {}!".format(self.weights_load_path),lvl=2)
+            self.Q_value.load_weights(self.weights_load_path)
+        # Copying the weights of one NN to another
+        self.update_Q_hat()
 
         #Clipping the error between the interval of 0.0 and 1.0 to compute the Huber Loss
         self.error_clip = 1.0
 
         #Inicializing the Replay memory
         self.batch_size = batch_size
-        self.replay_memory = ReplayMemory(num_states_stored=num_states_stored,batch_size=batch_size)
+        self.replay_memory = ReplayMemory(num_states_stored=num_states_stored,batch_size=batch_size,
+                                          path_save=os.path.join(self.root_path,path_save_episodes))
         self.history_size = history_size
         #Number of random plays to fill the replay memory before the RL-algorithm begins
         self.num_random_play = num_random_play
@@ -238,7 +266,7 @@ class AgentDQN:
         self.loss_value = 0.0
         self.q_rate = 0.0
         self.values_dict = {"Rewards":[],"Loss":[],"Q_value":[],"Num_frames":[],
-                                                                            "Time":[], "FPS":[], "Epsion":[]}
+                                                                            "Time":[], "FPS":[], "Epsilon":[]}
         self.image_array=[]
 
         self.steps_save_weights = steps_save_weights
@@ -256,8 +284,6 @@ class AgentDQN:
             self.path_save_weights=os.path.join(self.root_path, path_save_weights)
             folder_exists(self.path_save_weights)
 
-        # Initializing the graph an its variables.
-        self.initialize_graph()
         # Creating a log file
         self.LOG_FILENAME = os.path.join(self.path_save_plot, '{}-Training-{}.txt'.format(self.agent_name,
                                                                                           self.env.getName()))
@@ -265,6 +291,17 @@ class AgentDQN:
         with open(self.LOG_FILENAME, "w") as text_file:
             pass
         self.summary()
+
+        # Multi-threading variables
+        self.st = 0
+        self.act = 0
+        self.r = 0
+        self.st_next = 0
+        self.d = 0
+        self.queue_ready = False
+        self.run_thread = True
+        self.thread_sample = threading.Thread(target=self.sample_queue)
+        self.lock = threading.Lock()
 
 
     def summary(self):
@@ -276,44 +313,47 @@ class AgentDQN:
         """
         strr = ""
         strr += "\n============================================================================================"
-        strr +="\nINITIALIZING THE DQN ALGORITHM WITH THE FOLLOWING SETTINGS:"
-        strr +="\n\tStart Time:{}".format(time.strftime("%d %b %Y %H:%M:%S",time.localtime()))
-        strr +="\n\tEnvironment: {}".format(self.env.getName())
-        strr +="\n\tTotal number of frames to be be simulated: {} frame(s)".format(self.num_simul_frames)
-        strr +="\n\tDiscount rate: {}".format(self.discount_rate)
-        strr +="\n\tInitial Epsilon: {}".format(self.epsilon)
-        strr +="\n\tFinal Epsilon: {}".format(self.e_min)
-        if self.linear_decay_mode:
-            strr +="\n\tLinear Decay mode is activated!"
-            strr +="\n\tThe final Epsilon will be reached in: {} frame(s)".format(self.e_lin_decay)
-        else:
-            strr +="\n\tExponential Decay mode is activated!"
-            strr +="\n\tThe final Epsilon will be reached in approximately: {} episode(s)"\
-                                                                                .format(self.e_exp_decay*5)
-        strr +="\n\tLearning rate: {}".format(self.lr)
-        strr +="\n\tBatch size: {}".format(self.batch_size)
-        strr +="\n\tState shape: {}".format(self.input_shape)
-        strr +="\n\tThe Network will have the {} loss".format(self.loss_type.upper())
-        strr +="\n\tThe Network will be trained using {} optimizer".format(self.optimizer.upper())
-        strr +="\n\tThe Target Network will be updated every: {} frame(s)".format(self.target_update)
-        strr +="\n\tThe Replay Memory will store: {} state(s)".format(self.replay_memory.num_states_stored)
-        strr +="\n\tApproximate number of states from random plays before training: {} state(s)"\
-                                                                                .format(self.num_random_play)
+        strr += "\nINITIALIZING THE DQN ALGORITHM WITH THE FOLLOWING SETTINGS:"
+        strr += "\n\tMODE: {}".format(self.mode.upper())
+        strr += "\n\tStart Time: {}".format(time.strftime("%d %b %Y %H:%M:%S",time.localtime()))
+        strr += "\n\tEnvironment: {}".format(self.env.getName())
+        if self.mode == "train":
+            strr += "\n\tTotal number of frames to be be simulated: {} frame(s)".format(self.num_simul_frames)
+            strr += "\n\tDiscount rate: {}".format(self.discount_rate)
+            strr += "\n\tInitial Epsilon: {}".format(self.epsilon)
+            strr += "\n\tFinal Epsilon: {}".format(self.e_min)
+            if self.decay_mode.lower() == "linear":
+                strr += "\n\tLinear Decay mode is activated!"
+                strr += "\n\tThe final Epsilon will be reached in: {} frame(s)".format(self.e_lin_decay)
+            else:
+                strr += "\n\tExponential Decay mode is activated!"
+                strr += "\n\tThe final Epsilon will be reached in approximately: {} episode(s)"\
+                                                                                    .format(self.e_exp_decay*5)
+            strr += "\n\tLearning rate: {}".format(self.lr)
+            strr += "\n\tBatch size: {}".format(self.batch_size)
+            strr += "\n\tState shape: {}".format(self.input_shape)
+            strr += "\n\tThe Network will have the {} loss".format(self.loss_type.upper())
+            strr += "\n\tThe Network will be trained using {} optimizer".format(self.optimizer.upper())
+            strr += "\n\tThe Target Network will be updated every: {} frame(s)".format(self.target_update)
+            strr += "\n\tThe Replay Memory will store: {} state(s)".format(self.replay_memory.num_states_stored)
+            strr += "\n\tApproximate number of states from random plays before training: {} state(s)"\
+                                                                            .format(self.num_random_play)
         if self.save_episodes_flag:
             strr += "\n\tThe episode will be saved in: {}".format(self.path_save_episodes)
             strr += "\n\tAn episode will be saved each {} episodes".format(self.steps_save_episodes)
-        strr +="\n\tThe information will be saved in: {}".format(self.path_save_plot)
-        strr +="\n\tThe plot variables will be saved each: {} frame(s)".format(self.steps_save_plot)
-        strr +="\n\tThe NN weights will be saved in: {}".format(self.path_save_weights)
-        if self.load:
-            strr +="\n\tLoad the weights is set to True!"
-            strr +="\n\tThe weights {} will be loaded from the {} folder ".format(self.weights_load_path,
-                                                                                       self.path_save_weights)
-        strr +="\n\tThe weights will be saved each: {} frame(s)".format(self.steps_save_weights)
-        strr +="\n\tMulti gpu mode : {}".format(self.multi_gpu)
+        strr += "\n\tThe information will be saved in: {}".format(self.path_save_plot)
+        strr += "\n\tThe plot variables will be saved each: {} frame(s)".format(self.steps_save_plot)
+        if self.load_weights:
+            strr += "\n\tLoad the weights is set to True!"
+            strr += "\n\tThe weights will be loaded from : {}".format(self.weights_load_path)
+        if self.mode == "train":
+            strr += "\n\tThe NN weights will be saved in: {}".format(self.path_save_weights)
+            strr += "\n\tThe weights will be saved each: {} frame(s)".format(self.steps_save_weights)
+        strr += "\n\tMulti gpu mode : {}".format(self.multi_gpu)
         if not self.multi_gpu:
             strr +="\n\tGPU device used : {}".format(self.gpu_device)
-        strr +="\n============================================================================================="
+        strr += "\n\tMulti threading mode : {}".format(self.multi_threading)
+        strr += "\n============================================================================================"
         printd(strr)
         with open(self.LOG_FILENAME, "a+") as text_file:
             print(strr, file=text_file)
@@ -327,8 +367,7 @@ class AgentDQN:
         Keras framework together with Tensorflow. Before the Input volume enters in the network, its pixels are
         normalized (see lambda function on the code for more details). The network receives 2 inputs, the first
         is the image volume, and the last is a "Mask/Filter". The Mask has the function of filter the desired Q
-        values and clear the rest. Besides that the weights can be loaded from an external .h5 file, the option
-        to load "load" and the path to this file are given on initialization.
+        values and clear the rest.
 
         :param  name : str
                 The NN's name
@@ -349,13 +388,6 @@ class AgentDQN:
         model = Model(inputs=[frames_input, actions_input], outputs=filtered_output)
         self.sess = tf.Session()
         K.set_session(self.sess)
-        if(self.load):
-            if self.weights_load_path != "":
-                printd("Loading the Model {}!".format(self.weights_load_path))
-                model.load_weights(self.weights_load_path)
-            else:
-                printd("Load option is True but no path to a valid .h5 file was given"
-                       " therefore no weights was loadaded!")
         if (utils.DEBUG and utils.DEBUG_lvl >=2):
             model.summary()
         return model
@@ -423,7 +455,7 @@ class AgentDQN:
         self.Q_hat.set_weights(self.Q_value.get_weights())
 
 
-    def e_greddy_action(self, state):
+    def e_greddy_action(self, state, random_fill=False):
         """
         Function that selects an action with base on the e-greedy police.
 
@@ -435,12 +467,14 @@ class AgentDQN:
 
         # Gets a random action if the variable self.epsilon is less than a random variable
         # (distributed between 0 and 1)
-        if np.random.random() < self.epsilon:
+        if not self.mode.lower() == "test" and (random_fill or np.random.random() < self.epsilon):
             action = np.random.choice(np.arange(self.actions_num))
         # Otherwise the algorithm computes the Q value of each action possible for that state and
         # pick the one with greater value.
         else:
-            prediction = self.Q_value.predict_on_batch([state,np.ones((1,self.actions_num))])
+            # Reshaping the state to add one axis to send it as input to the Neural Network
+            state = state.reshape((1,) + state.shape)
+            prediction = self.Q_value.predict_on_batch([state, self.mask_one_e_greedy])
             self.q_rate += np.amax(prediction)
             action = np.argmax(prediction)
         return action
@@ -465,7 +499,7 @@ class AgentDQN:
         :return nothing
 
         """
-        if self.linear_decay_mode:
+        if self.decay_mode.lower() == "linear":
             # straight line equation wrapper by max operation -> max(min_value,(-mx + b))
             self.epsilon = np.amax((self.e_min, -((1.0-self.e_min)* self.steps_cont)/self.e_lin_decay + 1.0))
         else:
@@ -486,11 +520,21 @@ class AgentDQN:
         :return nothing
 
         """
-        # Uniform sampling from the replay memory
-        st,act,r,st_next,d,idx = self.replay_memory.sample()
+        # Uniformly sampling from the replay memory
+        if self.multi_threading:
+            self.lock.acquire(blocking=True)
+            st = self.st
+            act = self.act
+            r = self.r
+            st_next = self.st_next
+            d = self.d
+            self.queue_ready = False
+            self.lock.release()
+        else:
+            st, act, r, st_next, d, idx = self.replay_memory.sample()
         self.loss += self.sess.run([self.train_op, self.loss_train],
-                             feed_dict={self.state: st, self.action: act, self.reward: r,
-                                        self.state_next: st_next, self.done: d})[1]
+                                   feed_dict={self.state: st, self.action: act, self.reward: r,
+                                              self.state_next: st_next, self.done: d})[1]
 
     def save_episode(self,saved_episode):
         """
@@ -503,8 +547,8 @@ class AgentDQN:
         :return nothing
 
         """
-        imageio.mimsave(os.path.join(self.path_save_episodes, "{}-{}-Episode-{}.gif".format(self.agent_name,
-                        self.env.getName(), self.i_episode)),np.rollaxis(saved_episode, 2, 0),fps=60)
+        imageio.mimsave(os.path.join(self.path_save_episodes, "{}-{}-{}-Episode-{}.gif".format(self.agent_name,
+                self.mode,self.env.getName(), self.i_episode)),np.rollaxis(saved_episode, 2, 0),fps=60)
 
     def save_weights(self):
         """
@@ -531,7 +575,7 @@ class AgentDQN:
 
         """
         df = pd.DataFrame.from_dict(self.values_dict)
-        df.to_csv(os.path.join(self.path_save_plot, '{}-{}.csv'.format(self.agent_name,
+        df.to_csv(os.path.join(self.path_save_plot, '{}-{}-{}.csv'.format(self.agent_name,self.mode,
                                                                        self.env.getName())), index=False)
 
     def refresh_history(self, history, state_next):
@@ -552,14 +596,91 @@ class AgentDQN:
             history[:, :, -1] = state_next[:, :, 0]
             return history
 
-    def run(self, random_fill = False, to_render= False):
+    def sample_queue(self):
+        while self.run_thread:
+            self.lock.acquire(blocking=True)
+            if not self.queue_ready and self.replay_memory.size() >= self.batch_size:
+                self.st, self.act, self.r, self.st_next, self.d, _ = self.replay_memory.sample()
+                self.queue_ready = True
+            self.lock.release()
+            # Sleep time to give the other thread time to get access to the lock object
+            time.sleep(1e-8)
+
+    def summary_run(self, t , reward_total_episode, fps, time_it, mode="random_fill"):
+
+        avg_loss = 0
+        avg_q_rate = 0
+        if mode == "train":
+            avg_loss = self.loss / (t + 1)
+            avg_q_rate = self.q_rate / (t + 1)
+            self.values_dict["Rewards"].append(reward_total_episode)
+            self.values_dict["Loss"].append(avg_loss)
+            self.values_dict["Q_value"].append(avg_q_rate)
+            self.values_dict["Num_frames"].append(self.steps_cont)
+            self.values_dict["Time"].append(time.time() - time_it)
+            self.values_dict["FPS"].append(fps)
+            self.values_dict["Epsilon"].append(self.epsilon)
+
+        strr = ""
+        strr += "Episode {:d}:".format(self.i_episode)
+        strr += "\n\t\t\tTotal Frames: {:d}/{:d},".format(self.steps_cont, self.num_simul_frames)
+        strr += "\n\t\t\tFrames in this episode: {:d},".format(t)
+        strr += "\n\t\t\tTotal reward: {:.2f},".format(reward_total_episode)
+        if self.mode.lower() == "train":
+            strr += "\n\t\t\tEpsilon: {:.4f},".format(self.epsilon)
+            strr += "\n\t\t\tReplay memory size: {:d}/{:d},".format(self.replay_memory.size(),
+                                                                    self.replay_memory.num_states_stored)
+            strr += "\n\t\t\tLoss: {:.4f},".format(avg_loss)
+            strr += "\n\t\t\tMean Q value: {:.4f},".format(avg_q_rate)
+        strr += "\n\t\t\tFPS: {:.2f}, ".format(fps)
+        strr += "\n\t\t\tTime of this episode: {:.3f} (s)".format(time.time() - time_it)
+        with open(self.LOG_FILENAME, "a+") as text_file:
+            print(strr, file=text_file)
+        printd(strr)
+
+    def run_random_fill(self):
+        """
+        Function that fills the replay memory with states that come from actions chosen randomly.
+
+        :param  nothing
+
+        :return nothing
+
+        """
+        self.steps_cont = 0
+        time_it = time.time()
+        self.i_episode = 0
+        while self.replay_memory.size() < self.num_random_play:
+            self.i_episode += 1
+            state = self.env.reset()
+            # Transforming the receive state (image frame) in a volume of n frames (history)
+            state = np.concatenate((state, state, state, state), axis=2)
+            # ======Initializing variables====#
+            done = False
+            t = 0
+            reward_total_episode = 0
+            while not done:
+                t += 1
+                # accomulate the total number of frames
+                self.steps_cont += 1
+                action = self.e_greddy_action(state, random_fill=True)
+                state_next, reward, done, _ = self.env.step(action)
+                # Updating the input volume to put the current next_state
+                state_next = self.refresh_history(np.copy(state), state_next)
+                self.replay_memory.append(state, action, reward, state_next, done)
+                state = np.copy(state_next)
+                reward_total_episode += reward
+
+            # Saving the variables to plot and the episode
+            fps = t / (time.time() - time_it)
+            self.summary_run(t=t, reward_total_episode=reward_total_episode, fps=fps, time_it=time_it)
+            time_it = time.time()
+
+        self.env.close()
+
+    def run_train(self, to_render= False):
         """
         Function that runs the RL-DQN algorithm as demonstrated in the DQN paper.
-        
-        :param  random_fill : bool (default False)
-                Variable that decides if it is to fill the replay memory with states that come of 
-                random actions.If false the DQN algorithm will run otherwise it'll only choose random action
-                e get the correspondent states from the environment to fill the replay memory.
 
         :param  to_render : bool (default False)
                 Variable that decides if it's to render on the screen the current episode.
@@ -569,20 +690,20 @@ class AgentDQN:
         :return nothing
 
         """
-        if not random_fill: self.env.render(to_render)
+        self.env.render(to_render)
         self.steps_cont=0
         time_it = time.time()
         self.i_episode = 0
         saved_episode = 0
+        if self.multi_threading:
+            self.thread_sample.start()
         while self.steps_cont < self.num_simul_frames:
             self.i_episode += 1
-            # Filling the replay memory until it reaches the number num_random_play
-            if(random_fill and self.replay_memory.size()>=self.num_random_play):
-                break
             state = self.env.reset()
-            if self.save_episodes_flag and not random_fill and (self.i_episode % self.steps_save_episodes == 0):
+            # Starting to save the episode (if it's to save)
+            if self.save_episodes_flag and self.i_episode % self.steps_save_episodes == 0:
                 saved_episode = state
-            #Transforming the receive state (image frame) in a volume of n frames (history)
+            # Transforming the receive state (image frame) in a volume of n frames (history)
             state = np.concatenate((state,state,state,state),axis=2)
             #======Initializing variables====#
             done = False
@@ -590,26 +711,29 @@ class AgentDQN:
             self.loss = 0
             self.q_rate = 0
             reward_total_episode = 0
-            avg_loss = 0
-            avg_q_rate = 0
             while not done:
-                #the variable "t" differs from steps_cont on that it is reseted on each loop end
                 t += 1
                 #accomulate the total number of frames
                 self.steps_cont += 1
-                action = self.e_greddy_action(state.reshape((1,) + state.shape))
+                action = self.e_greddy_action(state,random_fill=False)
                 state_next, reward, done, _ = self.env.step(action)
-                if self.save_episodes_flag and not random_fill and\
-                                                    (self.i_episode % self.steps_save_episodes == 0):
-                    saved_episode = np.concatenate((saved_episode,state_next),axis=2)
-                #Transforming the state_next (image frame) in a volume of n frames (history)
+                if self.save_episodes_flag and self.i_episode % self.steps_save_episodes == 0:
+                    saved_episode = np.concatenate((saved_episode,state_next), axis=2)
+                # Updating the input volume to put the current next_state
                 state_next = self.refresh_history(np.copy(state), state_next)
-                self.replay_memory.append(state,action,reward,state_next,done)
+                if self.multi_threading:
+                    self.lock.acquire(blocking=True)
+                    self.replay_memory.append(state,action,reward,state_next,done)
+                    self.lock.release()
+                else:
+                    self.replay_memory.append(state, action, reward, state_next, done)
                 state = np.copy(state_next)
                 reward_total_episode += reward
-                if not random_fill and (self.replay_memory.size() > self.batch_size):
+                # 2* to make sure that the sampling thread executes first case there's no random_fill
+                if self.replay_memory.size() > 2*(self.batch_size):
                     self.train_dqn()
-                    self.decay_epsilon()
+                    if self.epsilon > self.e_min:
+                        self.decay_epsilon()
                     if (self.steps_cont % self.target_update == 0):
                         printd("Q_hat was renewed!",lvl=2)
                         self.update_Q_hat()
@@ -618,48 +742,199 @@ class AgentDQN:
                     if (self.steps_cont % self.steps_save_plot == 0):
                         self.save_plot()
             
-            
-            if self.save_episodes_flag and not random_fill and(self.i_episode % self.steps_save_episodes == 0):
+            # Saving the episode
+            if self.save_episodes_flag and self.i_episode % self.steps_save_episodes == 0:
                 self.save_episode(saved_episode)
             fps = t / (time.time() - time_it)
-            if not random_fill:
-                avg_loss = self.loss / (t + 1)
-                avg_q_rate = self.q_rate / (t + 1)
-                self.values_dict["Rewards"].append(reward_total_episode)
-                self.values_dict["Loss"].append(avg_loss)
-                self.values_dict["Q_value"].append(avg_q_rate)
-                self.values_dict["Num_frames"].append(self.steps_cont)
-                self.values_dict["Time"].append(time.time()-time_it)
-                self.values_dict["FPS"].append(fps)
-                self.values_dict["Epsion"].append(self.epsilon)
+            self.summary_run(mode="train",t=t, reward_total_episode=reward_total_episode, fps=fps,
+                             time_it=time_it)
+            time_it = time.time()
 
-            strr = ""
-            strr+="Episode {:d}:".format(self.i_episode)
-            strr+="\n\t\t\tTotal Frames: {:d}/{:d},".format(self.steps_cont,self.num_simul_frames,)
-            strr+="\n\t\t\tFrames in this episode: {:d},".format(t)
-            strr+="\n\t\t\tTotal reward: {:.2f},".format(reward_total_episode)
-            strr+="\n\t\t\tEpsilon: {:.4f},".format(self.epsilon)
-            strr+="\n\t\t\tReplay memory size: {:d}/{:d},".format(self.replay_memory.size(),
-                                                                self.replay_memory.num_states_stored)
-            strr+="\n\t\t\tLoss: {:.4f},".format(avg_loss)
-            strr+="\n\t\t\tMean Q value: {:.4f},".format(avg_q_rate)
-            strr+="\n\t\t\tFPS: {:.2f}, ".format(fps)
-            strr+="\n\t\t\tTime of this episode: {:.3f} (s)".format(time.time()-time_it)
-            with open(self.LOG_FILENAME, "a+") as text_file:
-                print(strr, file=text_file)
-            printd(strr)
+        self.run_thread = False
+        self.env.close()
+
+    def run_test(self, to_render=True):
+        """
+        Function that runs a test with the weights loaded from a previous simulation.
+
+        :param  to_render : bool (default True)
+                Variable that decides if it's to render on the screen the current episode.
+                OBS: If this variable is true the fps will decrease harshly since it needs to
+                show the game in reasonable speed.
+
+        :return nothing
+
+        """
+        self.env.render(to_render)
+        self.steps_cont = 0
+        time_it = time.time()
+        self.i_episode = 0
+        while self.steps_cont < self.num_simul_frames:
+            self.i_episode += 1
+            state = self.env.reset()
+            # Transforming the receive state (image frame) in a volume of n frames (history)
+            state = np.concatenate((state, state, state, state), axis=2)
+            # ======Initializing variables====#
+            done = False
+            t = 0
+            self.loss = 0
+            self.q_rate = 0
+            reward_total_episode = 0
+            while not done:
+                t += 1
+                # accumulate the total number of frames
+                self.steps_cont += 1
+                action = self.e_greddy_action(np.copy(state), random_fill=False)
+                state_next, reward, done, _ = self.env.step(action)
+                # Updating the input volume to put the current next_state
+                state_next = self.refresh_history(np.copy(state), state_next)
+                state = np.copy(state_next)
+                reward_total_episode += reward
+                # Sleep time to make the render in a reasonable speed(not to fast).
+                time.sleep(1/60)
+            fps = t / (time.time() - time_it)
+            self.summary_run(mode="test", t=t, reward_total_episode=reward_total_episode, fps=fps,
+                             time_it=time_it)
             time_it = time.time()
 
         self.env.close()
 
-
 if __name__ == "__main__":
-
-    dqn = AgentDQN(env='Doom', lr=1e-4, optimizer="adam",num_states_stored=250000,e_lin_decay=250000,
-                   save_episodes_flag=True, steps_save_episodes=50, batch_size=32, num_simul_frames=5000000,
-                   gpu_device="1")
+    parser = argparse.ArgumentParser(description="Runs a RL-agent in an environment.")
+    parser.add_argument("--mode", choices=["train","test"], help="Mode to execute the algorithm",
+                         required=True)
+    parser.add_argument("--agent_name", default="DQN",
+        help="Agent's name, it will be passed to the saved files (weights,episodes,plot). Type:str. "
+        "Default: DQN")
+    parser.add_argument("--env", default='PongNoFrameskip-v4',
+        help=" The name of the environment where the agent will interact. Type: str."
+        " Default:PongNoFrameskip-v4")
+    parser.add_argument("--config_file_path", default="DoomScenarios/labyrinth.cfg",
+        help="Path to .cfg file that contains the configuration to the Doom's environment. Type: str. "
+        "Default:../DoomScenarios/labyrinth.cfg")
+    parser.add_argument("--num_simul_frames", default=10000000, type=int,
+        help="Total number of frames that the agent will be trained. Type:int. Default:10000000")
+    parser.add_argument("--discount_rate", default=0.99, type=float,
+        help="Discount rate gamma. Type: float. Default:0.99")
+    parser.add_argument("--lr", default=0.00025, type=float,
+        help="Neural Network learning rate. Type: float. Default:0.00025")
+    parser.add_argument("--epsilon", default=1.0, type=float,
+        help="Initial value of random actions (exploration) chosen by the agent using the policy e-greedy. "
+        "Type:float. Default:1.0")
+    parser.add_argument("--e_min", default=0.1, type=float,
+        help="Final value of random actions (exploration) chosen by the agent using the policy e-greedy. "
+        "Type:float. Default:0.1")
+    parser.add_argument("--decay_mode", default="linear", choices=["linear","exponential"],
+        help="Type of epsilon's decay mode. There are two possible types: \"linear\" and \"exponential\". "
+        "Type: str. Default: linear")
+    parser.add_argument("--e_lin_decay", default=1000000, type=int,
+        help="Number of frames for epsilon reach its final value linearly (e_min). Type: int. Default:1000000")
+    parser.add_argument("--e_exp_decay", default=300, type=int,
+        help="Exponential decay rate in EPISODES (The decay is slowly with bigger values since the decay"
+        "equation is exp^[-1/e_exp_decay]). Type:int. Default:300")
+    parser.add_argument("--target_update", default=10000, type=int,
+        help="Number of frames that the parameters of Q_target will be updated with the parameters of Q"
+        "[See the DQN paper for more details]. Type:int. Default:10000")
+    parser.add_argument("--num_states_stored", default=1000000, type=int,
+        help="Number of states stored in the replay memory. Type:int. Default:1000000")
+    parser.add_argument("--batch_size", default=32, type=int,
+        help="The batch's size to train the NN. Type: int. Default:32")
+    parser.add_argument("--input_size", default=(84, 84), type=int, nargs=2,
+        help="Width x Height of the input frame (image) that will be send to the Neural Network. "
+        "Number of args:2. Type:int. Default:84 84")
+    parser.add_argument("--history_size", default= 4, type=int,
+        help="Number of sequential frames that will be stacked together to form the input volume to the NN. "
+             "Type:int. Default:4")
+    parser.add_argument("--num_random_play", default= 50000, type=int,
+        help="Number of states generate by actions chosen randomly that will be stored in the replay memory"
+        "before the train of the DQN begins. Type:int. Default:50000")
+    parser.add_argument("--load_weights", default= False, type=bool,
+        help="Variable that controls if it's to load the weights from a external .h5 file generated by "
+        "another simulation. Type:bool. Default (Train): False. Default(Test): True")
+    parser.add_argument("--steps_save_weights", default= 50000, type=int,
+        help="Desired number of frames to save the weights. Type:int. Default: 50000")
+    parser.add_argument("--steps_save_plot" , default= 10000, type=int,
+        help="Desired number of frames to save the plot variables. Type:int. Default:10000")
+    parser.add_argument("--save_episodes_flag" , default= False, type=bool,
+        help="Flag that controls if it's to save episodes on the disk. Type:bool. Default:True")
+    parser.add_argument("--steps_save_episodes" , default= 50, type=int,
+        help="Number of episodes that an episode will be saved on the disk as .gif. Type: int. Default:50")
+    parser.add_argument("--path_save_episodes" , default= "Episodes",
+        help="Path to the folder where will be saved the episode as .gif file. Type: str. Default:\"Episodes\"")
+    parser.add_argument("--weights_load_path", default="",
+        help="Path to .h5 file that contains the pre-treined weights. Default: None. REQUIRED IN TEST MODE")
+    parser.add_argument("--loss_type" , default= "huber", choices=["huber","mse"],
+        help="Name of the type of loss function that will be used to train the DQN Network. There are two "
+        "possible types: \"huber\" and \"MSE\". Type: str. Default: \"huber\"")
+    parser.add_argument("--optimizer" , default= "rmsprop", choices=["rmsprop","adam"],
+        help="Name of the type of optimizer that will be used to train the DQN Network. There are two possible "
+        "types: \"rmsprop\" and \"adam\". The first one uses the setting described on the DQN paper, "
+        "the second uses the tensorflow/keras default parameters. Type:str. Default:\"rmsprop\"")
+    parser.add_argument("--path_save_plot", default= "Plot",
+        help="Folder's path where will be saved the .csv file with the algorithm's information. Type:str."
+        "Default:\"<this_folder>\\Plot\"")
+    parser.add_argument("--path_save_weights" , default= "Weights",
+        help="Folder's path where will be saved the .h5 file with the Neural Network Weights. Type:str. "
+        "Default:\"<this_folder>\\Weights\"")
+    parser.add_argument("--silent_mode" , default= False, type=bool,
+        help="If it's active no message will be displayed on the prompt. Type:bool. Default:False.")
+    parser.add_argument("--multi_gpu" , default=False, type=bool,
+        help="If false, you can select what gpu to use (if there is more than one). Type:bool. Default:False")
+    parser.add_argument("--gpu_device" , default= 0, type=int,
+        help="The number of the gpu device that will be used in the case of the multi_gpu variable "
+             "is False and there is multiple GPUs. Type:int. Default:0")
+    parser.add_argument("--multi_threading", default=False, type=bool,
+        help="If this mode is active the sampling part of the algorithm will be done in parallel with the main"
+        " RL-algorithm. Type:bool. Default:False")
+    args = parser.parse_args(["--mode", "test","--env","Doom","--weights_load_path",
+        "C:/Users/leozi/Reinforcement-Learning/Weights/Weights-certos/DQN-weights-Doom-labyrinth-5000000.h5"])
+    # args = parser.parse_args(["--mode", "train","--optimizer","adam",'--lr',"1e-4","--num_random_play","0000",
+    #         "--num_states_stored","100000","--e_min","0.02","--e_lin_decay","100000", "--multi_threading",
+    #         "True", "--num_simul_frames","500000","--steps_save_weights","1000"])
+    # args = parser.parse_args()
+    if args.mode.lower() == "test":
+        args.load_weights = True
+    dqn = AgentDQN(agent_name=args.agent_name,
+                 mode=args.mode,
+                 env=args.env,
+                 config_file_path=args.config_file_path,
+                 num_simul_frames=args.num_simul_frames,
+                 discount_rate=args.discount_rate,
+                 lr=args.lr,
+                 epsilon=args.epsilon,
+                 e_min=args.e_min,
+                 decay_mode=args.decay_mode,
+                 e_lin_decay=args.e_lin_decay,
+                 e_exp_decay=args.e_exp_decay,
+                 target_update=args.target_update,
+                 num_states_stored=args.num_states_stored,
+                 batch_size=args.batch_size,
+                 input_size=args.input_size,
+                 history_size=args.history_size,
+                 num_random_play=args.num_random_play,
+                 load_weights=args.load_weights,
+                 steps_save_weights = args.steps_save_weights,
+                 steps_save_plot=args.steps_save_plot,
+                 save_episodes_flag=args.save_episodes_flag,
+                 steps_save_episodes=args.steps_save_episodes,
+                 path_save_episodes=args.path_save_episodes,
+                 weights_load_path=args.weights_load_path,
+                 loss_type=args.loss_type,
+                 optimizer=args.optimizer,
+                 path_save_plot=args.path_save_plot,
+                 path_save_weights=args.path_save_weights,
+                 silent_mode = args.silent_mode,
+                 multi_gpu = args.multi_gpu,
+                 gpu_device = args.gpu_device,
+                 multi_threading = args.multi_threading)
     dqn.env.set_seed(seed)
-    printd("EXECUTING RANDOM PLAYS TO FILL THE REPLAY MEMORY")
-    dqn.run(random_fill=True)
-    printd("EXECUTING AND TRAINING DQN ALGORITHM")
-    dqn.run(to_render=False)
+    if args.mode.lower() == "train":
+        if args.num_random_play > 0:
+            printd("EXECUTING RANDOM PLAYS TO FILL THE REPLAY MEMORY")
+            dqn.run_random_fill()
+        printd("EXECUTING AND TRAINING DQN ALGORITHM")
+        dqn.run_train(to_render=False)
+    elif not args.weights_load_path == "":
+        dqn.run_test(to_render=True)
+    else:
+        raise Exception("The path to load the weights was not valid!")

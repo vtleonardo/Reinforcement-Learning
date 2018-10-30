@@ -22,7 +22,7 @@ class ReplayMemory():
     link its position (inside the state_next deque).
 
     """
-    def __init__(self,num_states_stored=1000000,batch_size=32,path_save="",history_size=4):
+    def __init__(self,num_states_stored=1000000,batch_size=32,path_save=""):
         """
         Initializes the replay memory, each item in an experience will be stored in a different deque.
 
@@ -43,9 +43,7 @@ class ReplayMemory():
         self.state_idx = deque(maxlen=self.num_states_stored)
         # DEQUE with fixed length (num_states_stored) for each item inside an experience
         #Deque that stores the initial states of each episode
-        self.stacked_frames = deque(maxlen=history_size)
-        self.frames = deque(maxlen=self.num_states_stored)
-        self.replay_memory_state = deque(maxlen=self.num_states_stored)
+        self.replay_memory_state_initial = deque(maxlen=self.num_states_stored)
         self.replay_memory_action = deque(maxlen=self.num_states_stored)
         self.replay_memory_reward = deque(maxlen=self.num_states_stored)
         self.replay_memory_state_next = deque(maxlen=self.num_states_stored)
@@ -56,6 +54,7 @@ class ReplayMemory():
         self.reward_to_return = deque(maxlen=self.batch_size)
         self.state_next_to_return = deque(maxlen=self.batch_size)
         self.done_to_return = deque(maxlen=self.batch_size)
+
 
     def append(self,state,action,reward,state_next,done):
         """
@@ -85,26 +84,38 @@ class ReplayMemory():
         :return: nothing
 
         """
+        # Calling the function that checks and manually pop an element in case state_idx is full
+        self.update_index()
         if self._first_state:
             self._first_state = False
-            self.frames.append(state[:, :, -1].copy())
-            self.stacked_frames.append(self.frames[-1])
-            self.stacked_frames.append(self.frames[-1])
-            self.stacked_frames.append(self.frames[-1])
-            self.stacked_frames.append(self.frames[-1])
-            self.replay_memory_state.append(self.stacked_frames.copy())
+            self._cont_idx = len(self.replay_memory_state_initial)
+            self.state_idx.append(self._cont_idx)
+            self.replay_memory_state_initial.append(np.copy(state))
         else:
-            self.replay_memory_state.append(self.replay_memory_state_next[-1].copy())
-
-        self.frames.append(state_next[:, :, -1].copy())
-        self.stacked_frames.append(self.frames[-1])
-        self.replay_memory_state_next.append(self.stacked_frames.copy())
+            self.state_idx.append(-1)
         self.replay_memory_action.append(action)
         self.replay_memory_reward.append(reward)
+        self.replay_memory_state_next.append(np.copy(state_next))
         self.replay_memory_done.append(done*1)
         # If this is a terminal state, the next experience will be a initial state (first episode)
         if done:
             self._first_state=True
+
+    def update_index(self):
+        """
+        This method pop out an element from state_idx in case is full. If the element in question is different
+        from -1, meaning that corresponds to an index to an initial state, we also pop out the element from
+        that index inside memory_state_initial and refresh the rest of the indexes.
+
+        :return: nothing
+        """
+        if len(self.state_idx)>=self.num_states_stored:
+            element = self.state_idx.popleft()
+            if element != -1:
+                self.replay_memory_state_initial.popleft()
+                vect=np.array(self.state_idx)
+                vect[vect != -1] -= 1
+                self.state_idx = deque(vect,maxlen=self.num_states_stored)
 
     def sample(self):
         """
@@ -125,10 +136,16 @@ class ReplayMemory():
         # Sampling N indexes of elements uniformly
         idx = np.random.choice(len(self.replay_memory_done), self.batch_size)
         for i in idx:
-            self.state_to_return.append(self.get_state(i))
+            if (self.state_idx[i] == -1):
+                # If state_idx is -1 we can use as state the previous state_next
+                self.state_to_return.append(self.replay_memory_state_next[i-1])
+            else:
+                # If state_idx is different from -1 this experience is an initial one thus we have
+                # to get the correspondent initial state from replay memory initial state
+                self.state_to_return.append(self.replay_memory_state_initial[self.state_idx[i]])
             self.action_to_return.append(self.replay_memory_action[i])
             self.reward_to_return.append(self.replay_memory_reward[i])
-            self.state_next_to_return.append(self.get_state_next(i))
+            self.state_next_to_return.append(self.replay_memory_state_next[i])
             self.done_to_return.append(self.replay_memory_done[i])
 
         return (np.array(self.state_to_return,dtype=np.uint8),
@@ -156,7 +173,10 @@ class ReplayMemory():
 
         :return: state (np.array dtype=uint8 of shape input_shape [DQN Class])
         """
-        return np.stack(self.replay_memory_state[i], axis=2)
+        if (self.state_idx[i] == -1):
+            return self.replay_memory_state_next[i - 1]
+        else:
+            return self.replay_memory_state_initial[self.state_idx[i]]
 
     def get_state_next(self,i):
         """
@@ -167,7 +187,7 @@ class ReplayMemory():
 
         :return: state_next (np.array dtype=uint8 of shape input_shape [DQN Class])
         """
-        return np.stack(self.replay_memory_state_next[i], axis=2)
+        return self.replay_memory_state_next[i]
 
     def get_action(self,i):
         """
