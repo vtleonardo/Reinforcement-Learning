@@ -4,6 +4,7 @@
 
 from Environments.Base import Base
 import cv2
+from matplotlib import pyplot as plt
 import vizdoom as vzd
 import re
 import numpy as np
@@ -23,7 +24,7 @@ class WrapperDoom(Base):
         close : close the environment
     """
 
-    def __init__(self, config_file_path, input_shape=(84,84)):
+    def __init__(self, config_file_path, input_shape=(84, 84, 1), frame_skip=4):
         """
         Creates the object
 
@@ -32,16 +33,23 @@ class WrapperDoom(Base):
         :param input_shape tuple (int,int)
             Tuple that contains the size (WxH) of the image that will be fed to the Neural Network.
         """
+        if len(input_shape) == 2:
+            input_shape = input_shape + (1,)
         self.env = vzd.DoomGame()
         self.config_file_path = config_file_path
         self.env.load_config(self.config_file_path)
+        # Changing the mode to RGB case the third dimension of the input image is 3
+        # VizDoom stores the pixels in a different order so BGR = RGB (in matplotlib)
+        if input_shape[2] == 3:
+            self.env.set_screen_format(vzd.ScreenFormat.BGR24)
         self.input_shape = input_shape
         #If the game has began.
         self.game_init = False
         # Vizdoom only accepts actions format of a vector of binaries (ie.010) since it allows multiple inputs
         # at the same time, thus we need to change from int to binary format
         self.actions = self.one_hot_actions()
-        self.terminal_state_next = np.expand_dims(np.zeros(input_shape,dtype=np.uint8),axis=2)
+        self.terminal_state_next = np.zeros(self.input_shape, dtype=np.uint8)
+        self.frame_skip = frame_skip
 
     def getName(self):
         """
@@ -89,7 +97,7 @@ class WrapperDoom(Base):
             nothing
         """
         # Making an action and than skipping 4 frames
-        reward=self.env.make_action(self.actions[action],4)
+        reward=self.env.make_action(self.actions[action],self.frame_skip)
         state=self.env.get_state()
         done = self.env.is_episode_finished()
         if not done:
@@ -153,13 +161,15 @@ class WrapperDoom(Base):
         :return: img: np.array (dtype=np.uint8)
                 The image with the new size.
         """
-        img=np.expand_dims(cv2.resize(image,dsize=self.input_shape),axis=2)
+        # OPENCV image indexes by (x,y), numpy indexes by (y,x)
+        img=np.reshape(cv2.resize(image,dsize=(self.input_shape[1],self.input_shape[0]),
+                                      interpolation=cv2.INTER_LINEAR),self.input_shape)
         return img
 
     def one_hot_actions(self):
         """
         Vizdoom only accepts actions in a format of a vector of binaries (ie.010) since it allows multiple
-        inputs at the same time, thus we need to change from int(format used by the RL-algorithm) to binary
+        inputs at the same time, hence, we need to change from int(format used by the RL-algorithm) to binary
         format.
 
         :return: vector with actions in the one_hot encode format.

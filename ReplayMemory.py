@@ -13,16 +13,12 @@ class ReplayMemory():
     Class that stores the experiences lived by the agent.
 
     In this class each parameter that compose an experience will be stored in a different deque.
-    This class only stores a given state once and after that links its position to the next experience,
-    thus saving memory resources. To understand the previous statement, consider st_0 and s_t+1 as a state and
-    a state_next coming from an experience of time step t=0 and s_t+1 and s_t+2 coming from the experience at
-    the time step t=+1. S_t+1 in the first experience will be the state resulted from the agent taking an action
-    in the environment (state_next), however in the second, s_t+1 will be the state and the s_t+2 will
-    be state_next. Thus, we need to store s_t+1 only in the first experience, in the second we only need to
-    link its position (inside the state_next deque).
+    This class only stores a given frame once and after that links its position to the states that compose
+    an experience hence saving memory ram.
 
     """
-    def __init__(self,num_states_stored=1000000,batch_size=32,path_save="",history_size=4):
+    def __init__(self,num_states_stored=1000000, batch_size=32, path_save="", history_size=4,
+                                                                    input_shape=(84,84,1)):
         """
         Initializes the replay memory, each item in an experience will be stored in a different deque.
 
@@ -37,14 +33,15 @@ class ReplayMemory():
         self.path_save=path_save
         self.batch_size = batch_size
         self.num_states_stored = num_states_stored
+        self.input_shape = input_shape
+        self.input_depth = input_shape[2]
         self._first_state = True
-        # Aux variable that keeps track of the length of state_zero
-        self._cont_idx = 0
-        self.state_idx = deque(maxlen=self.num_states_stored)
+        self.history_size = history_size
+        # Variable that stack the frames
+        self.stacked_frames = deque(maxlen=history_size*self.input_depth)
+        #Deque that stores the frames
+        self.frames = deque(maxlen=self.num_states_stored*self.input_depth)
         # DEQUE with fixed length (num_states_stored) for each item inside an experience
-        #Deque that stores the initial states of each episode
-        self.stacked_frames = deque(maxlen=history_size)
-        self.frames = deque(maxlen=self.num_states_stored)
         self.replay_memory_state = deque(maxlen=self.num_states_stored)
         self.replay_memory_action = deque(maxlen=self.num_states_stored)
         self.replay_memory_reward = deque(maxlen=self.num_states_stored)
@@ -60,12 +57,6 @@ class ReplayMemory():
     def append(self,state,action,reward,state_next,done):
         """
         This method's responsible for appending the items that compose an experience.
-
-        If an experience comes from an initial state, we need to store the state and state_next variables,
-        otherwise we only need to store the state_next variable and link state_next[-1] (from previous time
-        step) as being the state variable. The state_idx is an auxiliary deque that receives:
-        -1 if the experience is from a first state or
-        the index where the initial state will be stored inside the memory_state_initial deque.
 
         :param state: volume of dtype_np.int8 and shape input shape.
                 The environment's state before the agent has took an action.
@@ -87,17 +78,19 @@ class ReplayMemory():
         """
         if self._first_state:
             self._first_state = False
-            self.frames.append(state[:, :, -1].copy())
-            self.stacked_frames.append(self.frames[-1])
-            self.stacked_frames.append(self.frames[-1])
-            self.stacked_frames.append(self.frames[-1])
-            self.stacked_frames.append(self.frames[-1])
+            for j in range(self.input_depth):
+                self.frames.append(state[:, :, -self.input_depth+j].copy())
+            # For each initial state we need to stack the first frame.
+            for i in range(self.history_size):
+                for j in range(self.input_depth):
+                    self.stacked_frames.append(self.frames[-self.input_depth+j])
             self.replay_memory_state.append(self.stacked_frames.copy())
         else:
             self.replay_memory_state.append(self.replay_memory_state_next[-1].copy())
 
-        self.frames.append(state_next[:, :, -1].copy())
-        self.stacked_frames.append(self.frames[-1])
+        for j in range(self.input_depth):
+            self.frames.append(state_next[:, :, -self.input_depth+j].copy())
+            self.stacked_frames.append(self.frames[-1])
         self.replay_memory_state_next.append(self.stacked_frames.copy())
         self.replay_memory_action.append(action)
         self.replay_memory_reward.append(reward)
@@ -120,7 +113,7 @@ class ReplayMemory():
             state_next : N elements of in a form of np.array where each element has a type of np.uint8
 
             done : N elements of in a form of np.array where each element has a type of np.float32
-                    (flag(in float type) if this experience is an terminal one)
+                    (flag(in float type) if this experience is a terminal one)
         """
         # Sampling N indexes of elements uniformly
         idx = np.random.choice(len(self.replay_memory_done), self.batch_size)
@@ -215,8 +208,10 @@ class ReplayMemory():
         :return: nothing
         """
         folder_exists(self.path_save)
-        imageio.mimsave(os.path.join(self.path_save, "{}{}.gif".format(name,i)),
-                        np.rollaxis(self.get_state_next(i), 2, 0))
+        img = self.get_state_next(i)
+        n_frames = img.shape[2]/(self.input_depth)
+        imageio.mimwrite(os.path.join(self.path_save, "{}{}.gif".format(name,i)),
+                         np.split(img, n_frames, axis=2), fps=30)
 
     def state_save(self,i,name):
         """
@@ -230,5 +225,8 @@ class ReplayMemory():
         :return: nothing
         """
         folder_exists(self.path_save)
-        imageio.mimsave(os.path.join(self.path_save, "{}{}.gif".format(name,i)),
-                        np.rollaxis(self.get_state(i), 2, 0))
+        img = self.get_state(i)
+        n_frames = img.shape[2]/(self.input_depth)
+        img = np.split(img, n_frames, axis=2)
+        imageio.mimwrite(os.path.join(self.path_save, "{}{}.gif".format(name,i)),
+                         img, fps=30)

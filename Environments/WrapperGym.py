@@ -23,7 +23,7 @@ class WrapperGym(Base):
         set_seed : set the random seed of the environment
         close : close the environment
     """
-    def __init__(self,env):
+    def __init__(self,env, input_shape=(84, 84, 1), include_score = True, frame_skip=4):
         """
         Creates the object
 
@@ -31,7 +31,7 @@ class WrapperGym(Base):
         env: str
             Name of the gym environment
         """
-        self.env=wrap_deepmind(gym.make(env))
+        self.env=wrap_deepmind(gym.make(env), input_shape, include_score, frame_skip)
         self.is_to_render = False
 
     def getName(self):
@@ -227,25 +227,44 @@ class MaxAndSkipEnv(gym.Wrapper):
         self._obs_buffer.append(obs)
         return obs
 
-def _process_frame84(frame):
+def _process_frame(frame, input_shape, include_score):
+    """
+    Pre-process the input frame.
+
+    :param frame: np.array
+            Image that contains the current environment's state
+    :param input_shape: tuple (w, h, color_channels)
+            Final shape of the frame image
+    :param include_score: bool
+            If its to include the score in the state image
+    :return: state as np.array (dtype=np.uint8 e shape=input_shape)
+    """
     img = np.reshape(frame, [210, 160, 3]).astype(np.float32)
-    img = img[:, :, 0] * 0.299 + img[:, :, 1] * 0.587 + img[:, :, 2] * 0.114
-    resized_screen = cv2.resize(img, (84, 110),  interpolation=cv2.INTER_LINEAR)
-    x_t = resized_screen[18:102, :]
-    x_t = np.reshape(x_t, [84, 84, 1])
+    # Converting the image to gray scale if the third dimension is 1
+    if input_shape[2] == 1:
+        img = img[:, :, 0] * 0.299 + img[:, :, 1] * 0.587 + img[:, :, 2] * 0.114
+    if not include_score:
+        img = img[35:194, :]
+    # OPENCV image indexes by (x,y), numpy indexes by (y,x)
+    resized_screen = cv2.resize(img, (input_shape[1], input_shape[0]),  interpolation=cv2.INTER_LINEAR)
+    x_t = np.reshape(resized_screen, input_shape)
     return x_t.astype(np.uint8)
 
-class ProcessFrame84(gym.Wrapper):
-    def __init__(self, env=None):
-        super(ProcessFrame84, self).__init__(env)
-        self.observation_space = spaces.Box(low=0, high=255, shape=(84, 84, 1))
+class ProcessFrame(gym.Wrapper):
+    def __init__(self, input_shape, include_score, env=None):
+        if len(input_shape) == 2:
+            input_shape = input_shape + (1,)
+        self.input_shape = input_shape
+        self.include_score = include_score
+        super(ProcessFrame, self).__init__(env)
+        self.observation_space = spaces.Box(low=0, high=255, shape=input_shape)
 
     def _step(self, action):
         obs, reward, done, info = self.env.step(action)
-        return _process_frame84(obs), reward, done, info
+        return _process_frame(obs, self.input_shape, self.include_score), reward, done, info
 
     def _reset(self):
-        return _process_frame84(self.env.reset())
+        return _process_frame(self.env.reset(), self.input_shape, self.include_score)
 
 class ClippedRewardsWrapper(gym.Wrapper):
     def _step(self, action):
@@ -261,13 +280,13 @@ def wrap_deepmind_ram(env):
     env = ClippedRewardsWrapper(env)
     return env
 
-def wrap_deepmind(env):
+def wrap_deepmind(env, input_shape=(84,84,1), include_score = False, frame_skip=4):
     assert 'NoFrameskip' in env.spec.id
     env = EpisodicLifeEnv(env)
     env = NoopResetEnv(env, noop_max=30)
-    env = MaxAndSkipEnv(env, skip=4)
+    env = MaxAndSkipEnv(env, skip=frame_skip)
     if 'FIRE' in env.unwrapped.get_action_meanings():
         env = FireResetEnv(env)
-    env = ProcessFrame84(env)
+    env = ProcessFrame(env=env, input_shape=input_shape, include_score=include_score)
     env = ClippedRewardsWrapper(env)
     return env
