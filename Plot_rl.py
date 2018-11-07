@@ -12,18 +12,19 @@ from keras.models import Model
 from keras.layers import Conv2D, Flatten, Dense, Lambda, Input, multiply
 
 def plot_stats():
-    abs_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "PlotDQN")
+    abs_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "Plot\\Plots-Certos")
     path_csv = [
-        "valores-tensor-BreakoutNoFrameskip-v4.csv"]  # ,"valores-tensor-PongNoFrameskip-v4 - adam2_5e-4.csv"]#'valores-PongNoFrameskip-v4.csv','valores-tensor-PongNoFrameskip-v4-1.csv',
-    # 'valores-PongNoFrameskip-v4-1.csv', 'valores-tensor-PongNoFrameskip-v4.csv',]
-    name = [
-        "DQN-Adam-lr: 0.0001"]  # ,"DQN-Adam-lr: 0.00025"]#"DQN-hubber","DQN-Tensorflow-hubber","DQN-mse","DQN-Tensorflow-mse"]
+        "grayh8-full-reg-train-Doom-labyrinth.csv", "errado-colorh8-train-Doom-labyrinth.csv"]
+    name = ["Doom com histórico = 8", "Doom colorido histórico = 8"]
+    colors = ["C{}".format(i) for i in range(10)]
     data_frame = []
-    leg = []
-    opt_classico = False
+    opt_classico = True
     opt_mean = True
     opt_window = 20
     epoch = 50000
+    alpha = 0.3
+    mean_fps = []
+    leg_d= []
     for i, path in enumerate(path_csv):
         if (os.path.exists(os.path.join(abs_path, path))):
             dta = pd.read_csv(os.path.join(abs_path, path))
@@ -32,7 +33,7 @@ def plot_stats():
     for i, df in enumerate(data_frame):
         df_2 = df.rolling(window=opt_window, center=True).mean()
         print(df.mean())
-        tim = df["Tempo"].sum()
+        tim = df["Time"].sum()
         print("Número de frames treinados:{}".format(df["Num_frames"].max()))
         print("Tempo de treinamento:{:.2f} segundos".format(tim))
         print("Tempo de treinamento:{:.2f} horas".format(tim / 3600.0))
@@ -41,59 +42,61 @@ def plot_stats():
             plt.xlabel("Frames")
         else:
             plt.xlabel("Epochs (1 epoch = {} frames)".format(epoch))
-        plt.ylabel("Valor médio de Q por episódio")
-        if opt_classico:
-            plt.plot(df["Num_frames"] / epoch, df["Q_value"])
-            leg.append("{}".format(name[i]))
-        if opt_mean:
-            plt.plot(df_2["Num_frames"] / epoch, df_2["Q_value"])
-            leg.append("{}".format(name[i]))
-        plt.legend(leg)
-        plt.title("Valor médio da Q-function\n(média móvel de 20 amostras)")
+        plt.ylabel("Valor médio de Q")
+        plt.plot(df["Num_frames"] / epoch, df["Q_value"], color=colors[i], alpha=alpha)
+        aux,=plt.plot(df_2["Num_frames"] / epoch, df_2["Q_value"], color=colors[i], label="{}".format(name[i]))
+        leg_d.append(aux)
+        plt.legend(handles=leg_d)
+        plt.grid()
+        plt.title("Valor médio da Q-function")
 
         plt.figure(2)
-        if opt_classico:
-            plt.plot(df["Num_frames"] / epoch, df["Rewards"])
-        if opt_mean:
-            plt.plot(df_2["Num_frames"] / epoch, df_2["Rewards"])
+        plt.plot(df["Num_frames"] / epoch, df["Rewards"], color=colors[i], alpha=alpha)
+        plt.plot(df_2["Num_frames"] / epoch, df_2["Rewards"], color=colors[i])
         if epoch == 1:
             plt.xlabel("Frames")
         else:
             plt.xlabel("Epochs (1 epoch = {} frames)".format(epoch))
-        plt.ylabel("Reward por episódio")
-        plt.legend(leg)
+        plt.ylabel("Reward médio por episódio")
+        plt.legend(handles=leg_d)
         plt.grid()
-        plt.title("Valor médio dos rewards recebidos\n(média móvel de 20 amostras)")
+        plt.title("Valor médio dos rewards recebidos")
 
         plt.figure(3)
-        if opt_classico:
-            plt.plot(df["Num_frames"] / epoch, df["Loss"])
-        if opt_mean:
-            plt.plot(df_2["Num_frames"] / epoch, df_2["Loss"])
+        plt.plot(df["Num_frames"] / epoch, df["Loss"], color=colors[i], alpha=alpha)
+        plt.plot(df_2["Num_frames"] / epoch, df_2["Loss"], color=colors[i])
         if epoch == 1:
             plt.xlabel("Frames")
         else:
             plt.xlabel("Epochs (1 epoch = {} frames)".format(epoch))
         plt.ylabel("Loss média por episódio")
-        plt.legend(leg)
+        plt.legend(handles=leg_d)
         plt.grid()
-        plt.title("Valor médio da Loss\n(média móvel de 20 amostras)")
+        plt.title("Valor médio da Loss")
 
         plt.figure(4)
-        if opt_classico:
-            plt.plot(np.arange(len(df["Num_frames"])), df["Num_frames"].diff() / df["Tempo"])
-        if opt_mean:
-            plt.plot(np.arange(len(df_2["Num_frames"])), df_2["Num_frames"].diff() / df_2["Tempo"])
+        plt.plot(df["Num_frames"], df["FPS"], color=colors[i], alpha=alpha)
+        plt.plot(df_2["Num_frames"], df_2["FPS"], color=colors[i])
         plt.xlabel("Episódios")
         plt.ylabel("Frames/Segundo")
-        plt.legend(leg)
+        plt.legend(handles=leg_d)
         plt.grid()
-        plt.title("Desempenho em Frames/Segundo\n(média móvel de 20 amostras)")
+        plt.title("Desempenho em Frames/Segundo")
+        mean_fps.append(df["FPS"].mean())
+    plt.figure(5)
+    plt.title("Frames/Segundo Médio")
+    plt.bar(np.arange(len(mean_fps)), mean_fps, color=colors)
+    for i,mean in enumerate(mean_fps):
+        plt.text(x=(i)-0.1, y=mean/2.0, s="FPS médio:{:.2f}".format(mean),fontsize=14)
+    plt.ylabel("Frames/Segundo")
+    plt.xticks(np.arange(len(mean_fps)),name)
     plt.figure(1)
     plt.grid()
     plt.figure(2)
     plt.grid()
     plt.figure(3)
+    plt.grid()
+    plt.figure(4)
     plt.grid()
     plt.show()
 
@@ -392,16 +395,17 @@ if __name__ == "__main__":
         help="Path to .h5 file that contains the pre-treined weights. Default: None. REQUIRED IN PLOT NETWORK")
     parser.add_argument("--state", default="",
         help="Path to .gif file that contains the state to be plotted. Default: None. REQUIRED IN PLOT NETWORK")
-    args = parser.parse_args(["--mode","network","--load_weights","True","--weights_load_path",
-        "C:/Users/leozi/Reinforcement-Learning/Weights/Weights-certos/weights-PongNoFrameskip-v4-350000.h5",
-        "--state",
-        "C:/Users/leozi/Reinforcement-Learning/States/test-test-PongNoFrameskip-v4-Episode-1-State-428.gif"])
-
-    if args.weights_load_path == "" and args.mode == "network":
-        raise Exception("The path to load the weights was not valid!")
-    dqn = AgentDQN( input_shape=args.input_shape,
-                    history_size=args.history_size,
-                    load_weights=args.load_weights,
-                    weights_load_path=args.weights_load_path,
-                    silent_mode=True)
-    plot_network(agent=dqn, state_path=args.state, state_save=dqn.path_save_plot)
+    # args = parser.parse_args(["--mode","network","--load_weights", "True","--weights_load_path",
+    #     "C:/Users/leozi/Reinforcement-Learning/Weights/Weights-certos/weights-PongNoFrameskip-v4-350000.h5",
+    #     "--state",
+    #     "C:/Users/leozi/Reinforcement-Learning/States/test-test-PongNoFrameskip-v4-Episode-1-State-428.gif"])
+    args = parser.parse_args(["--mode","stats"])
+    plot_stats()
+    # if args.weights_load_path == "" and args.mode == "network":
+    #     raise Exception("The path to load the weights was not valid!")
+    # dqn = AgentDQN( input_shape=args.input_shape,
+    #                 history_size=args.history_size,
+    #                 load_weights=args.load_weights,
+    #                 weights_load_path=args.weights_load_path,
+    #                 silent_mode=True)
+    # plot_network(agent=dqn, state_path=args.state, state_save=dqn.path_save_plot)
