@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import argparse
-from DQN import AgentDQN
+from Base_agent import Agent
 import cv2
 from PIL import Image, ImageSequence
 from keras import backend as K
@@ -14,15 +14,26 @@ from keras.layers import Conv2D, Flatten, Dense, Lambda, Input, multiply
 def plot_stats():
     abs_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "Plot\\Plots-Certos")
     path_csv = [
-        "grayh8-full-reg-train-Doom-labyrinth.csv", "errado-colorh8-train-Doom-labyrinth.csv"]
-    name = ["Doom com histórico = 8", "Doom colorido histórico = 8"]
+        #"grayh8-full-reg-train-Doom-labyrinth.csv",
+        # "errado-colorh8-train-Doom-labyrinth.csv",
+        "DQN-Doom-labyrinth.csv",
+        "grayh4-LSTM-train-Doom-labyrinth.csv",
+        #"grayh8-train-Doom-labyrinth.csv",
+                ]
+    name = [
+            #"Doom com histórico = 8-com regularização",
+            #"Doom colorido histórico = 8",
+            "DQN histórico = 4",
+            #"Doom histórico = 8",
+            "DRQN histórico = 4"
+            ]
     colors = ["C{}".format(i) for i in range(10)]
     data_frame = []
     opt_classico = True
     opt_mean = True
     opt_window = 20
     epoch = 50000
-    alpha = 0.3
+    alpha = 0
     mean_fps = []
     leg_d= []
     for i, path in enumerate(path_csv):
@@ -400,12 +411,14 @@ if __name__ == "__main__":
     #     "--state",
     #     "C:/Users/leozi/Reinforcement-Learning/States/test-test-PongNoFrameskip-v4-Episode-1-State-428.gif"])
     args = parser.parse_args(["--mode","stats"])
-    plot_stats()
-    # if args.weights_load_path == "" and args.mode == "network":
-    #     raise Exception("The path to load the weights was not valid!")
-    # dqn = AgentDQN( input_shape=args.input_shape,
-    #                 history_size=args.history_size,
-    #                 load_weights=args.load_weights,
-    #                 weights_load_path=args.weights_load_path,
-    #                 silent_mode=True)
-    # plot_network(agent=dqn, state_path=args.state, state_save=dqn.path_save_plot)
+    if args.mode.lower == "stats":
+        plot_stats()
+    else:
+        if args.weights_load_path == "" and args.mode == "network":
+            raise Exception("The path to load the weights was not valid!")
+        dqn = Agent( input_shape=args.input_shape,
+                        history_size=args.history_size,
+                        load_weights=args.load_weights,
+                        weights_load_path=args.weights_load_path,
+                        silent_mode=True)
+        plot_network(agent=dqn, state_path=args.state, state_save=dqn.path_save_plot)

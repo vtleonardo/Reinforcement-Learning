@@ -18,7 +18,7 @@ class ReplayMemory():
 
     """
     def __init__(self,num_states_stored=1000000, batch_size=32, path_save="", history_size=4,
-                                                                    input_shape=(84,84,1)):
+                                                    input_shape=(84,84,1), is_recurrent=False):
         """
         Initializes the replay memory, each item in an experience will be stored in a different deque.
 
@@ -30,6 +30,7 @@ class ReplayMemory():
                     Path to the folder where the states will be saved.
 
         """
+        self.is_recurrent = True
         self.path_save=path_save
         self.batch_size = batch_size
         self.num_states_stored = num_states_stored
@@ -79,7 +80,11 @@ class ReplayMemory():
         if self._first_state:
             self._first_state = False
             for j in range(self.input_depth):
-                self.frames.append(state[:, :, -self.input_depth+j].copy())
+                if self.is_recurrent:
+                    self.frames.append(state[-1,:, :, -self.input_depth + j].copy().reshape(self.input_shape))
+                else:
+                    self.frames.append(state[:, :, -self.input_depth+j].copy())
+
             # For each initial state we need to stack the first frame.
             for i in range(self.history_size):
                 for j in range(self.input_depth):
@@ -89,7 +94,10 @@ class ReplayMemory():
             self.replay_memory_state.append(self.replay_memory_state_next[-1].copy())
 
         for j in range(self.input_depth):
-            self.frames.append(state_next[:, :, -self.input_depth+j].copy())
+            if self.is_recurrent:
+                self.frames.append(state_next[-1 , : , :, -self.input_depth + j].copy().reshape(self.input_shape))
+            else:
+                self.frames.append(state_next[:, :, -self.input_depth+j].copy())
             self.stacked_frames.append(self.frames[-1])
         self.replay_memory_state_next.append(self.stacked_frames.copy())
         self.replay_memory_action.append(action)
@@ -123,7 +131,6 @@ class ReplayMemory():
             self.reward_to_return.append(self.replay_memory_reward[i])
             self.state_next_to_return.append(self.get_state_next(i))
             self.done_to_return.append(self.replay_memory_done[i])
-
         return (np.array(self.state_to_return,dtype=np.uint8),
                 np.array(self.action_to_return,dtype=np.int32),
                 np.array(self.reward_to_return,dtype=np.float32),
@@ -149,7 +156,8 @@ class ReplayMemory():
 
         :return: state (np.array dtype=uint8 of shape input_shape [DQN Class])
         """
-        return np.stack(self.replay_memory_state[i], axis=2)
+        ax = 0 if self.is_recurrent else 2
+        return np.stack(self.replay_memory_state[i], axis=ax)
 
     def get_state_next(self,i):
         """
@@ -160,7 +168,8 @@ class ReplayMemory():
 
         :return: state_next (np.array dtype=uint8 of shape input_shape [DQN Class])
         """
-        return np.stack(self.replay_memory_state_next[i], axis=2)
+        ax = 0 if self.is_recurrent else 2
+        return np.stack(self.replay_memory_state_next[i], axis=ax)
 
     def get_action(self,i):
         """
@@ -209,9 +218,11 @@ class ReplayMemory():
         """
         folder_exists(self.path_save)
         img = self.get_state_next(i)
-        n_frames = img.shape[2]/(self.input_depth)
+        if not self.is_recurrent:
+            n_frames = img.shape[2]/(self.input_depth)
+            img=np.split(img, n_frames, axis=2)
         imageio.mimwrite(os.path.join(self.path_save, "{}{}.gif".format(name,i)),
-                         np.split(img, n_frames, axis=2), fps=30)
+                         img, fps=30)
 
     def state_save(self,i,name):
         """
@@ -226,7 +237,8 @@ class ReplayMemory():
         """
         folder_exists(self.path_save)
         img = self.get_state(i)
-        n_frames = img.shape[2]/(self.input_depth)
-        img = np.split(img, n_frames, axis=2)
+        if not self.is_recurrent:
+            n_frames = img.shape[2]/(self.input_depth)
+            img = np.split(img, n_frames, axis=2)
         imageio.mimwrite(os.path.join(self.path_save, "{}{}.gif".format(name,i)),
                          img, fps=30)
