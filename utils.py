@@ -1,8 +1,9 @@
-################################################################################################################
-# Created by Leonardo Viana Teixeira at 17/10/2018                                                             #
-################################################################################################################
+############################################################################################################
+# Created by Leonardo Viana Teixeira at 17/10/2018                                                         #
+############################################################################################################
 
 import os
+import re
 #Varibles of the printd Debug function.
 DEBUG = True
 DEBUG_lvl = 1
@@ -25,3 +26,24 @@ def folder_exists(path_save):
     """
     if not (os.path.exists(path_save)):
         os.mkdir(path_save)
+
+def read_cfg(file):
+    appended_text = []
+    with open(file) as f:
+        for line in f:
+            content = line.strip().replace(" ","")
+            if len(content) and content[0] != "#":
+                key,value = content.split("=")
+                appended_text.append("--{}".format(key))
+                if "../" in value:
+                    value=os.path.join(os.path.dirname(__file__),value[3:])
+                appended_text.append(value)
+    return appended_text
+
+def str2bool(v):
+    if v.lower() in ('yes', 'true', 't', 'y', '1'):
+        return True
+    elif v.lower() in ('no', 'false', 'f', 'n', '0'):
+        return False
+    else:
+        raise Exception('Boolean value expected.')

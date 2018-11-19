@@ -138,7 +138,11 @@ class WrapperDoom(Base):
         :return: list of str
             Name of each action available inside the environment
         """
-        return self.env.get_available_buttons()
+        str_vect = []
+        button_str = str(self.env.get_available_buttons()).split(",")
+        for str_aux in button_str:
+            str_vect.append(re.sub(r"\]","",re.sub(r"\[*Button.","",str_aux)))
+        return str_vect
 
     def close(self):
         """

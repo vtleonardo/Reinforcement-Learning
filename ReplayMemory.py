@@ -30,7 +30,7 @@ class ReplayMemory():
                     Path to the folder where the states will be saved.
 
         """
-        self.is_recurrent = True
+        self.is_recurrent = is_recurrent
         self.path_save=path_save
         self.batch_size = batch_size
         self.num_states_stored = num_states_stored

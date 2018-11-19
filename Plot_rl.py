@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import argparse
-from Base_agent import Agent
+from Base_agent import Agent, agent_arg_parser
 import cv2
 from PIL import Image, ImageSequence
 from keras import backend as K
@@ -12,30 +12,46 @@ from keras.models import Model
 from keras.layers import Conv2D, Flatten, Dense, Lambda, Input, multiply
 
 def plot_stats():
-    abs_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "Plot\\Plots-Certos")
+    abs_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "Plot\\Plots-test")
     path_csv = [
         #"grayh8-full-reg-train-Doom-labyrinth.csv",
         # "errado-colorh8-train-Doom-labyrinth.csv",
-        "DQN-Doom-labyrinth.csv",
-        "grayh4-LSTM-train-Doom-labyrinth.csv",
+        #"grayh4-DQN-Doom-labyrinth.csv",
+        #"grayh4-LSTM-train-Doom-labyrinth.csv",
         #"grayh8-train-Doom-labyrinth.csv",
+        #"DQN-multi-rp-new-train-PongNoFrameskip-v4.csv",
+        #"DQN-rp-new-train-PongNoFrameskip-v4.csv"
+        # "grayh4-DQN-Doom-labyrinth.csv",
+        # "grayh8-train-Doom-labyrinth.csv",
+        # "grayh8-full-reg-train-Doom-labyrinth.csv",
+        # "grayh4-LSTM-train-Doom-labyrinth.csv",
+        #"errado-colorh8-train-Doom-labyrinth.csv",
+        "grayh4-train-Doom-labyrinth_test.csv",
+        "grayh8-train-Doom-labyrinth_test.csv",
+        "grayh8-fullreg-train-Doom-labyrinth_test.csv",
+        "LSTM-h4-train-Doom-labyrinth_test.csv"
+
                 ]
     name = [
-            #"Doom com histórico = 8-com regularização",
+            "DQN Hist=4",
+            "DQN Hist=8",
+            "DQN Hist=8 Reg",
+            "DRQN Hist=4",
+            #"DQN Hist=8 Colorido",
             #"Doom colorido histórico = 8",
-            "DQN histórico = 4",
-            #"Doom histórico = 8",
-            "DRQN histórico = 4"
+            #"DQN rodando em paralelo",
+            #"DQN padrão"
             ]
     colors = ["C{}".format(i) for i in range(10)]
     data_frame = []
     opt_classico = True
     opt_mean = True
-    opt_window = 20
+    opt_window = 50
     epoch = 50000
     alpha = 0
     mean_fps = []
     leg_d= []
+    min_vect,max_vect = [],[]
     for i, path in enumerate(path_csv):
         if (os.path.exists(os.path.join(abs_path, path))):
             dta = pd.read_csv(os.path.join(abs_path, path))
@@ -70,7 +86,14 @@ def plot_stats():
             plt.xlabel("Epochs (1 epoch = {} frames)".format(epoch))
         plt.ylabel("Reward médio por episódio")
         plt.legend(handles=leg_d)
-        plt.grid()
+        plt.xticks(np.arange(0,11,0.5))
+        min_vect.append(df["Rewards"].min())
+        min_vect.append(df_2["Rewards"].min())
+        max_vect.append(df["Rewards"].max())
+        max_vect.append(df_2["Rewards"].max())
+        plt.gca().set_xlim(0,10)
+        plt.gca().set_ylim(np.amin(min_vect),np.amax(max_vect)+5)
+        #plt.grid()
         plt.title("Valor médio dos rewards recebidos")
 
         plt.figure(3)
@@ -88,27 +111,28 @@ def plot_stats():
         plt.figure(4)
         plt.plot(df["Num_frames"], df["FPS"], color=colors[i], alpha=alpha)
         plt.plot(df_2["Num_frames"], df_2["FPS"], color=colors[i])
-        plt.xlabel("Episódios")
+        plt.xlabel("Frames")
         plt.ylabel("Frames/Segundo")
         plt.legend(handles=leg_d)
         plt.grid()
         plt.title("Desempenho em Frames/Segundo")
         mean_fps.append(df["FPS"].mean())
     plt.figure(5)
-    plt.title("Frames/Segundo Médio")
+    plt.title("Frames/Segundo Médio",fontsize=20)
     plt.bar(np.arange(len(mean_fps)), mean_fps, color=colors)
     for i,mean in enumerate(mean_fps):
-        plt.text(x=(i)-0.1, y=mean/2.0, s="FPS médio:{:.2f}".format(mean),fontsize=14)
-    plt.ylabel("Frames/Segundo")
-    plt.xticks(np.arange(len(mean_fps)),name)
+        plt.text(x=(i)-0.1, y=mean/2.0, s="FPS médio:{:.2f}".format(mean),fontsize=18)
+    plt.ylabel("Frames/Segundo",fontsize=20)
+    plt.xticks(np.arange(len(mean_fps)),name,fontsize=20)
+    plt.yticks(fontsize=20)
     plt.figure(1)
     plt.grid()
     plt.figure(2)
     plt.grid()
     plt.figure(3)
-    plt.grid()
+    #plt.grid()
     plt.figure(4)
-    plt.grid()
+    #plt.grid()
     plt.show()
 
 def get_image_max_filter(model_input, layer_output, filter_index, input_shape, lr=100, iterations = 20,
@@ -182,7 +206,7 @@ def get_rows_cols(num_elements):
     rows, cols = 0, 0
     # Exception to the rule
     if num_elements == 32:
-        rows, cols = 4, 8
+        rows, cols = 8, 4
     # Trying to let rows and columns the closest possible
     else:
         cols = np.ceil(np.sqrt(num_elements)).astype(np.int)
@@ -247,24 +271,32 @@ def get_convolutional_layers(agent):
     conv_inputs = []
     for i in range(len(agent.Q_value.layers)):
         #Checks for all inputs that come before the first conv layer.
-        if check_for_input and "input" in str(agent.Q_value.layers[i]):
+        if check_for_input and "input" in agent.Q_value.layers[i].__str__():
             conv_inputs.append(agent.Q_value.layers[i].input)
-        if "conv" in str(agent.Q_value.layers[i]):
+        if "conv" in agent.Q_value.layers[i].__str__():
             check_for_input = False
             conv_layer.append(agent.Q_value.layers[i])
             conv_eval.append(K.function(conv_inputs,[agent.Q_value.layers[i].output]))
     return (conv_layer,conv_eval)
 
 def plot_network(agent,state_path,state_save):
+    cmap = "gray_r"
+    cmap2 = "gray"
     fig_idx = 0
     state=Image.open(state_path)
-    frames =[np.array(frame.copy().getdata(),dtype=np.uint8).reshape(frame.size[1],frame.size[0],1)
-                      for frame in ImageSequence.Iterator(state)]
+    frames= []
+    for frame in range(0,state.n_frames):
+        state.seek(frame)
+        state_aux = state.convert("RGB") if agent.input_depth == 3 else state
+        frames.append(np.array(state_aux.copy().getdata(),dtype=np.uint8).reshape(agent.input_shape))
     bld_img=blend_img(frames)
+    Image.fromarray(bld_img).save(os.path.join(state_save, "blended2_img.png"))
     fig0 = plt.figure(fig_idx)
     fig_idx += 1
-    plt.imshow(bld_img.astype(np.uint8), cmap="gray_r")
-    plt.imsave(os.path.join(state_save, "blended_img.png"), bld_img, cmap="gray_r")
+    plt.imshow(bld_img.astype(np.uint8), cmap=cmap)
+    plt.imsave(os.path.join(state_save, "blended_img.png"), bld_img, cmap=cmap)
+    for i in range(len(frames)):
+        plt.imsave(os.path.join(state_save, "frame{}.png".format(i)), np.squeeze(frames[i]), cmap=cmap)
     #=====================================================================================================#
     #    Gets each layer's activation and the portions of the input image that maximize its filters.
     #=====================================================================================================#
@@ -282,7 +314,8 @@ def plot_network(agent,state_path,state_save):
         ax.set_yticklabels([])
         ax.set_aspect('equal')
         ax.axis("off")
-        plt.imshow(np.asarray(new_img,dtype=np.float32),cmap="gray")
+        plt_save=plt.imshow(np.asarray(new_img,dtype=np.float32),cmap=cmap2)._A
+        plt.imsave(os.path.join(state_save, "activ-layer{}.png".format(i)),plt_save , cmap=cmap2)
         # Store the argmax, max and index of each filter
         argmax_vect = []
         max_vect = []
@@ -318,37 +351,40 @@ def plot_network(agent,state_path,state_save):
                                    edgecolor="red", facecolor='none',alpha=0.95)
             ax.add_patch(rect)
 
-        ax.imshow(bld_img, cmap="gray_r")
+        plt_save=ax.imshow(bld_img, cmap=cmap)._A
+        plt.imsave(os.path.join(state_save, "max-zone-layer{}.png".format(i)), plt_save, cmap=cmap)
         # ====================================================================================#
         #   Gets the input image that maximize each of the network`s filters
         # ====================================================================================#
-        # print(filter_idx_max)
-        # for i_aux in range(len(filter_idx_max)):
-        #     for j in range(i_aux,len(filter_idx_max)-1):
-        #         if filter_idx_max[i_aux] == -1:
-        #             break
-        #         if filter_idx_max[i_aux]==filter_idx_max[j+1]:
-        #             filter_idx_max[j+1]=-1
-        # filter_idx_max = [idx for idx in filter_idx_max if idx!=-1]
-        # print(filter_idx_max)
-        # n_idx = len(filter_idx_max)
-        #fig1 = plt.figure(fig_idx, figsize=(8, 8))
-        #fig_idx += 1
-        #rows,cols = get_rows_cols(n_idx)
-        #axes = [fig1.add_subplot(rows,cols,k+1) for k in range(n_idx)]
-        # img_max = []
-        # for j in range(num_elements):
-        #     img_temp, loss = get_image_max_filter(model_input=agent.Q_value.layers[0].input,
-        #                 layer_output=conv_layer[i].output, filter_index=j,
-        #                 input_shape=state_vect.shape, )
-        #     img_max.append(np.expand_dims(np.asarray(join_image(np.squeeze(img_temp))),axis=2))
-        #     #axes[j].plot(range(len(loss)),np.array(loss))
-        # fig1 = plt.figure(fig_idx, figsize=(8, 8))
-        # fig_idx += 1
-        # img_total = np.asarray(join_image(np.concatenate(img_max,axis=2),width_space=3,height_space=3))
-        # print(img_total.shape)
-        # im=plt.imshow(img_total,cmap="gray_r")._A
-        # plt.imsave(os.path.join(state_save, "teste.png"), im, cmap="gray_r")
+        # Taking out the repeated elements
+        for i_aux in range(len(filter_idx_max)):
+            for j in range(i_aux,len(filter_idx_max)-1):
+                if filter_idx_max[i_aux] == -1:
+                    break
+                if filter_idx_max[i_aux]==filter_idx_max[j+1]:
+                    filter_idx_max[j+1]=-1
+        filter_idx_max = [idx for idx in filter_idx_max if idx!=-1]
+        n_idx = len(filter_idx_max)
+        fig1 = plt.figure(fig_idx, figsize=(8, 8))
+        fig1.suptitle("Losses dos filtros da camada convolutiva {}".format(i+1))
+        fig_idx += 1
+        rows,cols = get_rows_cols(num_elements)
+        axes = [fig1.add_subplot(rows,cols,k+1) for k in range(num_elements)]
+        img_max = []
+        for j in range(num_elements):
+            img_temp, loss = get_image_max_filter(model_input=agent.Q_value.layers[0].input,
+                        layer_output=conv_layer[i].output, filter_index=j,
+                        input_shape=state_vect.shape, )
+            img_max.append(np.expand_dims(np.asarray(join_image(np.squeeze(img_temp))),axis=2))
+            axes[j].plot(np.arange(len(loss)),np.array(loss))
+            axes[j].set_xticks([])
+            axes[j].set_yticks([])
+        fig1 = plt.figure(fig_idx, figsize=(8, 8))
+        fig_idx += 1
+        img_total = np.asarray(join_image(np.concatenate(img_max,axis=2),width_space=3,height_space=3))
+        print(img_total.shape)
+        im=plt.imshow(img_total,cmap=cmap)._A
+        plt.imsave(os.path.join(state_save, "filters-layer{}.png".format(i)), im, cmap=cmap)
 
 
     #=====================================================================#
@@ -365,7 +401,8 @@ def plot_network(agent,state_path,state_save):
         filters_vec.append(np.expand_dims(join_image(np.squeeze(weights[:,:,:,i])),axis=2))
     # joining all the filters
     filter_total = np.squeeze(join_image(np.concatenate(filters_vec,axis=2),width_space=2,height_space=2))
-    plt.imshow(filter_total,cmap="gray")
+    plt_save=plt.imshow(filter_total,cmap="gray")._A
+    plt.imsave(os.path.join(state_save, "layer0-filters.png"), plt_save, cmap=cmap2)
     ax = plt.gca()
     ax.set_xticklabels([])
     ax.set_yticklabels([])
@@ -374,7 +411,7 @@ def plot_network(agent,state_path,state_save):
     #==================================================================================================#
     #   Bar plot with the q-values
     #==================================================================================================#
-    q_s = agent.Q_value.predict_on_batch([state_vect,agent.mask_one_e_greedy])
+    q_s = agent.Q_value.predict_on_batch([state_vect])
     fig2 = plt.figure(fig_idx, figsize=(4, 4))
     fig2.suptitle("Action-Values (Q) for each action available")
     fig_idx += 1
@@ -389,36 +426,31 @@ def plot_network(agent,state_path,state_save):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Plot the RL-variables.")
-    parser.add_argument("--mode", choices=["stats","network"], help="Mode to execute the plot",
-                         required=True)
-    parser.add_argument("--input_shape", default="84 84",
-        help="Input frame's shape (WxHxColor_channel[if any]) that will be sent to the Neural Network. If "
-        "just WxH are entered, the color_channel will be 1 (gray_scale)"
-        "Type:str (with each argument separated by space or comma, and the whole sentence between quotation "
-        "marks). Default:\"84 84\"")
-    parser.add_argument("--history_size", default= 4, type=int,
-        help="Number of sequential frames that will be stacked together to form the input volume to the NN. "
-             "Type:int. Default:4")
-    parser.add_argument("--load_weights", default= False, type=bool,
-        help="Variable that controls if it's to load the weights from a external .h5 file generated by "
-        "another simulation. Type:bool. Default (Train): False. Default(Test): True")
-    parser.add_argument("--weights_load_path", default="",
-        help="Path to .h5 file that contains the pre-treined weights. Default: None. REQUIRED IN PLOT NETWORK")
+    parser.add_argument("--plot_mode", choices=["stats","network"], default="stats",
+        help="Mode to execute the plot. Type:str. Default=stats")
     parser.add_argument("--state", default="",
         help="Path to .gif file that contains the state to be plotted. Default: None. REQUIRED IN PLOT NETWORK")
-    # args = parser.parse_args(["--mode","network","--load_weights", "True","--weights_load_path",
-    #     "C:/Users/leozi/Reinforcement-Learning/Weights/Weights-certos/weights-PongNoFrameskip-v4-350000.h5",
-    #     "--state",
-    #     "C:/Users/leozi/Reinforcement-Learning/States/test-test-PongNoFrameskip-v4-Episode-1-State-428.gif"])
-    args = parser.parse_args(["--mode","stats"])
-    if args.mode.lower == "stats":
+
+    str=["--plot_mode", "network", "--weights_load_path",
+    "C:/Users/leozi/Reinforcement-Learning/Weights/Weights-certos/grayh4-weights-Doom-labyrinth-5000000.h5",
+    # #"C:/Users/leozi/Reinforcement-Learning/Weights/Weights-certos/grayh8-full-reg-weights-Doom-labyrinth-5000000.h5",
+    # #"C:/Users/leozi/Reinforcement-Learning/Weights/Weights-certos/pong/DQN-weights-PongNoFrameskip-v4-500000-gray.h5",
+    # #"C:/Users/leozi/Reinforcement-Learning/Weights/Weights-certos/pong/DQN-weights-PongNoFrameskip-v4-500000-gray.h5",
+     "--state",
+    "C:/Users/leozi/Reinforcement-Learning/States/doomh4-test-Doom-labyrinth-Episode-1-State-47.gif",
+    # #"C:/Users/leozi/Reinforcement-Learning/States/pong-test-PongNoFrameskip-v4-Episode-1-State-78.gif",
+    # "C:/Users/leozi/Reinforcement-Learning/States/pong-test-PongNoFrameskip-v4-Episode-1-State-104.gif",
+    "--input_shape","84,84,1",
+    #]#,
+    "--env", "Doom", "--history_size","4", "--network_model","DQN"]
+    #str = []
+    args, kwargs = agent_arg_parser(parser,str)
+    kwargs["silent_mode"] = True
+    kwargs["load_weights"] = True
+    if args.plot_mode.lower() == "stats":
         plot_stats()
     else:
-        if args.weights_load_path == "" and args.mode == "network":
+        if args.weights_load_path == "":
             raise Exception("The path to load the weights was not valid!")
-        dqn = Agent( input_shape=args.input_shape,
-                        history_size=args.history_size,
-                        load_weights=args.load_weights,
-                        weights_load_path=args.weights_load_path,
-                        silent_mode=True)
-        plot_network(agent=dqn, state_path=args.state, state_save=dqn.path_save_plot)
+        agent = Agent(**kwargs)
+        plot_network(agent=agent, state_path=args.state, state_save=agent.path_save_plot)

@@ -11,13 +11,14 @@ import random
 from Environments import WrapperGym, WrapperDoom
 import tensorflow as tf
 from tensorflow import set_random_seed
-from utils import printd, folder_exists
+from utils import printd, folder_exists, str2bool, read_cfg
 import utils
 import imageio
 import argparse
 import threading
 import re
 import Networks
+import sys
 
 #Multi-thread lock
 lock = threading.Lock()
@@ -26,11 +27,7 @@ lock = threading.Lock()
 utils.DEBUG = True
 utils.DEBUG_lvl = 1
 
-#Setting all random seeds to a value known
-seed=1
-np.random.seed(seed)
-random.seed(seed)
-set_random_seed(seed)
+
 #Silencing tensorflow
 if utils.DEBUG_lvl <= 2:
     os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
@@ -359,6 +356,11 @@ class Agent:
         strr += "\n\tStart Time: {}".format(time.strftime("%d %b %Y %H:%M:%S",time.localtime()))
         strr += "\n\tEnvironment: {}".format(self.env.getName())
         strr += "\n\tNetwork architecture: {}".format(self.network_model)
+        strr += "\n\tFrame shape: {}".format(self.input_shape)
+        strr += "\n\tHistory size: {}".format(self.history_size)
+        strr += "\n\tState shape: {}".format(self.state_input_shape)
+        if self.is_recurrent:
+            strr += "\n\tThe model has a recurrent architecture"
         if self.mode == "train":
             strr += "\n\tTotal number of frames to be be simulated: {} frame(s)".format(self.num_simul_frames)
             strr += "\n\tDiscount rate: {}".format(self.discount_rate)
@@ -373,7 +375,6 @@ class Agent:
                                                                                     .format(self.e_exp_decay*5)
             strr += "\n\tLearning rate: {}".format(self.lr)
             strr += "\n\tBatch size: {}".format(self.batch_size)
-            strr += "\n\tState shape: {}".format(self.state_input_shape)
             strr += "\n\tThe Network will have the {} loss".format(self.loss_type.upper())
             strr += "\n\tThe Network will be trained using {} optimizer".format(self.optimizer.upper())
             strr += "\n\tThe Target Network will be updated every: {} frame(s)".format(self.target_update)
@@ -905,21 +906,28 @@ class Agent:
 
         self.env.close()
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Runs a RL-agent in an environment.")
-    parser.add_argument("--mode", choices=["train","test"], help="Mode to execute the algorithm",
-                         required=True)
+def agent_arg_parser(parser):
+    str = None
+    # If any argument was sent, use the <this_file_name>.cfg file
+    if len(sys.argv) == 1:
+        # Replacing the .py from this file for .cfg, thus appointing to the file with the configurations
+        file_cfg=sys.argv[0][:-3]+".cfg"
+        #If the file exists, read it
+        if (os.path.exists(file_cfg)):
+            str=read_cfg(file_cfg)
+    parser.add_argument("--agent_mode", choices=["train", "test"], default="train",
+        help="Mode to execute the algorithm. Type:str. Default: train")
     parser.add_argument("--agent_name", default="DQN",
         help="Agent's name, it will be passed to the saved files (weights,episodes,plot). Type:str. "
-        "Default: DQN")
+                             "Default: DQN")
     parser.add_argument("--env", default='PongNoFrameskip-v4',
         help=" The name of the environment where the agent will interact. Type: str."
         " Default:PongNoFrameskip-v4")
-    parser.add_argument("--include_score", default= False, type=bool,
+    parser.add_argument("--include_score", default=False, type=str2bool,
         help="If its to include in the state image the score from the environment (atari game)."
         " Type: bool. Default: False. [GYM ATARI EXCLUSIVE]")
     parser.add_argument("--config_file_path", default="DoomScenarios/labyrinth.cfg",
-        help="Path to .cfg file that contains the configuration to the Doom's environment. Type: str. "
+         help="Path to .cfg file that contains the configuration to the Doom's environment. Type: str. "
         "Default:../DoomScenarios/labyrinth.cfg")
     parser.add_argument("--network_model", default="DQN",
         help="Neural Network's architecture to be used. The name should match one of the methods inside the "
@@ -939,7 +947,7 @@ if __name__ == "__main__":
     parser.add_argument("--e_min", default=0.1, type=float,
         help="Probability's final value of the agent to choose random actions (exploration) using the "
         "policy e-greedy. Type:float. Default:0.1")
-    parser.add_argument("--decay_mode", default="linear", choices=["linear","exponential"],
+    parser.add_argument("--decay_mode", default="linear", choices=["linear", "exponential"],
         help="Type of epsilon's decay mode. There are two possible types: \"linear\" and \"exponential\". "
         "Type: str. Default: linear")
     parser.add_argument("--e_lin_decay", default=1000000, type=int,
@@ -959,126 +967,121 @@ if __name__ == "__main__":
         "just WxH are entered, the color_channel will be 1 (gray_scale)"
         "Type:str (with each argument separated by space or comma, and the whole sentence between quotation "
         "marks). Default:\"84 84\"")
-    parser.add_argument("--history_size", default= 4, type=int,
+    parser.add_argument("--history_size", default=4, type=int,
         help="Number of sequential frames that will be stacked together to form the input volume to the NN. "
-             "Type:int. Default:4")
-    parser.add_argument("--num_random_play", default= 50000, type=int,
+        "Type:int. Default:4")
+    parser.add_argument("--num_random_play", default=50000, type=int,
         help="Number of states generated by actions chosen randomly that will be stored in the replay memory"
         "before the agent's training begins. Type:int. Default:50000")
-    parser.add_argument("--load_weights", default= False, type=bool,
+    parser.add_argument("--load_weights", default=False, type=str2bool,
         help="Variable that controls if it's to load the weights from a external .h5 file generated by "
         "another simulation. Type:bool. Default (Train): False. Default(Test): True")
-    parser.add_argument("--steps_save_weights", default= 50000, type=int,
+    parser.add_argument("--steps_save_weights", default=50000, type=int,
         help="Desired number of frames to save the weights. Type:int. Default: 50000")
-    parser.add_argument("--steps_save_plot" , default= 10000, type=int,
+    parser.add_argument("--steps_save_plot", default=10000, type=int,
         help="Desired number of frames to save the plot variables. Type:int. Default:10000")
-    parser.add_argument("--to_save_episodes" , default= False, type=bool,
+    parser.add_argument("--to_save_episodes", default=False, type=str2bool,
         help="Flag that controls if it's to save episodes on the disk. Type:bool. Default:True")
-    parser.add_argument("--steps_save_episodes" , default= 50, type=int,
+    parser.add_argument("--steps_save_episodes", default=50, type=int,
         help="Number of episodes that an episode will be saved on the disk as .gif. Type: int. Default:50")
-    parser.add_argument("--path_save_episodes" , default= "Episodes",
+    parser.add_argument("--path_save_episodes", default="Episodes",
         help="Path to the folder where will be saved the episode as .gif file. Type: str. Default:\"Episodes\"")
     parser.add_argument("--weights_load_path", default="",
         help="Path to .h5 file that contains the pre-treined weights. Default: None. REQUIRED IN TEST MODE")
-    parser.add_argument("--loss_type" , default= "huber", choices=["huber","mse"],
+    parser.add_argument("--loss_type", default="huber", choices=["huber", "mse"],
         help="Name of the type of loss function that will be used to train the DQN Network. There are two "
         "possible types: \"huber\" and \"MSE\". Type: str. Default: \"huber\"")
-    parser.add_argument("--optimizer" , default= "rmsprop", choices=["rmsprop","adam"],
+    parser.add_argument("--optimizer", default="rmsprop", choices=["rmsprop", "adam"],
         help="Name of the type of optimizer that will be used to train the DQN Network. There are two possible "
         "types: \"rmsprop\" and \"adam\". The first one uses the setting described on the DQN paper, "
         "the second uses the tensorflow/keras default parameters. Type:str. Default:\"rmsprop\"")
-    parser.add_argument("--path_save_plot", default= "Plot",
+    parser.add_argument("--path_save_plot", default="Plot",
         help="Folder's path where will be saved the .csv file with the algorithm's information. Type:str."
         "Default:\"<this_folder>\\Plot\"")
-    parser.add_argument("--path_save_weights" , default= "Weights",
+    parser.add_argument("--path_save_weights", default="Weights",
         help="Folder's path where will be saved the .h5 file with the Neural Network Weights. Type:str. "
         "Default:\"<this_folder>\\Weights\"")
-    parser.add_argument("--silent_mode" , default= False, type=bool,
+    parser.add_argument("--silent_mode", default=False, type=str2bool,
         help="If it's active no message will be displayed on the prompt. Type:bool. Default:False.")
-    parser.add_argument("--multi_gpu" , default=False, type=bool,
+    parser.add_argument("--multi_gpu", default=False, type=str2bool,
         help="If false, you can select what gpu to use (if there is more than one). Type:bool. Default:False")
-    parser.add_argument("--gpu_device" , default= 0, type=int,
+    parser.add_argument("--gpu_device", default=0, type=int,
         help="The number of the gpu device that will be used in the case of the multi_gpu variable "
-             "is False and there is multiple GPUs. Type:int. Default:0")
-    parser.add_argument("--multi_threading", default=False, type=bool,
+        "is False and there is multiple GPUs. Type:int. Default:0")
+    parser.add_argument("--multi_threading", default=False, type=str2bool,
         help="If this mode is active the sampling part of the algorithm will be done in parallel with the main"
         " RL-algorithm. Type:bool. Default:False")
-    parser.add_argument("--to_render", default=False, type=bool,
+    parser.add_argument("--to_render", default=False, type=str2bool,
         help="If this mode is active the environment will be rendered. Type:bool. Default:False")
-    parser.add_argument("--to_save_states", default=False, type=bool,
+    parser.add_argument("--to_save_states", default=False, type=str2bool,
         help="Controls if it to save the states in TEST MODE. Type:bool. Default:False")
     parser.add_argument("--path_save_states", default="States",
         help="Folder's path where will be saved the state as .gif images. Type:str. Default : States. "
         "Default:\"<this_folder>\\States\" TEST MODE ONLY")
-    parser.add_argument("--is_recurrent", default=False, type=bool,
+    parser.add_argument("--is_recurrent", default=False, type=str2bool,
         help="If your model has any recurrent layer set this flag to True. Type:bool. Default:False")
-
-    # args = parser.parse_args(["--mode", "train","--load_weights","True","--weights_load_path",
-    #     "C:/Users/leozi/Reinforcement-Learning/Weights/Weights-certos/grayh8-full-reg-weights-Doom-labyrinth-5000000.h5",
-    #     "--config_file_path","C:/Users/leozi/Reinforcement-Learning/DoomScenarios/labyrinth_test.cfg",
-    #     "--num_random_play","0","--epsilon","0.05","--multi_threading","True",
-    #     "--to_save_states","False","--input_shape","(84, 84,1)","--history_size","8",
-    #     "--agent_name", "grayh8-fullreg", "--env", "Doom", "--gpu_device", "1",
-    #     "--num_states_stored", "50000","--num_simul_frames", "500000","--optimizer", "adam", '--lr', "1e-4",
-    #     "--network_model","DQN_regularized"])
-
-    args = parser.parse_args(["--mode", "test","--load_weights","True","--weights_load_path",
-          "C:/Users/leozi/Reinforcement-Learning/Weights/Weights-certos/grayh8-full-reg-weights-Doom-labyrinth-5000000.h5",
-            "--agent_name", "grayh8","--gpu_device","0","--network_model","DQN_regularized",
-            "--env","Doom","--history_size","8","--to_render","True","--to_save_states","True"])
-
-    # args = parser.parse_args(
-    #     ["--mode", "train", "--optimizer", "adam", '--lr', "1e-4", "--num_random_play", "50000",
-    #      "--num_states_stored", "250000", "--e_lin_decay", "250000", "--multi_threading",
-    #      "True", "--num_simul_frames", "5000000", "--steps_save_weights", "50000", "--history_size", "4",
-    #      "--input_shape", "(84,84,1)", "--to_save_episodes", "True", "--steps_save_episodes", "100",
-    #      "--agent_name", "grayh4-LSTM","--env","Doom","--gpu_device","1","--network_model","DRQN"
-    #         ,"--is_recurrent","True"])
-
-    # args = parser.parse_args()
-    if args.mode.lower() == "test":
+    parser.add_argument("--random_seed", default=-1, type=str2bool,
+        help="Seed to the random methods used by this agent. If the value is -1. No seed is set at all."
+             " Type:int. Default:-1")
+    if str is not None:
+        args = parser.parse_args(str)
+    else:
+        args = parser.parse_args()
+    # Parsing the input_shape argument to int
+    input_shape_aux = tuple([int(item) for item in re.findall(r"\d+", args.input_shape)])
+    # Parsing the arguments as a dict
+    kwargs = {"agent_name": args.agent_name,
+    "mode":args.agent_mode,
+    "env":args.env,
+    "config_file_path" : args.config_file_path,
+    "network_model" : args.network_model,
+    "frame_skip" : args.frame_skip,
+    "num_simul_frames" : args.num_simul_frames,
+    "discount_rate" : args.discount_rate,
+    "lr" : args.lr,
+    "epsilon" : args.epsilon,
+    "e_min" : args.e_min,
+    "decay_mode" : args.decay_mode,
+    "e_lin_decay" : args.e_lin_decay,
+    "e_exp_decay" : args.e_exp_decay,
+    "target_update" : args.target_update,
+    "num_states_stored" : args.num_states_stored,
+    "batch_size" : args.batch_size,
+    "input_shape" : input_shape_aux,
+    "history_size" : args.history_size,
+    "num_random_play" : args.num_random_play,
+    "load_weights" : args.load_weights,
+    "steps_save_weights": args.steps_save_weights,
+    "steps_save_plot" : args.steps_save_plot,
+    "to_save_episodes" : args.to_save_episodes,
+    "steps_save_episodes" : args.steps_save_episodes,
+    "path_save_episodes" : args.path_save_episodes,
+    "weights_load_path" : args.weights_load_path,
+    "loss_type" : args.loss_type,
+    "optimizer" : args.optimizer,
+    "path_save_plot" : args.path_save_plot,
+    "path_save_weights" : args.path_save_weights,
+    "silent_mode" : args.silent_mode,
+    "multi_gpu" : args.multi_gpu,
+    "gpu_device" : args.gpu_device,
+    "multi_threading" : args.multi_threading,
+    "is_recurrent" : args.is_recurrent}
+    if args.agent_mode.lower() == "test":
         assert args.load_weights == True, "In test mode you have to specify the path to load " \
                                           "the pre-trained weights"
-    # Parsing the input_shape argument to int
-    input_shape_aux = tuple([int(item) for item in re.findall(r"\d+",args.input_shape)])
-    dqn = Agent(agent_name=args.agent_name,
-                mode=args.mode,
-                env=args.env,
-                config_file_path=args.config_file_path,
-                network_model=args.network_model,
-                frame_skip=args.frame_skip,
-                num_simul_frames=args.num_simul_frames,
-                discount_rate=args.discount_rate,
-                lr=args.lr,
-                epsilon=args.epsilon,
-                e_min=args.e_min,
-                decay_mode=args.decay_mode,
-                e_lin_decay=args.e_lin_decay,
-                e_exp_decay=args.e_exp_decay,
-                target_update=args.target_update,
-                num_states_stored=args.num_states_stored,
-                batch_size=args.batch_size,
-                input_shape=input_shape_aux,
-                history_size=args.history_size,
-                num_random_play=args.num_random_play,
-                load_weights=args.load_weights,
-                steps_save_weights = args.steps_save_weights,
-                steps_save_plot=args.steps_save_plot,
-                to_save_episodes=args.to_save_episodes,
-                steps_save_episodes=args.steps_save_episodes,
-                path_save_episodes=args.path_save_episodes,
-                weights_load_path=args.weights_load_path,
-                loss_type=args.loss_type,
-                optimizer=args.optimizer,
-                path_save_plot=args.path_save_plot,
-                path_save_weights=args.path_save_weights,
-                silent_mode = args.silent_mode,
-                multi_gpu = args.multi_gpu,
-                gpu_device = args.gpu_device,
-                multi_threading = args.multi_threading,
-                is_recurrent=args.is_recurrent)
-    dqn.env.set_seed(seed)
-    if args.mode.lower() == "train":
+    return args, kwargs
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Runs a RL-agent in an environment.")
+    args, kwargs = agent_arg_parser(parser)
+    dqn = Agent(**kwargs)
+    if args.random_seed != -1:
+        # Setting all random seeds to a value known
+        np.random.seed(args.random_seed)
+        random.seed(args.random_seed)
+        set_random_seed(args.random_seed)
+        dqn.env.set_seed(args.random_seed)
+    if args.agent_mode.lower() == "train":
         if args.num_random_play > 0:
             printd("EXECUTING RANDOM PLAYS TO FILL THE REPLAY MEMORY")
             dqn.run_random_fill()
