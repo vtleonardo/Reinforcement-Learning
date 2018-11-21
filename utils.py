@@ -1,6 +1,6 @@
-############################################################################################################
-# Created by Leonardo Viana Teixeira at 17/10/2018                                                         #
-############################################################################################################
+######################################################################################################
+# Created by Leonardo Viana Teixeira at 17/10/2018                                                   #
+######################################################################################################
 
 import os
 import re
@@ -35,7 +35,7 @@ def read_cfg(file):
             if len(content) and content[0] != "#":
                 key,value = content.split("=")
                 appended_text.append("--{}".format(key))
-                if "../" in value:
+                if ".." == value[:2]:
                     value=os.path.join(os.path.dirname(__file__),value[3:])
                 appended_text.append(value)
     return appended_text

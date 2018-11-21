@@ -51,7 +51,7 @@ def plot_stats():
     alpha = 0
     mean_fps = []
     leg_d= []
-    min_vect,max_vect = [],[]
+    min_vect, max_vect = [], []
     for i, path in enumerate(path_csv):
         if (os.path.exists(os.path.join(abs_path, path))):
             dta = pd.read_csv(os.path.join(abs_path, path))
@@ -168,12 +168,12 @@ def get_image_max_filter(model_input, layer_output, filter_index, input_shape, l
     grads /= (K.sqrt(K.mean(K.square(grads))) + 1e-5)
     # this function returns the loss and grads given the input picture
     iterate = K.function([model_input], [loss, grads])
-    # we start from a gray image with some noise
+    # we start from image with some noise
     if input_img_data.shape[0]==0:
         input_img_data = np.random.random(input_shape) * 20 + 128.
     loss_vect = []
     print("iterations")
-    # run gradient ascent for 20 steps
+    # run gradient ascent for iterations steps
     for i in range(iterations):
         loss_value, grads_value = iterate([input_img_data])
         input_img_data += (np.clip(grads_value,-1,1))*127 * lr
@@ -216,21 +216,27 @@ def get_rows_cols(num_elements):
                 break
     return (rows,cols)
 
-def join_image(img , width_space=1, height_space=1):
-    img_width, img_height, num_elements = img.shape[0], img.shape[1], img.shape[2]
+def join_image(img ,input_depth=1, width_space=1, height_space=1):
+    # Reshaping the input volume putting the number of frames as the first axis.
+    if len(img.shape) != 4:
+        img_aux=[np.expand_dims(img[:,:,i:i+input_depth],axis=0) for i in range(0,img.shape[2],input_depth)]
+        img = np.concatenate(img_aux,axis=0)
+    mode = "L" if input_depth == 1 else "RGB"
+    num_elements, img_width, img_height = img.shape[0], img.shape[1], img.shape[2]
     rows, cols = get_rows_cols(num_elements)
     total_width = (cols * (img_width + width_space)) + width_space  # +width_space for the last space
     total_height = (rows * (img_height + height_space)) + height_space
-    new_img = Image.new('L', (total_width, total_height))
+    new_img = Image.new(mode=mode, size=(total_width, total_height))
     for i in range(num_elements):
         idx, idy = np.unravel_index(i, (cols, rows), order="F")
         x_offset = (idx * (img_width + width_space)) + width_space
         y_offset = (idy * (img_height + height_space)) + height_space
-        if img[:, :, i].dtype == np.float32:
-            new_img.paste(Image.fromarray(deprocess_image(img[:, :, i]), mode="L"), (x_offset, y_offset))
+        if img[i].dtype == np.float32:
+            new_img_aux = Image.fromarray(np.squeeze(deprocess_image(img[i])), mode=mode)
         else:
-            new_img.paste(Image.fromarray(img[:, :, i], mode="L"), (x_offset, y_offset))
-    return new_img
+            new_img_aux = Image.fromarray(np.squeeze(img[i]), mode=mode)
+        new_img.paste(new_img_aux, (x_offset, y_offset))
+    return np.array(new_img)
 
 def deconv_coord(conv_layer,layer_number,coord_x,coord_y):
     rect_width = 0
@@ -280,8 +286,8 @@ def get_convolutional_layers(agent):
     return (conv_layer,conv_eval)
 
 def plot_network(agent,state_path,state_save):
-    cmap = "gray_r"
-    cmap2 = "gray"
+    cmap = None#"gray_r"
+    cmap2 = None#"gray"
     fig_idx = 0
     state=Image.open(state_path)
     frames= []
@@ -337,7 +343,7 @@ def plot_network(agent,state_path,state_save):
         fig_idx += 1
         ax = plt.gca()
         filter_idx_max = []
-        # Plotting the rectangles with the input parts that maximizes the activations of this layer.
+        # Plotting on the input the rectangles that maximizes the activations of this layer.
         for k in range(n_max[i]):
             idx_max = int(np.argmax(max_vect))
             # Images uses (x,y) arrays uses (y,x)[rows,cols]
@@ -375,13 +381,15 @@ def plot_network(agent,state_path,state_save):
             img_temp, loss = get_image_max_filter(model_input=agent.Q_value.layers[0].input,
                         layer_output=conv_layer[i].output, filter_index=j,
                         input_shape=state_vect.shape, )
-            img_max.append(np.expand_dims(np.asarray(join_image(np.squeeze(img_temp))),axis=2))
+            img_max.append(np.expand_dims(np.asarray(join_image(np.squeeze(img_temp),
+                                                                input_depth=agent.input_depth)),axis=0))
             axes[j].plot(np.arange(len(loss)),np.array(loss))
             axes[j].set_xticks([])
             axes[j].set_yticks([])
         fig1 = plt.figure(fig_idx, figsize=(8, 8))
         fig_idx += 1
-        img_total = np.asarray(join_image(np.concatenate(img_max,axis=2),width_space=3,height_space=3))
+        img_total = np.asarray(join_image(np.concatenate(img_max,axis=0),
+                                          input_depth=agent.input_depth,width_space=3,height_space=3))
         print(img_total.shape)
         im=plt.imshow(img_total,cmap=cmap)._A
         plt.imsave(os.path.join(state_save, "filters-layer{}.png".format(i)), im, cmap=cmap)
@@ -430,21 +438,7 @@ if __name__ == "__main__":
         help="Mode to execute the plot. Type:str. Default=stats")
     parser.add_argument("--state", default="",
         help="Path to .gif file that contains the state to be plotted. Default: None. REQUIRED IN PLOT NETWORK")
-
-    str=["--plot_mode", "network", "--weights_load_path",
-    "C:/Users/leozi/Reinforcement-Learning/Weights/Weights-certos/grayh4-weights-Doom-labyrinth-5000000.h5",
-    # #"C:/Users/leozi/Reinforcement-Learning/Weights/Weights-certos/grayh8-full-reg-weights-Doom-labyrinth-5000000.h5",
-    # #"C:/Users/leozi/Reinforcement-Learning/Weights/Weights-certos/pong/DQN-weights-PongNoFrameskip-v4-500000-gray.h5",
-    # #"C:/Users/leozi/Reinforcement-Learning/Weights/Weights-certos/pong/DQN-weights-PongNoFrameskip-v4-500000-gray.h5",
-     "--state",
-    "C:/Users/leozi/Reinforcement-Learning/States/doomh4-test-Doom-labyrinth-Episode-1-State-47.gif",
-    # #"C:/Users/leozi/Reinforcement-Learning/States/pong-test-PongNoFrameskip-v4-Episode-1-State-78.gif",
-    # "C:/Users/leozi/Reinforcement-Learning/States/pong-test-PongNoFrameskip-v4-Episode-1-State-104.gif",
-    "--input_shape","84,84,1",
-    #]#,
-    "--env", "Doom", "--history_size","4", "--network_model","DQN"]
-    #str = []
-    args, kwargs = agent_arg_parser(parser,str)
+    args, kwargs = agent_arg_parser(parser)
     kwargs["silent_mode"] = True
     kwargs["load_weights"] = True
     if args.plot_mode.lower() == "stats":
