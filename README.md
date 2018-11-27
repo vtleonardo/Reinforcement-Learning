@@ -20,14 +20,18 @@ https://www.dropbox.com/s/oh236l071q955ig/ModeloTCC.pdf?dl=0
 - Pesos pré-treinados para os jogos Pong e para os dois mapas de ViZDoom que acompanham esse repositório.
 
 ## Performance 
-Para melhorar o tempo de processamento gasto no treinamento dos agentes foi desenvolvido uma abordagem para o algoritmo de reinforcement learning rodar em paralelo. Essa abordagem consiste basicamente em amostrar as experiências da replay memory em paralelo enquanto o algoritmo de decisão é executado, assim quanto chegamos na parte de treinamento da rede neural o custo computacional da amostragem já foi executado. Para mais detalhes consultar a seção 3.8 do arquivo de TCC. A seguir temos algumas imagens comparativas entre as performances do modo serial (single-threading) e paralelo (multi-threading) no treinamento de agente para jogar o jogo de Atari 2600 Pong.
+Para melhorar o tempo de processamento gasto no treinamento dos agentes foi desenvolvido uma abordagem para o algoritmo de reinforcement learning rodar em paralelo. Essa abordagem consiste basicamente em amostrar as experiências da replay memory em paralelo enquanto o algoritmo de decisão é executado, assim quanto chegamos na parte de treinamento da rede neural o custo computacional da amostragem já foi executado. Para mais detalhes consultar a seção 3.8 do arquivo de TCC. A seguir temos algumas imagens comparativas entre as performances em frames/segundo do modo serial (single-threading) e paralelo (multi-threading) no treinamento de agente para jogar o jogo de Atari 2600 Pong.
 
 <p align="center">
  <img src="docs/fps_bar.png">
 </p>
+Como podemos observar na imagem abaixo, embora a versão em paralelo introduza um "atraso" de uma amostragem, ambos os algoritmos aprendem com sucesso a jogar o jogo Pong.
 
+<p align="center">
+ <img src="docs/pong_desemp_reward.png">
+</p>
 
-
+## Instalação
 
 
 ## Referências
