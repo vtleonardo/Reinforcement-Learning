@@ -3,13 +3,15 @@ Contém os arquivos utilizados no trabalho de conclusão de curso (TCC) **DESENV
 
 ## Referências
 Se esse código foi útil para sua pesquisa, por favor considere citar:
-##Bibtex
 
+## Bibtex
+```
 @misc{LVTeixeira,
   author = {Leonardo Viana Teixeira},
-  title = {Desenvolvimento de um agente inteligente para explroação autonoma de um ambiente tridimensional via visual reinforcement      learning},
+  title = {Desenvolvimento de um agente inteligente para exploração autônoma de ambientes 3D via Visual Reinforcement Learning},
   year = {2018},
   publisher = {GitHub},
   journal = {GitHub repository},
-  howpublished = {\url{https://github.com/Leonardo-Viana/Reinforcement-Learning}},
+  url = {https://github.com/Leonardo-Viana/Reinforcement-Learning},
 }
+```
