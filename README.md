@@ -74,6 +74,8 @@ Mais detalhes sobre a execução dos jogos de atari no windows, consultar esse [
 
 Para a instalação do ViZDoom no windows consultar esse [link](https://github.com/mwydmuch/ViZDoom/blob/master/doc/Building.md#windows_build)
 
+Uma vez com todas as bibliotecas instaladas e o ambiente virtual configurado, basta dar download ou clonar esse repositório e executar o arquivo Base_agent para o treinamento de um agente com o algoritmo de reinforcement learning DQN ou DRQN (Detalhes nos próximos tópicos).
+
 ## Referências
 Se esse código foi útil para sua pesquisa, por favor considere citar:
 ```
