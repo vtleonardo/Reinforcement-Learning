@@ -20,11 +20,14 @@ https://www.dropbox.com/s/oh236l071q955ig/ModeloTCC.pdf?dl=0
 - Pesos pré-treinados para os jogos Pong e para os dois mapas de ViZDoom que acompanham esse repositório.
 
 ## Performance 
-Para melhorar o tempo de processamento gasto no treinamento dos agentes foi desenvolvido uma abordagem para o algoritmo de reinforcement learning rodar em paralelo. Essa abordagem consiste basicamente em amostrar as experiências da replay memory em paralelo enquanto o algoritmo de decisão é executado, assim quanto chegamos na parte de treinamento da rede neural o custo computacional da amostragem já foi executado. Para mais detalhes consultar a seção 3.8 do arquivo de TCC. A seguir temos algumas imagens comparativas entre as performances em frames/segundo do modo serial (single-threading) e paralelo (multi-threading) no treinamento de agente para jogar o jogo de Atari 2600 Pong.
+Para melhorar o tempo de processamento gasto no treinamento dos agentes foi desenvolvido uma abordagem para o algoritmo de reinforcement learning rodar em paralelo. Essa abordagem consiste basicamente em amostrar as experiências da replay memory em paralelo enquanto o algoritmo de decisão é executado, assim quanto chegamos na parte de treinamento da rede neural o custo computacional da amostragem já foi executado. Para mais detalhes consultar a seção 3.8 do arquivo de TCC. A seguir temos algumas imagens comparativas entre as performances em frames/segundo do modo serial (single-threading) e paralelo (multi-threading) no treinamento de agente para jogar o jogo de Atari 2600 Pong. 
 
 <p align="center">
  <img src="docs/fps_bar.png">
 </p>
+*Os testes de performance foram realizado em cpu core i7 4790K e gpu nvidia geforce gtx 970*
+
+
 Como podemos observar na imagem abaixo, embora a versão em paralelo introduza um "atraso" de uma amostragem, ambos os algoritmos aprendem com sucesso a jogar o jogo Pong.
 
 <p align="center">
@@ -32,7 +35,44 @@ Como podemos observar na imagem abaixo, embora a versão em paralelo introduza u
 </p>
 
 ## Instalação
+O código foi todo escrito e testado em python 3.6 com Windows 10. Para execução do código as seguintes bibliotecas se fazem necessárias:
 
+````
+Numpy
+Tensorflow (cpu ou gpu)
+Keras
+Pandas
+Imageio
+OpenCV
+OpenAI Gym
+ViZDoom
+````
+
+Para a instalação das bibliotecas acima recomenda-se criar um [ambiente virtual](https://conda.io/docs/user-guide/tasks/manage-environments.html) com o [miniconda](https://conda.io/docs/user-guide/install/index.html). Com o ambiente virutal ativado a instalação das bibliotecas com o miniconda pode ser feita com os seguintes comandos:
+Versão cpu do tensorflow
+````
+conda install tensorflow
+````
+Versão gpu do tensorflow
+````
+conda install tensorflow-gpu
+````
+Para as demais bibliotecas
+````
+conda install numpy
+conda install keras
+conda install pandas
+conda install imageio
+conda install opencv
+````
+Para a instalação da biblioteca open ai gym no windows, utiize o seguinte comando:
+````
+pip install gym
+pip install --no-index -f https://github.com/Kojoley/atari-py/releases atari_py
+````
+Mais detalhes sobre a execução dos jogos de atari no windows, consultar esse [link](https://stackoverflow.com/questions/42605769/openai-gym-atari-on-windows).
+
+Para a instalação do ViZDoom no windows consultar esse [link](https://github.com/mwydmuch/ViZDoom/blob/master/doc/Building.md#windows_build)
 
 ## Referências
 Se esse código foi útil para sua pesquisa, por favor considere citar:
