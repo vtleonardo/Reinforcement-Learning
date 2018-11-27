@@ -1,5 +1,9 @@
 # Reinforcement-Learning
-Contém os arquivos utilizados no trabalho de conclusão de curso (TCC) **DESENVOLVIMENTO DE UM AGENTE INTELIGENTE PARA EXPLORAÇÃO AUTONOMA DE UM AMBIENTE TRIDIMENSIONAL VIA VISUAL REINFORCEMENT LEARNING**, apresentado no dia 28/11/2018 para a obtenção do título de engenheiro mecatrônico pelo CEFET-MG campus Divinópolis.
+Contém os arquivos utilizados no trabalho de conclusão de curso (TCC) **DESENVOLVIMENTO DE UM AGENTE INTELIGENTE PARA EXPLORAÇÃO AUTÔNOMA DE UM AMBIENTE TRIDIMENSIONAL VIA VISUAL REINFORCEMENT LEARNING**, apresentado no dia 28/11/2018 para a obtenção do título de engenheiro mecatrônico pelo CEFET-MG campus Divinópolis.
+
+**Versão de rascunho disponível em:**
+
+https://www.dropbox.com/s/oh236l071q955ig/ModeloTCC.pdf?dl=0
 
 
 
