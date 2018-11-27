@@ -32,12 +32,15 @@ def read_cfg(file):
     with open(file) as f:
         for line in f:
             content = line.strip().replace(" ","")
-            if len(content) and content[0] != "#":
-                key,value = content.split("=")
-                appended_text.append("--{}".format(key))
-                if ".." == value[:2]:
-                    value=os.path.join(os.path.dirname(__file__),value[3:])
-                appended_text.append(value)
+            if len(content) and content[0] != "#" and content[0] != ";":
+                if content[0] != "+":
+                    key,value = content.split("=",1)
+                    appended_text.append("--{}".format(key))
+                    if ".." == value[:2]:
+                        value=os.path.join(os.path.dirname(__file__),value[3:])
+                    appended_text.append(value)
+                else:
+                    appended_text[-1]="{}{}".format(appended_text[-1],content[1:])
     return appended_text
 
 def str2bool(v):
