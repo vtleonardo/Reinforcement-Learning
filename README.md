@@ -1,10 +1,4 @@
 # Reinforcement-Learning
-Contém os arquivos utilizados no trabalho de conclusão de curso (TCC) **DESENVOLVIMENTO DE UM AGENTE INTELIGENTE PARA EXPLORAÇÃO AUTÔNOMA DE UM AMBIENTE TRIDIMENSIONAL VIA VISUAL REINFORCEMENT LEARNING**, apresentado no dia 28/11/2018 para a obtenção do título de engenheiro mecatrônico pelo CEFET-MG campus Divinópolis.
-
-**Versão de rascunho disponível em:**
-
-https://www.dropbox.com/s/oh236l071q955ig/ModeloTCC.pdf?dl=0
-
 ## Características do código
 
 - Modo de execução em paralelo do algoritmo de RL disponível (mais detalhes na seção 3.8 do arquivo de TCC disponibilizado acima).
@@ -38,7 +32,6 @@ Como podemos observar na imagem abaixo, embora a versão em paralelo introduza u
 O código foi todo escrito e testado em python 3.6 com Windows 10. Para execução do código as seguintes bibliotecas se fazem necessárias:
 
 ````
-Numpy
 Tensorflow (cpu ou gpu)
 Keras
 Pandas
@@ -59,13 +52,12 @@ conda install tensorflow-gpu
 ````
 Para as demais bibliotecas
 ````
-conda install numpy
 conda install keras
 conda install pandas
 conda install imageio
 conda install opencv
 ````
-Para a instalação da biblioteca open ai gym no windows, utiize o seguinte comando:
+Para a instalação da biblioteca open ai gym em conjunto com o ambiente de ATARI 2600 no windows, utiize o seguintes comandos:
 ````
 pip install gym
 pip install --no-index -f https://github.com/Kojoley/atari-py/releases atari_py
