@@ -37,6 +37,7 @@ Keras
 Pandas
 Imageio
 OpenCV
+Matplotlib
 OpenAI Gym
 ViZDoom
 ````
@@ -56,6 +57,7 @@ conda install keras
 conda install pandas
 conda install imageio
 conda install opencv
+conda install matplotlib
 ````
 Para a instalação da biblioteca open ai gym em conjunto com o ambiente de ATARI 2600 no windows, utiize o seguintes comandos:
 ````
