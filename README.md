@@ -94,7 +94,7 @@ network_model = <nome_da_sua_funcao>
 A rede neural desensolvida deve ter como entrada um tensor de dimensão **state_input_shape** e um nome igual a **name**, além da possibilidade da escolha se os pixel das entrada serão normalizados ou não pela variavel **normalize** e deve possuir como saída um tensor com formato igual **actions_num**. A função deve ter como retorno o modelo Keras implementado pela função. Os paramêtros **state_input_shape**, **name**, **actions_num** e **normalize** são enviados ao arquivo Networks.py pelo script principal, que por sua vez, espera como retorno o modelo implementado. A seguir temos um exemplo de implementação da arquitetura (com a functional API do Keras) utilizada no artigo [Human-level control through deep reinforcement learning](https://www.nature.com/articles/nature14236) dentro de uma função chamada **DQN**:
 
 ````
-def DQN_basic(state_input_shape, actions_num, name, normalize):
+def DQN(state_input_shape, actions_num, name, normalize):
     input = Input(state_input_shape, name=name)
     if normalize:
         lamb = Lambda(lambda x: (2 * x - 255) / 255.0, )(input)
@@ -109,8 +109,7 @@ def DQN_basic(state_input_shape, actions_num, name, normalize):
     model = Model(inputs=input, outputs=output)
     return model
 ````
-Essa é a arquitetura padrão executada, caso nenhuma outra seja especificada na execução do agente. O arquivo [Networks.py](Networks.py)
-possui outras arquiteturas de redes neurais utilizadas por mim.
+Essa é a arquitetura padrão executada, caso nenhuma outra seja especificada na execução do agente. Dentro do arquivo [Networks.py](Networks.py) há outras arquiteturas de redes neurais que servem como exemplo.
 ## Exemplos
 
 
