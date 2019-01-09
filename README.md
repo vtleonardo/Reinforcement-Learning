@@ -78,7 +78,7 @@ Antes do começo do treinamento do agente, o script exibe um resumo das configur
 <p align="center">
  <img src="docs/summary.png">
 </p>
-**NN = Neural Network**
+*NN = Neural Network
 
 ## Definindo a arquitetura da rede neural
 É possível definir sua propria arquitetura de rede neural para o treinamento do seu agente. Para isso basta criar dentro do arquivo Networks.py sua própria rede neural como uma função utilizando a biblioteca [Keras](https://keras.io/) **(A arquitetura pode ser criada com a functional ou sequential API)**. Dessa forma, você pode experimentar de forma rápida e sem complicações os efeitos de diferentes arquiteturas, como por exemplo, camadas recorrentes, métodos de regularização (Dropout, distância L2), normalização, batch normalization no aprendizado do agente. Após definida sua arquitetura, o nome da função deve ser enviado como um argumento via comando de terminal com o comando:
@@ -91,10 +91,10 @@ Ou escrito no arquivo Base_agent.cfg como:
 network_model = <nome_da_sua_funcao>
 ````
 ### Requisitos
-A rede neural desensolvida deve ter como entrada um tensor de dimensão **state_input_shape** e um nome igual a **name** e possuir como saída um tensor com formato igual **actions_num**. A função deve ter como retorno o modelo Keras implementado pela função. Os paramêtros **state_input_shape**, **name** e **actions_num** são enviados ao arquivo Networks.py pelo script principal Base_agent.py, que por sua vez, espera como retorno o modelo implementado. A seguir temos um exemplo de implementação da arquitetura (com a functional API do Keras) utilizada no artigo [Human-level control through deep reinforcement learning](https://www.nature.com/articles/nature14236) dentro de uma função chamada **DQN**:
+A rede neural desensolvida deve ter como entrada um tensor de dimensão **state_input_shape** e um nome igual a **name**, além da possibilidade da escolha se os pixel das entrada serão normalizados ou não pela variavel **normalize** e deve possuir como saída um tensor com formato igual **actions_num**. A função deve ter como retorno o modelo Keras implementado pela função. Os paramêtros **state_input_shape**, **name**, **actions_num** e **normalize** são enviados ao arquivo Networks.py pelo script principal, que por sua vez, espera como retorno o modelo implementado. A seguir temos um exemplo de implementação da arquitetura (com a functional API do Keras) utilizada no artigo [Human-level control through deep reinforcement learning](https://www.nature.com/articles/nature14236) dentro de uma função chamada **DQN**:
 
 ````
-def DQN_basic(state_input_shape, actions_num, name, normalize = True):
+def DQN_basic(state_input_shape, actions_num, name, normalize):
     input = Input(state_input_shape, name=name)
     if normalize:
         lamb = Lambda(lambda x: (2 * x - 255) / 255.0, )(input)
@@ -109,8 +109,8 @@ def DQN_basic(state_input_shape, actions_num, name, normalize = True):
     model = Model(inputs=input, outputs=output)
     return model
 ````
-Essa é a arquitetura padrão executada, caso nenhuma outra seja especificada na execução do agente. Para mais exemplos veja o arquivo [Networks.py](Networks.py)
-
+Essa é a arquitetura padrão executada, caso nenhuma outra seja especificada na execução do agente. O arquivo [Networks.py](Networks.py)
+possui outras arquiteturas de redes neurais utilizadas por mim.
 ## Exemplos
 
 
