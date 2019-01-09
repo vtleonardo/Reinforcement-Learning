@@ -20,15 +20,15 @@ import re
 import Networks
 import sys
 
-#Multi-thread lock
+# Multi-thread lock
 lock = threading.Lock()
 
-#Setting the DEBUG lvl of the function printd (utils.py)
+# Setting the DEBUG lvl of the function printd (utils.py)
 utils.DEBUG = True
 utils.DEBUG_lvl = 1
 
 
-#Silencing tensorflow
+# Silencing tensorflow
 if utils.DEBUG_lvl <= 2:
     os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
@@ -394,7 +394,7 @@ class Agent:
             strr += "\n\tThe weights will be saved each: {} frame(s)".format(self.steps_save_weights)
         strr += "\n\tMulti gpu mode : {}".format(self.multi_gpu)
         if not self.multi_gpu:
-            strr +="\n\tGPU device used : {}".format(self.gpu_device)
+            strr +="\n\tID from the GPU device used : {}".format(self.gpu_device)
         strr += "\n\tMulti threading mode : {}".format(self.multi_threading)
         strr += "\n============================================================================================"
         printd(strr)
@@ -908,7 +908,7 @@ class Agent:
 
 def agent_arg_parser(parser):
     str = None
-    # If any argument was sent, use the <this_file_name>.cfg file
+    # If no argument was sent, use the <this_file_name>.cfg file
     if len(sys.argv) == 1:
         # Replacing the .py from this file for .cfg, thus appointing to the file with the configurations
         file_cfg=sys.argv[0][:-3]+".cfg"
