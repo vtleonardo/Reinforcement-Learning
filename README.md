@@ -1,7 +1,7 @@
 # Reinforcement-Learning
 ## Características do código
 
-- Modo de execução em paralelo do algoritmo de RL disponível (mais detalhes na seção 3.8 do arquivo de TCC disponibilizado acima).
+- Modo de execução em paralelo do algoritmo de RL disponível.
 - Ambientes bidimensionais ([OpenAi Gym](https://github.com/openai/gym)) e tridimensionais ([ViZDoom](https://github.com/mwydmuch/ViZDoom)) para o treinamento e teste de agentes.
 - Possibilidade de inserção de outros ambientes para o treinamento de agentes.
 - Configuração do treinamento/teste do agente via comandos no terminal ou via arquivos de configuração .cfg.
@@ -14,7 +14,7 @@
 - Pesos pré-treinados para os jogos Pong e para os dois mapas de ViZDoom que acompanham esse repositório.
 
 ## Performance 
-Para melhorar o tempo de processamento gasto no treinamento dos agentes foi desenvolvido uma abordagem para o algoritmo de reinforcement learning rodar em paralelo. Essa abordagem consiste basicamente em amostrar as experiências da replay memory em paralelo enquanto o algoritmo de decisão é executado, assim quanto chegamos na parte de treinamento da rede neural o custo computacional da amostragem já foi executado. Para mais detalhes consultar a seção 3.8 do arquivo de TCC. A seguir temos algumas imagens comparativas entre as performances em frames/segundo do modo serial (single-threading) e paralelo (multi-threading) no treinamento de agente para jogar o jogo de Atari 2600 Pong. 
+Para melhorar o tempo de processamento gasto no treinamento dos agentes foi desenvolvido uma abordagem para o algoritmo de reinforcement learning rodar em paralelo. Essa abordagem consiste basicamente em amostrar as experiências da replay memory em paralelo enquanto o algoritmo de decisão é executado, assim quanto chegamos na parte de treinamento da rede neural o custo computacional da amostragem já foi executado. A seguir temos algumas imagens comparativas entre as performances em frames/segundo do modo serial (single-threading) e paralelo (multi-threading) no treinamento de agente para jogar o jogo de Atari 2600 Pong. 
 
 <p align="center">
  <img src="docs/fps_bar.png">
@@ -22,7 +22,7 @@ Para melhorar o tempo de processamento gasto no treinamento dos agentes foi dese
 *Os testes de performance foram realizado em cpu core i7 4790K e gpu nvidia geforce gtx 970*
 
 
-Como podemos observar na imagem abaixo, embora a versão em paralelo introduza um "atraso" de uma amostragem, ambos os algoritmos aprendem com sucesso a jogar o jogo Pong.
+Como podemos observar na imagem abaixo, embora a versão em paralelo introduza um "atraso" de uma amostragem, ambos os algoritmos aprenderam com sucesso a jogar o jogo Pong.
 
 <p align="center">
  <img src="docs/pong_desemp_reward.png">
@@ -42,7 +42,7 @@ OpenAI Gym
 ViZDoom
 ````
 
-Para a instalação das bibliotecas acima recomenda-se criar um [ambiente virtual](https://conda.io/docs/user-guide/tasks/manage-environments.html) com o [miniconda](https://conda.io/docs/user-guide/install/index.html). Com o ambiente virutal ativado a instalação das bibliotecas com o miniconda pode ser feita com os seguintes comandos:
+Para a instalação das bibliotecas acima recomenda-se criar um [ambiente virtual](https://conda.io/docs/user-guide/tasks/manage-environments.html) com o [miniconda](https://conda.io/docs/user-guide/install/index.html). Com o ambiente virtual ativado a instalação das bibliotecas com o miniconda pode ser feita com os seguintes comandos:
 Versão cpu do tensorflow
 ````
 conda install tensorflow
@@ -64,11 +64,23 @@ Para a instalação da biblioteca open ai gym em conjunto com o ambiente de ATAR
 pip install gym
 pip install --no-index -f https://github.com/Kojoley/atari-py/releases atari_py
 ````
-Mais detalhes sobre a execução dos jogos de atari no windows, consultar esse [link](https://stackoverflow.com/questions/42605769/openai-gym-atari-on-windows).
+Para mais detalhes sobre a execução dos jogos de atari no windows, consultar esse [link](https://stackoverflow.com/questions/42605769/openai-gym-atari-on-windows).
 
-Para a instalação do ViZDoom no windows consultar esse [link](https://github.com/mwydmuch/ViZDoom/blob/master/doc/Building.md#windows_build)
+Para a instalação do ViZDoom no windows consultar esse [link](https://github.com/mwydmuch/ViZDoom/blob/master/doc/Building.md#windows_bin)
 
-Uma vez com todas as bibliotecas instaladas e o ambiente virtual configurado, basta dar download ou clonar esse repositório e executar o arquivo Base_agent para o treinamento de um agente com o algoritmo de reinforcement learning DQN ou DRQN (Detalhes nos próximos tópicos).
+Uma vez com todas as bibliotecas instaladas e o ambiente virtual configurado, basta dar download ou clonar esse repositório e executar o arquivo Base_agent.py para o treinamento de um agente com o algoritmo de reinforcement learning DQN ou DRQN.
+
+## Utilização
+Para começar o treinamento do agente em seu ambiente de escolha basta executar o arquivo Base_agent.py com as configurações de treinamento desejadas. Essas opções podem ser passadas via comandos de terminal ou escritas no arquivo **Base_agent.cfg**. **Caso algum comando de terminal seja enviado, a configuração de execução do script será feita exclusivamente por eles, e os parâmetros não enviados terão seus valores atribuídos como default.** Se nenhum parâmetro for enviado via terminal, o script procurará por um arquivo de mesmo nome com extensão .cfg. Dentro deste arquivo caso encontre configurações validas às mesmas serão lidas e de forma similar a configuração via terminal, os valores não definidos serão atribuídos aos seus valores default. Se nenhuma das opções de configuração acima seja feita, o agente será treinado com seus valores default, ou seja, serão utilizados os hiperparâmetros demonstrados no artigo [Human-level control through deep reinforcement learning](https://www.nature.com/articles/nature14236) para o treinamento de um agente no jogo Pong (PongNoFrameSkip).
+
+Antes do começo do treinamento do agente, o script exibe um resumo das configurações e hiperparâmetros que serão utilizados em sua execução, desta forma, é possível checar se esta tudo de acordo com o planejado.
+
+<p align="center">
+ <img src="docs/summary.png">
+</p>
+
+## Exemplos
+
 
 ## Referências
 Se esse código foi útil para sua pesquisa, por favor considere citar:
