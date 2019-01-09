@@ -91,7 +91,7 @@ Ou escrito no arquivo Base_agent.cfg como:
 network_model = <nome_da_sua_funcao>
 ````
 ### Requisitos
-A rede neural desensolvida deve ter como entrada um tensor de dimensão **state_input_shape** e um nome igual a **name** e possuir como saída um tensor com formato igual **actions_num**. A função deve ter como retorno o modelo Keras implementado pela função. Os paramêtros **state_input_shape**, **name** e **actions_num** são enviados ao arquivo Networks.py pelo script principal Base_agent.py, que por sua vez, espera como retorno o modelo implementado. A seguir temos um exemplo de implementação da arquitetura (com functional API do Keras) utilizada no artigo XXXX dentro de uma função chamada **DQN**:
+A rede neural desensolvida deve ter como entrada um tensor de dimensão **state_input_shape** e um nome igual a **name** e possuir como saída um tensor com formato igual **actions_num**. A função deve ter como retorno o modelo Keras implementado pela função. Os paramêtros **state_input_shape**, **name** e **actions_num** são enviados ao arquivo Networks.py pelo script principal Base_agent.py, que por sua vez, espera como retorno o modelo implementado. A seguir temos um exemplo de implementação da arquitetura (com a functional API do Keras) utilizada no artigo [Human-level control through deep reinforcement learning](https://www.nature.com/articles/nature14236) dentro de uma função chamada **DQN**:
 
 ````
 def DQN_basic(state_input_shape, actions_num, name, normalize = True):
@@ -109,7 +109,7 @@ def DQN_basic(state_input_shape, actions_num, name, normalize = True):
     model = Model(inputs=input, outputs=output)
     return model
 ````
-Essa é a arquitetura padrão executada, caso nenhuma outra seja especificada na execução do agente. Para mais exemplos veja o arquivo [Network.py](Network.py)
+Essa é a arquitetura padrão executada, caso nenhuma outra seja especificada na execução do agente. Para mais exemplos veja o arquivo [Networks.py](Networks.py)
 
 ## Exemplos
 
