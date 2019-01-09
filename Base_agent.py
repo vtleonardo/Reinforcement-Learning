@@ -27,10 +27,10 @@ lock = threading.Lock()
 utils.DEBUG = True
 utils.DEBUG_lvl = 1
 
-
 # Silencing tensorflow
 if utils.DEBUG_lvl <= 2:
     os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+
 
 class Agent:
     """
@@ -44,7 +44,8 @@ class Agent:
                  include_score=False,
                  config_file_path="DoomScenarios/labyrinth.cfg",
                  network_model="DQN",
-                 frame_skip = 4,
+                 normalize_input=True,
+                 frame_skip=4,
                  num_simul_frames=10000000,
                  discount_rate=0.99,
                  lr=0.00025,
@@ -56,11 +57,11 @@ class Agent:
                  target_update=10000,
                  num_states_stored=1000000,
                  batch_size=32,
-                 input_shape=(84,84,1),
+                 input_shape=(84, 84, 1),
                  history_size=4,
                  num_random_play=50000,
                  load_weights=False,
-                 steps_save_weights = 50000,
+                 steps_save_weights=50000,
                  steps_save_plot=10000,
                  to_save_episodes=False,
                  steps_save_episodes=50,
@@ -100,6 +101,9 @@ class Agent:
                     Neural Network's architecture to be used. The name should match
                     one of the methods inside the Networks.py. You can create you own model inside the
                     Networks.py and send the name of the method to this argument to be implemented by the agent.
+
+        :param  normalize_input : bool (Default: True)
+                    Variable that controls if it's to normalize the state's pixels or not.
 
         :param  frame_skip : int (Default : 4)
                     Total number of frames that will be skipped between states.
@@ -214,13 +218,13 @@ class Agent:
         :param  is_recurrent : bool (Default : False)
                     If your model has any recurrent layer set this flag to True.
         """
-        #Setting the mode
+        # Setting the mode
         self.mode = mode
         # Setting the root path
         self.root_path = os.path.dirname(os.path.realpath(__file__))
         # Defining the agent's name
         self.agent_name = agent_name
-        #Setting the silent mode
+        # Setting the silent mode
         if silent_mode:
             utils.DEBUG = False
 
@@ -236,35 +240,35 @@ class Agent:
         if len(input_shape) == 2:
             input_shape = input_shape + (1,)
         # Changing from notation (x,y)=(width, height) to (y,x)=(rows,columns) used by numpy
-        input_shape = (input_shape[1],input_shape[0],input_shape[2])
+        input_shape = (input_shape[1], input_shape[0], input_shape[2])
         self.frame_skip = frame_skip
         if "doom" in env.lower():
-            self.env = WrapperDoom.WrapperDoom(config_file_path=os.path.join(self.root_path,config_file_path),
-                                               input_shape=input_shape,frame_skip=self.frame_skip)
+            self.env = WrapperDoom.WrapperDoom(config_file_path=os.path.join(self.root_path, config_file_path),
+                                               input_shape=input_shape, frame_skip=self.frame_skip)
         else:
             self.env = WrapperGym.WrapperGym(env, input_shape=input_shape, include_score=include_score,
-                                                frame_skip=self.frame_skip)
+                                             frame_skip=self.frame_skip)
 
-        #Total number of frames that the simulation will run
+        # Total number of frames that the simulation will run
         self.num_simul_frames = num_simul_frames
-        #Counter to the total number of steps
+        # Counter to the total number of steps
         self.steps_cont = 0
-        #Total number of actions possible inside the environment
+        # Total number of actions possible inside the environment
         self.actions_num = self.env.numberOfActions()
-        #input's shape
+        # input's shape
         self.input_shape = input_shape
         # Defining the size of the input's third dimension
         self.input_depth = self.input_shape[2]
         # Flag to know if the models has any recurrent layer
         self.is_recurrent = is_recurrent
-        #Defining the input of the network
+        # Defining the input of the network
         if self.is_recurrent:
             self.state_input_shape = (history_size, self.input_shape[0], self.input_shape[1], self.input_depth)
         else:
-            self.state_input_shape = (self.input_shape[0],self.input_shape[1],(self.input_depth*history_size))
+            self.state_input_shape = (self.input_shape[0], self.input_shape[1], (self.input_depth * history_size))
         self.load_weights = load_weights
         self.weights_load_path = weights_load_path
-        #=========Learning Parameters===========#
+        # =========Learning Parameters===========#
         self.discount_rate = discount_rate
         self.lr = lr
         self.epsilon = epsilon
@@ -276,38 +280,39 @@ class Agent:
         self.loss_type = loss_type
         self.optimizer = optimizer
         self.network_model = network_model
-        self.Q_value = self.initalize_network(self.network_model,"Q_value")
-        self.Q_hat = self.initalize_network(self.network_model,"Q_hat")
+        self.normalize_input = normalize_input
+        self.Q_value = self.initalize_network(self.network_model, "Q_value")
+        self.Q_hat = self.initalize_network(self.network_model, "Q_hat")
         # Initializing the graph an its variables.
         self.initialize_graph()
         # Loading the weights
-        if(self.load_weights):
-            printd("Loading the Model {}!".format(self.weights_load_path),lvl=2)
+        if (self.load_weights):
+            printd("Loading the Model {}!".format(self.weights_load_path), lvl=2)
             self.Q_value.load_weights(self.weights_load_path)
         # Copying the weights of one NN to another
         self.update_Q_hat()
 
-        #Clipping the error between the interval of 0.0 and 1.0 to compute the Huber Loss
+        # Clipping the error between the interval of 0.0 and 1.0 to compute the Huber Loss
         self.error_clip = 1.0
 
-        #Inicializing the Replay memory
+        # Inicializing the Replay memory
         self.batch_size = batch_size
-        self.replay_memory = ReplayMemory(num_states_stored=num_states_stored,batch_size=batch_size,
-                                          path_save=os.path.join(self.root_path,path_save_episodes),
+        self.replay_memory = ReplayMemory(num_states_stored=num_states_stored, batch_size=batch_size,
+                                          path_save=os.path.join(self.root_path, path_save_episodes),
                                           history_size=history_size, input_shape=input_shape,
                                           is_recurrent=self.is_recurrent)
         self.history_size = history_size
-        #Number of random plays to fill the replay memory before the RL-algorithm begins
+        # Number of random plays to fill the replay memory before the RL-algorithm begins
         self.num_random_play = num_random_play
 
-        #======Auxiliary variables to plot or control=======#
+        # ======Auxiliary variables to plot or control=======#
         self.start_episode = 0
         self.i_episode = 0
         self.loss_value = 0.0
         self.q_rate = 0.0
-        self.values_dict = {"Rewards":[],"Loss":[],"Q_value":[],"Num_frames":[],
-                                                                            "Time":[], "FPS":[], "Epsilon":[]}
-        self.image_array=[]
+        self.values_dict = {"Rewards": [], "Loss": [], "Q_value": [], "Num_frames": [],
+                            "Time": [], "FPS": [], "Epsilon": []}
+        self.image_array = []
 
         self.steps_save_weights = steps_save_weights
         self.steps_save_plot = steps_save_plot
@@ -315,13 +320,13 @@ class Agent:
         self.steps_save_episodes = steps_save_episodes
         # Checking if the default paths exists.
         if path_save_episodes == "Episodes":
-            self.path_save_episodes=os.path.join(self.root_path,path_save_episodes)
+            self.path_save_episodes = os.path.join(self.root_path, path_save_episodes)
             folder_exists(self.path_save_episodes)
         if path_save_plot == "Plot":
-            self.path_save_plot=os.path.join(self.root_path, path_save_plot)
+            self.path_save_plot = os.path.join(self.root_path, path_save_plot)
             folder_exists(self.path_save_plot)
         if path_save_weights == "Weights":
-            self.path_save_weights=os.path.join(self.root_path, path_save_weights)
+            self.path_save_weights = os.path.join(self.root_path, path_save_weights)
             folder_exists(self.path_save_weights)
 
         # Creating a log file
@@ -353,9 +358,10 @@ class Agent:
         strr += "\n============================================================================================"
         strr += "\nINITIALIZING THE DQN ALGORITHM WITH THE FOLLOWING SETTINGS:"
         strr += "\n\tMODE: {}".format(self.mode.upper())
-        strr += "\n\tStart Time: {}".format(time.strftime("%d %b %Y %H:%M:%S",time.localtime()))
+        strr += "\n\tStart Time: {}".format(time.strftime("%d %b %Y %H:%M:%S", time.localtime()))
         strr += "\n\tEnvironment: {}".format(self.env.getName())
         strr += "\n\tNetwork architecture: {}".format(self.network_model)
+        strr += "\n\tNormalize input: {}".format(self.normalize_input)
         strr += "\n\tFrame shape: {}".format(self.input_shape)
         strr += "\n\tHistory size: {}".format(self.history_size)
         strr += "\n\tState shape: {}".format(self.state_input_shape)
@@ -371,16 +377,16 @@ class Agent:
                 strr += "\n\tThe final Epsilon will be reached in: {} frame(s)".format(self.e_lin_decay)
             else:
                 strr += "\n\tExponential Decay mode is activated!"
-                strr += "\n\tThe final Epsilon will be reached in approximately: {} episode(s)"\
-                                                                                    .format(self.e_exp_decay*5)
+                strr += "\n\tThe final Epsilon will be reached in approximately: {} episode(s)" \
+                    .format(self.e_exp_decay * 5)
             strr += "\n\tLearning rate: {}".format(self.lr)
             strr += "\n\tBatch size: {}".format(self.batch_size)
             strr += "\n\tThe Network will have the {} loss".format(self.loss_type.upper())
             strr += "\n\tThe Network will be trained using {} optimizer".format(self.optimizer.upper())
             strr += "\n\tThe Target Network will be updated every: {} frame(s)".format(self.target_update)
             strr += "\n\tThe Replay Memory will store: {} state(s)".format(self.replay_memory.num_states_stored)
-            strr += "\n\tApproximate number of states from random plays before training: {} state(s)"\
-                                                                            .format(self.num_random_play)
+            strr += "\n\tApproximate number of states from random plays before training: {} state(s)" \
+                .format(self.num_random_play)
         if self.to_save_episodes:
             strr += "\n\tThe episode will be saved in: {}".format(self.path_save_episodes)
             strr += "\n\tAn episode will be saved each {} episodes".format(self.steps_save_episodes)
@@ -394,13 +400,12 @@ class Agent:
             strr += "\n\tThe weights will be saved each: {} frame(s)".format(self.steps_save_weights)
         strr += "\n\tMulti gpu mode : {}".format(self.multi_gpu)
         if not self.multi_gpu:
-            strr +="\n\tID from the GPU device used : {}".format(self.gpu_device)
+            strr += "\n\tID from the GPU device used : {}".format(self.gpu_device)
         strr += "\n\tMulti threading mode : {}".format(self.multi_threading)
         strr += "\n============================================================================================"
         printd(strr)
         with open(self.LOG_FILENAME, "a+") as text_file:
             print(strr, file=text_file)
-
 
     def initalize_network(self, network_model, name):
         """
@@ -419,13 +424,12 @@ class Agent:
         :return nothing
         
         """
-        model = getattr(Networks,network_model)(self.state_input_shape,self.actions_num, name)
+        model = getattr(Networks, network_model)(self.state_input_shape, self.actions_num, name, self.normalize_input)
         self.sess = tf.Session()
         K.set_session(self.sess)
-        if (utils.DEBUG and utils.DEBUG_lvl >=1):
+        if (utils.DEBUG and utils.DEBUG_lvl >= 1):
             model.summary()
         return model
-
 
     def initialize_graph(self):
         """
@@ -444,39 +448,38 @@ class Agent:
         :return nothing
 
         """
-        #Defining the tensors variables (placeholds)
+        # Defining the tensors variables (placeholders)
         self.state = tf.placeholder(tf.uint8, [None] + list(self.state_input_shape))
         self.action = tf.placeholder(tf.int32, [None])
         self.reward = tf.placeholder(tf.float32, [None])
-        self.state_next= tf.placeholder(tf.uint8, [None] + list(self.state_input_shape))
+        self.state_next = tf.placeholder(tf.uint8, [None] + list(self.state_input_shape))
         self.done = tf.placeholder(tf.float32, [None])
-        #Pre-processing the state
+        # Pre-processing the state
         state_float = tf.cast(self.state, tf.float32)
         state_next_float = tf.cast(self.state_next, tf.float32)
         # Operations
         act_one_hot = tf.one_hot(self.action, self.actions_num, on_value=1.0, off_value=0.0)
         self.mask_one = tf.ones_like(act_one_hot, tf.float32)
-        current_q = tf.reduce_sum(self.Q_value([state_float])* act_one_hot,axis=1)
-        prediction = self.Q_hat([state_next_float])* self.mask_one
+        current_q = tf.reduce_sum(self.Q_value([state_float]) * act_one_hot, axis=1)
+        prediction = self.Q_hat([state_next_float]) * self.mask_one
         target_q = tf.reduce_max(prediction, axis=1)
-        #Computing the NN ERROR as descrived in the DQN paper.
+        # Computing the NN ERROR as described in the DQN paper.
         target_val = tf.stop_gradient(self.reward + (self.discount_rate * target_q) * (1 - self.done))
         if "huber" in self.loss_type:
             # Computing the Huber Loss
-            self.loss_train = tf.losses.huber_loss(current_q,target_val)
+            self.loss_train = tf.losses.huber_loss(current_q, target_val)
         elif "mse" in self.loss_type:
-            #Computing the MSE loss
-            self.loss_train = tf.losses.mean_squared_error(target_val,current_q)
+            # Computing the MSE loss
+            self.loss_train = tf.losses.mean_squared_error(target_val, current_q)
         if "rms" in self.optimizer.lower():
-            #Using RMSprop with DQN paper's parameters
+            # Using RMSprop with DQN paper's parameters
             self.train_op = tf.train.RMSPropOptimizer(
-                 self.lr, decay=0.95, momentum=0.0, epsilon=0.01).minimize(self.loss_train)
+                self.lr, decay=0.95, momentum=0.0, epsilon=0.01).minimize(self.loss_train)
         elif "adam" in self.optimizer.lower():
-            #Using the Adam  optimizer with default parameters
+            # Using the Adam  optimizer with default parameters
             self.train_op = tf.train.AdamOptimizer(learning_rate=self.lr).minimize(self.loss_train)
-        #Initializing the variables
+        # Initializing the variables
         self.sess.run(tf.global_variables_initializer())
-
 
     def update_Q_hat(self):
         """
@@ -488,7 +491,6 @@ class Agent:
         
         """
         self.Q_hat.set_weights(self.Q_value.get_weights())
-
 
     def e_greddy_action(self, state, random_fill=False):
         """
@@ -514,7 +516,6 @@ class Agent:
             action = np.argmax(prediction)
         return action
 
-
     def decay_epsilon(self):
         """
         Function that makes the epsilon decay. This decay can be linear if the initialization parameter
@@ -536,12 +537,11 @@ class Agent:
         """
         if self.decay_mode.lower() == "linear":
             # straight line equation wrapper by max operation -> max(min_value,(-mx + b))
-            self.epsilon = np.amax((self.e_min, -((1.0-self.e_min)* self.steps_cont)/self.e_lin_decay + 1.0))
+            self.epsilon = np.amax((self.e_min, -((1.0 - self.e_min) * self.steps_cont) / self.e_lin_decay + 1.0))
         else:
             # exponential's function Const(e^-t) wrapped by a min function
-            self.epsilon = np.amin((1, (self.e_min + (1.0-self.e_min) * np.exp(-(self.i_episode-1) /
-                                                                                        self.e_exp_decay))))
-
+            self.epsilon = np.amin((1, (self.e_min + (1.0 - self.e_min) * np.exp(-(self.i_episode - 1) /
+                                                                                 self.e_exp_decay))))
 
     def train_dqn(self):
         """
@@ -571,7 +571,7 @@ class Agent:
                                    feed_dict={self.state: st, self.action: act, self.reward: r,
                                               self.state_next: st_next, self.done: d})[1]
 
-    def save_gif(self,saved_gif, name="", path_save_gif=""):
+    def save_gif(self, saved_gif, name="", path_save_gif=""):
         """
         Function that saves an episode (can be a state) as .gif file.
 
@@ -583,17 +583,16 @@ class Agent:
         """
 
         if name == "":
-            name="{}-{}-{}-Episode-{}.gif".format(self.agent_name, self.mode, self.env.getName(),
-                                                  self.i_episode)
+            name = "{}-{}-{}-Episode-{}.gif".format(self.agent_name, self.mode, self.env.getName(),
+                                                    self.i_episode)
         if path_save_gif == "":
-            path_save_gif=os.path.join(self.path_save_episodes, name)
+            path_save_gif = os.path.join(self.path_save_episodes, name)
         else:
             path_save_gif = os.path.join(path_save_gif, name)
         if not self.is_recurrent:
-            n_frames = saved_gif.shape[2]/(self.input_depth)
-            saved_gif=np.split(saved_gif, n_frames, axis=2)
+            n_frames = saved_gif.shape[2] / (self.input_depth)
+            saved_gif = np.split(saved_gif, n_frames, axis=2)
         imageio.mimwrite(path_save_gif, saved_gif, fps=60)
-
 
     def save_weights(self):
         """
@@ -606,8 +605,8 @@ class Agent:
 
         """
         self.Q_value.save_weights(os.path.join(self.path_save_weights,
-                     "{}-weights-{}-{}.h5".format(self.agent_name,self.env.getName(),self.steps_cont)))
-
+                                               "{}-weights-{}-{}.h5".format(self.agent_name, self.env.getName(),
+                                                                            self.steps_cont)))
 
     def save_plot(self):
         """
@@ -620,36 +619,36 @@ class Agent:
 
         """
         df = pd.DataFrame.from_dict(self.values_dict)
-        df.to_csv(os.path.join(self.path_save_plot, '{}-{}-{}.csv'.format(self.agent_name,self.mode,
-                                                                       self.env.getName())), index=False)
+        df.to_csv(os.path.join(self.path_save_plot, '{}-{}-{}.csv'.format(self.agent_name, self.mode,
+                                                                          self.env.getName())), index=False)
 
     def refresh_history(self, history, state_next):
-            """
-            Function that updates the history (a set of "n" frames that is used as a state of the replay memory)
-            taking out the first frame, moving the rest and adding the new frame to end of the history.
+        """
+        Function that updates the history (a set of "n" frames that is used as a state of the replay memory)
+        taking out the first frame, moving the rest and adding the new frame to end of the history.
 
-            :param history : input volume of shape state_input_shape
-                    The history that will be refreshed (basically a set of n frames concatenated
-                    [np.array dtype=np.int8]) as a state on the replay memory.
+        :param history : input volume of shape state_input_shape
+                The history that will be refreshed (basically a set of n frames concatenated
+                [np.array dtype=np.int8]) as a state on the replay memory.
 
-            :param state_next : Image (np.array of dtype=np.uint8 of input_shape)
-                    Frame (np.array dtype=np.int8) of the environment's current state after a action was taken.
+        :param state_next : Image (np.array of dtype=np.uint8 of input_shape)
+                Frame (np.array dtype=np.int8) of the environment's current state after a action was taken.
 
-            :return nothing
-            """
-            if self.is_recurrent:
-                history[:-1] = history[1:]
-                history[-1] = state_next
-            else:
-                history[:, :, :-self.input_depth] = history[:, :, self.input_depth:]
-                history[:, :, -self.input_depth:] = state_next
-            return history
+        :return nothing
+        """
+        if self.is_recurrent:
+            history[:-1] = history[1:]
+            history[-1] = state_next
+        else:
+            history[:, :, :-self.input_depth] = history[:, :, self.input_depth:]
+            history[:, :, -self.input_depth:] = state_next
+        return history
 
     def reshape_state(self, state):
-        ax=2
+        ax = 2
         if self.is_recurrent:
             state_concat = [np.expand_dims(state, axis=0) for _ in range(self.history_size)]
-            ax=0
+            ax = 0
         else:
             state_concat = [state for _ in range(self.history_size)]
             # Transforming the receive state (image frame) in a volume of n frames (history)
@@ -675,7 +674,7 @@ class Agent:
             # Sleep time to give the other thread time to get access to the lock object
             time.sleep(1e-8)
 
-    def summary_run(self, t , reward_total_episode, fps, time_it, mode="random_fill"):
+    def summary_run(self, t, reward_total_episode, fps, time_it, mode="random_fill"):
         """
         Function that computes the plot variables and displays the information of the execution mode
         to the user.
@@ -767,7 +766,7 @@ class Agent:
 
         self.env.close()
 
-    def run_train(self, to_render= False):
+    def run_train(self, to_render=False):
         """
         Function that trains the RL-DQN algorithm as demonstrated in the DQN paper.
 
@@ -780,7 +779,7 @@ class Agent:
 
         """
         self.env.render(to_render)
-        self.steps_cont=0
+        self.steps_cont = 0
         time_it = time.time()
         self.i_episode = 0
         saved_episode = 0
@@ -792,11 +791,11 @@ class Agent:
             # Starting to save the episode (if it's to save)
             if self.to_save_episodes and self.i_episode % self.steps_save_episodes == 0:
                 if self.is_recurrent:
-                    saved_episode = np.expand_dims(state,axis=0)
+                    saved_episode = np.expand_dims(state, axis=0)
                 else:
                     saved_episode = state
             state = self.reshape_state(state)
-            #======Initializing variables====#
+            # ======Initializing variables====#
             done = False
             t = 0
             self.loss = 0
@@ -804,51 +803,51 @@ class Agent:
             reward_total_episode = 0
             while not done:
                 t += 1
-                #accomulate the total number of frames
+                # accumulate the total number of frames
                 self.steps_cont += 1
-                action = self.e_greddy_action(state,random_fill=False)
+                action = self.e_greddy_action(state, random_fill=False)
                 state_next, reward, done, _ = self.env.step(action)
                 if self.to_save_episodes and self.i_episode % self.steps_save_episodes == 0:
                     if self.is_recurrent:
-                        saved_episode = np.concatenate((saved_episode, np.expand_dims(state_next,axis=0)),
+                        saved_episode = np.concatenate((saved_episode, np.expand_dims(state_next, axis=0)),
                                                        axis=0)
                     else:
-                        saved_episode = np.concatenate((saved_episode,state_next), axis=2)
+                        saved_episode = np.concatenate((saved_episode, state_next), axis=2)
                 # Updating the input volume to put the current next_state
                 state_next = self.refresh_history(np.copy(state), state_next)
                 if self.multi_threading:
                     lock.acquire(blocking=True)
-                    self.replay_memory.append(state,action,reward,state_next,done)
+                    self.replay_memory.append(state, action, reward, state_next, done)
                     lock.release()
                 else:
                     self.replay_memory.append(state, action, reward, state_next, done)
                 state = np.copy(state_next)
                 reward_total_episode += reward
                 # 2* to make sure that the sampling thread executes first case there's no random_fill
-                if self.replay_memory.size() > 2*(self.batch_size):
+                if self.replay_memory.size() > 2 * (self.batch_size):
                     self.train_dqn()
                     if self.epsilon > self.e_min:
                         self.decay_epsilon()
                     if (self.steps_cont % self.target_update == 0):
-                        printd("Q_hat was renewed!",lvl=2)
+                        printd("Q_hat was renewed!", lvl=2)
                         self.update_Q_hat()
                     if (self.steps_cont % self.steps_save_weights == 0):
                         self.save_weights()
                     if (self.steps_cont % self.steps_save_plot == 0):
                         self.save_plot()
-            
+
             # Saving the episode
             if self.to_save_episodes and self.i_episode % self.steps_save_episodes == 0:
                 self.save_gif(saved_episode)
             fps = t / (time.time() - time_it)
-            self.summary_run(mode="train",t=t, reward_total_episode=reward_total_episode, fps=fps,
+            self.summary_run(mode="train", t=t, reward_total_episode=reward_total_episode, fps=fps,
                              time_it=time_it)
             time_it = time.time()
 
         self.run_thread = False
         self.env.close()
 
-    def run_test(self, to_render=True, to_save_states=False, path_save_states = "States"):
+    def run_test(self, to_render=True, to_save_states=False, path_save_states="States"):
         """
         Function that runs a test with the weights loaded from a previous simulation.
 
@@ -880,8 +879,8 @@ class Agent:
             state = self.reshape_state(state)
             if to_save_states:
                 name_str = "{}-{}-{}-Episode-{}-State-{}.gif".format(self.agent_name, self.mode,
-                                            self.env.getName(), self.i_episode, t)
-                self.save_gif(state,name=name_str,path_save_gif=path_save_states)
+                                                                     self.env.getName(), self.i_episode, t)
+                self.save_gif(state, name=name_str, path_save_gif=path_save_states)
 
             while not done:
                 t += 1
@@ -898,7 +897,7 @@ class Agent:
                     self.save_gif(state, name=name_str, path_save_gif=path_save_states)
                 reward_total_episode += reward
                 # Sleep time to make the render in a reasonable speed(not to fast).
-                time.sleep(1/100)
+                time.sleep(1 / 100)
             fps = t / (time.time() - time_it)
             self.summary_run(mode="test", t=t, reward_total_episode=reward_total_episode, fps=fps,
                              time_it=time_it)
@@ -906,15 +905,16 @@ class Agent:
 
         self.env.close()
 
+
 def agent_arg_parser(parser):
     str = None
     # If no argument was sent, use the <this_file_name>.cfg file
     if len(sys.argv) == 1:
         # Replacing the .py from this file for .cfg, thus appointing to the file with the configurations
-        file_cfg=sys.argv[0][:-3]+".cfg"
-        #If the file exists, read it
+        file_cfg = sys.argv[0][:-3] + ".cfg"
+        # If the file exists, read it
         if (os.path.exists(file_cfg)):
-            str=read_cfg(file_cfg)
+            str = read_cfg(file_cfg)
     parser.add_argument("--agent_mode", choices=["train", "test"], default="train",
         help="Mode to execute the algorithm. Type:str. Default: train")
     parser.add_argument("--agent_name", default="DQN",
@@ -922,17 +922,19 @@ def agent_arg_parser(parser):
                              "Default: DQN")
     parser.add_argument("--env", default='PongNoFrameskip-v4',
         help=" The name of the environment where the agent will interact. Type: str."
-        " Default:PongNoFrameskip-v4")
+                             " Default:PongNoFrameskip-v4")
     parser.add_argument("--include_score", default=False, type=str2bool,
         help="If its to include in the state image the score from the environment (atari game)."
-        " Type: bool. Default: False. [GYM ATARI EXCLUSIVE]")
+                             " Type: bool. Default: False. [GYM ATARI EXCLUSIVE]")
     parser.add_argument("--config_file_path", default="DoomScenarios/labyrinth.cfg",
-         help="Path to .cfg file that contains the configuration to the Doom's environment. Type: str. "
-        "Default:../DoomScenarios/labyrinth.cfg")
+        help="Path to .cfg file that contains the configuration to the Doom's environment. Type: str. "
+                             "Default:../DoomScenarios/labyrinth.cfg")
     parser.add_argument("--network_model", default="DQN",
         help="Neural Network's architecture to be used. The name should match one of the methods inside the "
         "Networks.py. You can create you own model inside the Networks.py and send the name of the method "
         "to this argument. Type; str. Default:DQN")
+    parser.add_argument("--normalize_input", default=True, type=str2bool,
+        help="Flag that controls if it's to save episodes on the disk. Type:bool. Default:True")
     parser.add_argument("--frame_skip", default=4, type=int,
         help=" Total number of frames that will be skipped between states.. Type:int. Default:4")
     parser.add_argument("--num_simul_frames", default=10000000, type=int,
@@ -975,13 +977,13 @@ def agent_arg_parser(parser):
         "before the agent's training begins. Type:int. Default:50000")
     parser.add_argument("--load_weights", default=False, type=str2bool,
         help="Variable that controls if it's to load the weights from a external .h5 file generated by "
-        "another simulation. Type:bool. Default (Train): False. Default(Test): True")
+        "another simulation. Type:bool. Default (Train): False. Default(Test): False")
     parser.add_argument("--steps_save_weights", default=50000, type=int,
         help="Desired number of frames to save the weights. Type:int. Default: 50000")
     parser.add_argument("--steps_save_plot", default=10000, type=int,
         help="Desired number of frames to save the plot variables. Type:int. Default:10000")
     parser.add_argument("--to_save_episodes", default=False, type=str2bool,
-        help="Flag that controls if it's to save episodes on the disk. Type:bool. Default:True")
+        help="Flag that controls if it's to save episodes on the disk. Type:bool. Default:False")
     parser.add_argument("--steps_save_episodes", default=50, type=int,
         help="Number of episodes that an episode will be saved on the disk as .gif. Type: int. Default:50")
     parser.add_argument("--path_save_episodes", default="Episodes",
@@ -1020,9 +1022,9 @@ def agent_arg_parser(parser):
         "Default:\"<this_folder>\\States\" TEST MODE ONLY")
     parser.add_argument("--is_recurrent", default=False, type=str2bool,
         help="If your model has any recurrent layer set this flag to True. Type:bool. Default:False")
-    parser.add_argument("--random_seed", default=-1, type=str2bool,
+    parser.add_argument("--random_seed", default=-1, type=int,
         help="Seed to the random methods used by this agent. If the value is -1. No seed is set at all."
-             " Type:int. Default:-1")
+        " Type:int. Default:-1")
     if str is not None:
         args = parser.parse_args(str)
     else:
@@ -1031,45 +1033,47 @@ def agent_arg_parser(parser):
     input_shape_aux = tuple([int(item) for item in re.findall(r"\d+", args.input_shape)])
     # Parsing the arguments as a dict
     kwargs = {"agent_name": args.agent_name,
-    "mode":args.agent_mode,
-    "env":args.env,
-    "config_file_path" : args.config_file_path,
-    "network_model" : args.network_model,
-    "frame_skip" : args.frame_skip,
-    "num_simul_frames" : args.num_simul_frames,
-    "discount_rate" : args.discount_rate,
-    "lr" : args.lr,
-    "epsilon" : args.epsilon,
-    "e_min" : args.e_min,
-    "decay_mode" : args.decay_mode,
-    "e_lin_decay" : args.e_lin_decay,
-    "e_exp_decay" : args.e_exp_decay,
-    "target_update" : args.target_update,
-    "num_states_stored" : args.num_states_stored,
-    "batch_size" : args.batch_size,
-    "input_shape" : input_shape_aux,
-    "history_size" : args.history_size,
-    "num_random_play" : args.num_random_play,
-    "load_weights" : args.load_weights,
-    "steps_save_weights": args.steps_save_weights,
-    "steps_save_plot" : args.steps_save_plot,
-    "to_save_episodes" : args.to_save_episodes,
-    "steps_save_episodes" : args.steps_save_episodes,
-    "path_save_episodes" : args.path_save_episodes,
-    "weights_load_path" : args.weights_load_path,
-    "loss_type" : args.loss_type,
-    "optimizer" : args.optimizer,
-    "path_save_plot" : args.path_save_plot,
-    "path_save_weights" : args.path_save_weights,
-    "silent_mode" : args.silent_mode,
-    "multi_gpu" : args.multi_gpu,
-    "gpu_device" : args.gpu_device,
-    "multi_threading" : args.multi_threading,
-    "is_recurrent" : args.is_recurrent}
+              "mode": args.agent_mode,
+              "env": args.env,
+              "config_file_path": args.config_file_path,
+              "network_model": args.network_model,
+              "normalize_input": args.normalize_input,
+              "frame_skip": args.frame_skip,
+              "num_simul_frames": args.num_simul_frames,
+              "discount_rate": args.discount_rate,
+              "lr": args.lr,
+              "epsilon": args.epsilon,
+              "e_min": args.e_min,
+              "decay_mode": args.decay_mode,
+              "e_lin_decay": args.e_lin_decay,
+              "e_exp_decay": args.e_exp_decay,
+              "target_update": args.target_update,
+              "num_states_stored": args.num_states_stored,
+              "batch_size": args.batch_size,
+              "input_shape": input_shape_aux,
+              "history_size": args.history_size,
+              "num_random_play": args.num_random_play,
+              "load_weights": args.load_weights,
+              "steps_save_weights": args.steps_save_weights,
+              "steps_save_plot": args.steps_save_plot,
+              "to_save_episodes": args.to_save_episodes,
+              "steps_save_episodes": args.steps_save_episodes,
+              "path_save_episodes": args.path_save_episodes,
+              "weights_load_path": args.weights_load_path,
+              "loss_type": args.loss_type,
+              "optimizer": args.optimizer,
+              "path_save_plot": args.path_save_plot,
+              "path_save_weights": args.path_save_weights,
+              "silent_mode": args.silent_mode,
+              "multi_gpu": args.multi_gpu,
+              "gpu_device": args.gpu_device,
+              "multi_threading": args.multi_threading,
+              "is_recurrent": args.is_recurrent}
     if args.agent_mode.lower() == "test":
         assert args.load_weights == True, "In test mode you have to specify the path to load " \
                                           "the pre-trained weights"
     return args, kwargs
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Runs a RL-agent in an environment.")
