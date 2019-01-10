@@ -179,7 +179,7 @@ class Agent:
         :param  weights_load_path : str (Default: "")
                     Path of the .h5 file with the weights of the Network to be loaded.
 
-        :param  loss_type : str (Default: "hubber")
+        :param  loss_type : str (Default: "huber")
                     Name of the type of loss function that will be used to train the Network. There are two
                     possible types: "huber" and "MSE".
 
@@ -201,7 +201,7 @@ class Agent:
                     If false, you can select what gpu to use (if there is more than one).
 
         :param  gpu_device : int (Default : 0 [first gpu])
-                    The number of the gpu device that will be used in the case of the multi_gpu variable
+                    The ID of the gpu device that will be used in the case of the multi_gpu variable
                     is False. To use the gpu, send -1.
 
         :param  multi_threading : bool (Default : False)
@@ -385,7 +385,7 @@ class Agent:
             strr += "\n\tThe Network will be trained using {} optimizer".format(self.optimizer.upper())
             strr += "\n\tThe Target Network will be updated every: {} frame(s)".format(self.target_update)
             strr += "\n\tThe Replay Memory will store: {} state(s)".format(self.replay_memory.num_states_stored)
-            strr += "\n\tApproximate number of states from random plays before training: {} state(s)" \
+            strr += "\n\tApproximated number of states from random plays before training: {} state(s)" \
                 .format(self.num_random_play)
         if self.to_save_episodes:
             strr += "\n\tThe episode will be saved in: {}".format(self.path_save_episodes)
@@ -396,7 +396,7 @@ class Agent:
             strr += "\n\tLoad the weights is set to True!"
             strr += "\n\tThe weights will be loaded from : {}".format(self.weights_load_path)
         if self.mode == "train":
-            strr += "\n\tThe NN weights will be saved in: {}".format(self.path_save_weights)
+            strr += "\n\tThe neural network's weights will be saved in: {}".format(self.path_save_weights)
             strr += "\n\tThe weights will be saved each: {} frame(s)".format(self.steps_save_weights)
         strr += "\n\tMulti gpu mode : {}".format(self.multi_gpu)
         if not self.multi_gpu:
@@ -436,7 +436,7 @@ class Agent:
         Function that initializes the tensorflow graph that computes the NN training.
 
         This function creates the tensorflow graph that will compute the NN error and training. The network
-        can be trained by two different losses, hubber loss (default) and mse (Mean Squared Error), the type of
+        can be trained by two different losses, huber loss (default) and mse (Mean Squared Error), the type of
         loss used is defined on the initialization of this class by the parameter "loss_type". This function
         allows you to choose between two optimizers: RMSProp (with the settings given by the DQN Paper) and
         ADAM (with tensorflow defaults arguments), this choice is also made on the initialization by the 
@@ -1008,7 +1008,7 @@ def agent_arg_parser(parser):
     parser.add_argument("--multi_gpu", default=False, type=str2bool,
         help="If false, you can select what gpu to use (if there is more than one). Type:bool. Default:False")
     parser.add_argument("--gpu_device", default=0, type=int,
-        help="The number of the gpu device that will be used in the case of the multi_gpu variable "
+        help="The ID of the gpu device that will be used in the case of the multi_gpu variable "
         "is False and there is multiple GPUs. Type:int. Default:0")
     parser.add_argument("--multi_threading", default=False, type=str2bool,
         help="If this mode is active the sampling part of the algorithm will be done in parallel with the main"
