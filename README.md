@@ -130,12 +130,8 @@ A seguir serão apresentados alguns exemplos. Todos os parâmetros podem ser pas
 python Base_agent.py --help
 ````
 ### Pong treinado com DQN básico
-Para treinar um agente utilizando os hiperparâmetros especificados pelo excelente artigo [Speeding up DQN on PyTorch: how to solve Pong in 30 minutes](https://medium.com/mlreview/speeding-up-dqn-on-pytorch-solving-pong-in-30-minutes-81a1bd2dff55) basta executar o script Base_agent.py com seguintes comandos no terminal:
+Como primeiro exemplo treinaremos um agente utilizando os hiperparâmetros especificados pelo excelente artigo [Speeding up DQN on PyTorch: how to solve Pong in 30 minutes](https://medium.com/mlreview/speeding-up-dqn-on-pytorch-solving-pong-in-30-minutes-81a1bd2dff55). O arquivo Base_agent.cfg deverá possuir :
 
-````
-python Base_agent.py --agent_name "DQNPong30" --num_simul_frames 1000000 --e_min 0.02 --e_lin_decay 100000 --target_update 1000 --num_states_stored 100000 --num_random_play 10000 --optimizer adam --lr 1e-4 --random_seed 1
-````
-Outra alternativa seria a escrita destes comandos dentro do arquivo Base_agent.cfg da seguinte forma:
 ```
 agent_name = DQNPong30
 num_simul_frames = 1000000
@@ -151,6 +147,10 @@ random_seed = 1
 E depois basta executar o script Base_agent.py sem nenhum argumento:
 ````
 python Base_agent.py
+````
+Outra opção seria executar os comandos no terminal em conjunto com a execução do script:
+````
+python Base_agent.py --agent_name "DQNPong30" --num_simul_frames 1000000 --e_min 0.02 --e_lin_decay 100000 --target_update 1000 --num_states_stored 100000 --num_random_play 10000 --optimizer adam --lr 1e-4 --random_seed 1
 ````
 Ambas as opções de configuração irão treinar o agente com hiperparâmetros especificados pelo artigo acima com a random seed fixa (em 1) durante 1 milhão de frames. 
 
