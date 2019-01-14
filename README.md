@@ -3,7 +3,6 @@
 
 - Modo de execução em paralelo do algoritmo de RL disponível.
 - Ambientes bidimensionais ([OpenAi Gym](https://github.com/openai/gym)) e tridimensionais ([ViZDoom](https://github.com/mwydmuch/ViZDoom)) para o treinamento e teste de agentes.
-- Possibilidade de inserção de outros ambientes para o treinamento de agentes.
 - Configuração do treinamento/teste do agente via comandos no terminal ou via arquivos de configuração .cfg.
 - Armazenamento de informações do treinamento em arquivos .csv e dos pesos das redes neurais como .h5.
 - Facilidade e robustez para definir os hiperparâmetros sem a necessidade de modificar o código.
@@ -124,6 +123,20 @@ def DQN(state_input_shape, actions_num, name, normalize):
     return model
 ````
 Essa é a arquitetura padrão executada, caso nenhuma outra seja especificada na execução do agente. Dentro do arquivo [Networks.py](Networks.py) há outras arquiteturas de redes neurais (com camadadas recorrentes, métodos de normalização) que servem como exemplo.
+
+## Arquivos de configuração .CFG
+Os arquivos de extensão .cfg são arquivos que possuem configurações para a execução do algoritmo de reinforcement learning. Esses arquivos são uma alternativa que facilita a execução e o debug dos treinamentos/testes dos agentes nos ambientes escolhidos. Ao invés de digitar toda vez longos códigos no terminal para a execução do script, escrevemos essa configuração em arquivo .cfg de mesmo nome do script a ser executado, como por exemplo, Base_agent.cfg ou Plot_rl.cfg para os scripts Base_agent.py e Plot_rl.py respectivamente. De baixo dos panos, o que script faz é ler o arquivo .cfg e transformar as linhas válidas de código dentro do mesmo em comando de terminais e envia ao arquivo Argparser antes de inicializar qualquer coisa, assim, uma linha de código env = Doom se transforma em --env Doom e é enviada o método main do arquivo executado.
+Um cuidado necessário na execução de nosso script configurado um arquivo .cfg é que :**Caso algum comando de terminal seja enviado, a configuração de execução do script será feita exclusivamente por eles, e os parâmetros não enviados terão seus valores atribuídos como default.** Se nenhum parâmetro for enviado via terminal, o script procurará por um arquivo de mesmo nome com extensão .cfg. Dentro deste arquivo caso encontre configurações validas às mesmas serão lidas e de forma similar a configuração via terminal, os valores não definidos serão atribuídos aos seus valores default.
+
+### Escrevendo os arquivos .cfg
+As regras de escrita dos arquivos .cfg são as seguintes:
+- Linhas começando com os caracteres # ou ; são tratadas como comentários
+- Linhas começando com o caractere + são continuações de linhas anteriores (Por exemplo, para um path do sistema que é muito longo)
+- As linhas não são Case sensitive, ou seja, não há distinção entre minúscula ou maiúscula (ENV = DOOM é igual à env = Doom)
+- Cada linha **deve possuir apenas um par de chave = valor** (agent_mode = train em uma linha, e na próxima env = doom e assim por diante).
+- Se um argumento não estiver especificado no arquivo .cfg e seja necessário para execução da tarefa desejada, seu valor padrão será carregado. Isto foi feito, para evitar a fatiga de toda vez ter escrever parâmetros que tem seus valores frequentes entre simulações. Para ver quais são os valores padrões de cada variável verificar o [DOC] e para exemplos e cuidados sobre esses valores verificar a sessão de [Exemplos]
+- Caminhos relativos ao diretório principal, podem ser inseridos utilizando os dois pontos (..) antes do path. Por exemplo: para acessar o diretório Weights, ao invés de especificarmos todo o path do sistema, podemos inserir apenas: ../Weights
+
 ## Exemplos
 A seguir serão apresentados alguns exemplos. Todos os parâmetros podem ser passados via comandos de terminal na execução do script ou via arquivo .cfg (como visto na sessão [Utilização](https://github.com/Leonardo-Viana/Reinforcement-Learning#utiliza%C3%A7%C3%A3o)). Relembrando que os parâmetros não configurados possuem seus valores iguais ao default. Para mais informações sobre cada opção disponivel e seus valores default verificar o [DOC](www.somelink.com) ou utilizar o comando de terminal:
 ````
