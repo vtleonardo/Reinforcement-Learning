@@ -210,11 +210,19 @@ to_render = True
 to_save_states = False
 ````
 ## Documentação
+---
 ### <a name="agent_mode"></a> `agent_mode`
 
-|Comando de Terminal| `bool init()`|
-|Arquivo .cfg| `bool init()`|
+| Comando de Terminal | `--agent_mode <value>`|
+| :--                 | :--                   |
+| **Arquivo .cfg**        | **`agent_mode = <value>`**|
+| Opções disponíveis  | train, test           |
+| Valor default       | train                 |
+| Tipo                | string                |
 
+Variável que escolhe o modo do agente.
+
+---
 
 ## Referências
 Se esse código foi útil para sua pesquisa, por favor considere citar:
