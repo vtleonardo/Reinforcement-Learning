@@ -213,14 +213,50 @@ to_save_states = False
 ---
 ### <a name="agent_mode"></a> `agent_mode`
 
-| Comando de Terminal | `--agent_mode <value>`|
-| :--                 | :--                   |
-| **Arquivo .cfg**        | **`agent_mode = <value>`**|
-| Opções disponíveis  | train, test           |
-| Valor default       | train                 |
-| Tipo                | string                |
+| Comando de Terminal | `--agent_mode <value>`    |
+| :--                 | :--                       |
+| **Arquivo .cfg**    | **`agent_mode = <value>`**|
+| Tipo                | string                    |
+| Escolhas possíveis  | train, test               |
+| **Valor default**   | **train**                 |
 
-Variável que escolhe o modo do agente.
+
+Variável que escolhe o modo de execução do algoritmo de reinforcement learning. Existem duas opções disponíveis: train e test. 
+
+A opção de **train** treina um agente com base no algoritmo de reinforcement learning DQN ou em suas variantes, ou seja, o agente irá aprender a otimizar os pesos de sua rede neural com base em suas experiências vividas dentro do ambiente para maximizar sua premiação final. Logo, neste modo o algoritmo armazena as experiências passadas, otimiza a rede neural com os hiperparâmetros de aprendizagem.
+
+A opção de **test** é usada para testar um agente que já aprendeu dentro de um ambiente. Essa opção é basicamente para o programador avaliar o desempenho do agente, gravar episódios, armazenar estados para plot.
+
+---
+
+### <a name="agent_name"></a> `agent_name`
+
+| Comando de Terminal | `--agent_name <value>`    |
+| :--                 | :--                       |
+| **Arquivo .cfg**    | **`agent_name = <value>`**|
+| Tipo                | string                    |
+| **Valor default**   | **DQN**                   |
+
+
+Nome do agente, além de identificação do agente será utilizado para nomear os arquivos que serão salvos (Weights, Plot, Episódios, Estados).
+
+---
+
+### <a name="env"></a> `env`
+
+| Comando de Terminal | `--env <value>`           |
+| :--                 | :--                       |
+| **Arquivo .cfg**    | **`env = <value>`**       |
+| Tipo                | string                    |
+| **Valor default**   | **PongNoFrameSkip-v4**    |
+
+
+Nome do ambiente (environment) a ser executado. Atualmente são suportados todos os jogos de atari disponíveis pela biblioteca OpenAi gym e o ambiente tridimensional Doom.
+
+O nome dos jogos de atari, deverão seguir o seguinte template <nome do jogo de atari>NoFrameSkip-v4**. É possível ver todos os jogos de atari disponíveis no seguinte [link](https://gym.openai.com/envs/#atari). Assim, para treinar o agente no ambiente breakout, devemos passar para a variável env o valor BreakoutNoFrameSkip-v4 (env = BreakoutNoFrameSkip-v4 ou --env BreakoutNoFrameSkip-v4).
+ 
+Para executar o ambiente VizDoom, basta enviar para a variável env o valor doom (env = Doom ou --env Doom). 
+
 
 ---
 
