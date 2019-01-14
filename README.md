@@ -72,7 +72,7 @@ Uma vez com todas as bibliotecas instaladas e o ambiente virtual configurado, ba
 ## Utilização
 Para começar o treinamento do agente em seu ambiente de escolha basta executar o arquivo Base_agent.py com as configurações de treinamento desejadas. Essas opções podem ser passadas via comandos de terminal ou escritas no arquivo Base_agent.cfg. **Caso algum comando de terminal seja enviado, a configuração de execução do script será feita exclusivamente por eles, e os parâmetros não enviados terão seus valores atribuídos como default.** Se nenhum parâmetro for enviado via terminal, o script procurará por um arquivo de mesmo nome com extensão .cfg. Dentro deste arquivo caso encontre configurações validas às mesmas serão lidas e de forma similar a configuração via terminal, os valores não definidos serão atribuídos aos seus valores default. Se nenhuma das opções de configuração acima seja feita, o agente será treinado com seus valores default, ou seja, serão utilizados os hiperparâmetros demonstrados no artigo [Human-level control through deep reinforcement learning](https://www.nature.com/articles/nature14236) para o treinamento de um agente no jogo Pong.
 
-A grande vantagem de se utilizar o arquivo .cfg é o fato de não precisar copiar e colar (ou escrever) comandos gigantes no terminal, além de facilitar o debug em caso de algum contratempo na inicialização de algum hiperparâmetro. Mais detalhes sobre a configuração dos arquivos .cfg pode ser vista no tópico [Arquivos CFG].
+A grande vantagem de se utilizar o arquivo .cfg é o fato de não precisar copiar e colar (ou escrever) comandos gigantes no terminal, além de facilitar o debug em caso de algum contratempo na inicialização de algum hiperparâmetro. Mais detalhes sobre a configuração dos arquivos .cfg pode ser vista no tópico [Arquivos CFG](#).
 
 Antes do começo do treinamento do agente, o script exibe um resumo das configurações e hiperparâmetros que serão utilizados em sua execução, desta forma, é possível checar se esta tudo de acordo com o planejado.
 
@@ -130,11 +130,11 @@ Um cuidado necessário na execução de nosso script configurado um arquivo .cfg
 
 ### Escrevendo os arquivos .cfg
 As regras de escrita dos arquivos .cfg são as seguintes:
-- Linhas começando com os caracteres # ou ; são tratadas como comentários
-- Linhas começando com o caractere + são continuações de linhas anteriores (Por exemplo, para um path do sistema que é muito longo)
-- As linhas não são Case sensitive, ou seja, não há distinção entre minúscula ou maiúscula (ENV = DOOM é igual à env = Doom)
-- Cada linha **deve possuir apenas um par de chave = valor** (agent_mode = train em uma linha, e na próxima env = doom e assim por diante).
-- Se um argumento não estiver especificado no arquivo .cfg e seja necessário para execução da tarefa desejada, seu valor padrão será carregado. Isto foi feito, para evitar a fatiga de toda vez ter escrever parâmetros que tem seus valores frequentes entre simulações. Para ver quais são os valores padrões de cada variável verificar o [DOC] e para exemplos e cuidados sobre esses valores verificar a sessão de [Exemplos]
+- Linhas começando com os caracteres **#** ou **;** são tratadas como comentários.
+- Linhas começando com o caractere **+** são continuações de linhas anteriores. Por exemplo, para um path do sistema que é muito longo.
+- As linhas não são Case sensitive, ou seja, não há distinção entre minúscula ou maiúscula (ENV = DOOM é igual a env = Doom).
+- Cada linha **deve possuir apenas um par de chave = valor**. Por exemplo, agent_mode = train em uma linha, e na próxima env = doom e assim por diante.
+- Se um argumento não estiver especificado no arquivo .cfg e seja necessário para execução da tarefa desejada, seu valor padrão será carregado. Isto foi feito, para evitar a fatiga de toda vez ter escrever parâmetros que tem seus valores frequentes entre simulações. Para ver quais são os valores padrões de cada variável verificar o [DOC] e para exemplos e cuidados sobre esses valores verificar a sessão de [Exemplos](#Exemplo).
 - Caminhos relativos ao diretório principal, podem ser inseridos utilizando os dois pontos (..) antes do path. Por exemplo: para acessar o diretório Weights, ao invés de especificarmos todo o path do sistema, podemos inserir apenas: ../Weights
 
 ## Exemplos
@@ -209,6 +209,13 @@ agent_name = doomh4
 to_render = True
 to_save_states = False
 ````
+## Documentação
+### <a name="agent_mode"></a> `agent_mode`
+
+|Comando de Terminal| `bool init()`|
+|Arquivo .cfg| `bool init()`|
+
+
 ## Referências
 Se esse código foi útil para sua pesquisa, por favor considere citar:
 ```
