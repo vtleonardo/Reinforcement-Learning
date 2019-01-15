@@ -136,6 +136,7 @@ As regras de escrita dos arquivos .cfg são as seguintes:
 - Cada linha **deve possuir apenas um par de chave = valor**. Por exemplo, agent_mode = train em uma linha, e na próxima env = doom e assim por diante.
 - Se um argumento não estiver especificado no arquivo .cfg e seja necessário para execução da tarefa desejada, seu valor padrão será carregado. Isto foi feito, para evitar a fatiga de toda vez ter escrever parâmetros que tem seus valores frequentes entre simulações. Para ver quais são os valores padrões de cada variável verificar o [DOC] e para exemplos e cuidados sobre esses valores verificar a sessão de [Exemplos](#Exemplo).
 - Caminhos relativos ao diretório principal, podem ser inseridos utilizando os dois pontos (..) antes do path. Por exemplo: para acessar o diretório Weights, ao invés de especificarmos todo o path do sistema, podemos inserir apenas: ../Weights
+- Os comandos serão lidos em sequência, logo, em caso de comandos repetidos apenas o último sera válido.
 
 ## Exemplos
 A seguir serão apresentados alguns exemplos. Todos os parâmetros podem ser passados via comandos de terminal na execução do script ou via arquivo .cfg (como visto na sessão [Utilização](https://github.com/Leonardo-Viana/Reinforcement-Learning#utiliza%C3%A7%C3%A3o)). Relembrando que os parâmetros não configurados possuem seus valores iguais ao default. Para mais informações sobre cada opção disponivel e seus valores default verificar o [DOC](www.somelink.com) ou utilizar o comando de terminal:
@@ -253,9 +254,49 @@ Nome do agente, além de identificação do agente será utilizado para nomear o
 
 Nome do ambiente (environment) a ser executado. Atualmente são suportados todos os jogos de atari disponíveis pela biblioteca OpenAi gym e o ambiente tridimensional Doom.
 
-O nome dos jogos de atari, deverão seguir o seguinte template <nome do jogo de atari>NoFrameSkip-v4**. É possível ver todos os jogos de atari disponíveis no seguinte [link](https://gym.openai.com/envs/#atari). Assim, para treinar o agente no ambiente breakout, devemos passar para a variável env o valor BreakoutNoFrameSkip-v4 (env = BreakoutNoFrameSkip-v4 ou --env BreakoutNoFrameSkip-v4).
+O nome dos jogos de atari, deverão seguir o seguinte template \<nome do jogo de atari\>NoFrameSkip-v4. É possível ver todos os jogos de atari disponíveis no seguinte [link](https://gym.openai.com/envs/#atari). Assim, para treinar o agente no ambiente breakout, devemos passar para a variável env o valor BreakoutNoFrameSkip-v4 (env = BreakoutNoFrameSkip-v4 ou --env BreakoutNoFrameSkip-v4).
  
 Para executar o ambiente VizDoom, basta enviar para a variável env o valor doom (env = Doom ou --env Doom). 
+
+---
+
+### <a name="include_score"></a> `include_score`
+
+| Comando de Terminal  | `--include_score <value>`    |
+| :--                  | :--                          |
+| **Arquivo .cfg**     | **`include_score = <value>`**|
+| Tipo                 | bool                         |
+| **Valor default**    | **False**                    |
+| Exclusivo do ambiente| ATARI GYM                    |
+
+
+Variável **exclusiva dos jogos de atari da biblioteca GYM** que controla se o score dos jogos de atari será incluído ou não nos frames/estados enviados pela biblioteca open ai gym. Por exemplo no jogo Pong, o score (pontuação) é localizado na parte superior da tela do jogo de atari.
+
+---
+
+### <a name="config_file_path"></a> `config_file_path`
+
+| Comando de Terminal  | `--config_file_path <value>`       |
+| :--                  | :--                                |
+| **Arquivo .cfg**     | **`config_file_path = <value>`**   |
+| Tipo                 | string (path do sistema)           |
+| **Valor default**    | **../DoomScenarios/labyrinth.cfg** |
+| Exclusivo do ambiente| ViZDOOM                            |
+
+
+Caminho do sistema operacional (path) para o arquivo que carrega a fase de escolha do VizDoom. A configuração da fase do VizDoom no qual o agente será treinado é feita por um arquivo .cfg, cada fase do VizDoom deverá possuir um arquivo .cfg correspondente. Portanto, para treinarmos os agente em uma fase específica do VizDoom devemos carregar seu arquivo .cfg enviando para essa variável o seu caminho dentro do sistema operacional.
+
+Para mais detalhes sobre os arquivos .cfg usados pela VizDoom, consulte esse [link](https://github.com/mwydmuch/ViZDoom/blob/master/doc/ConfigFile.md)
+
+---
+
+### <a name="network_model"></a> `network_model`
+
+| Comando de Terminal  | `--network_model <value>`          |
+| :--                  | :--                                |
+| **Arquivo .cfg**     | **`network_model = <value>`**      |
+| Tipo                 | string                             |
+| **Valor default**    | **DQN**                            |
 
 
 ---
