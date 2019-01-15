@@ -298,6 +298,31 @@ Para mais detalhes sobre os arquivos .cfg usados pela VizDoom, consulte esse [li
 | Tipo                 | string                             |
 | **Valor default**    | **DQN**                            |
 
+Nome da função que define a arquitetura da rede neural dentro do arquivo [Networks.py](Networks.py). Para mais detalhes sobre a implementação de sua própria arquitetura de rede neural consultar o tópico: [Definindo a arquitetura da rede neural](https://github.com/Leonardo-Viana/Reinforcement-Learning#definindo-a-arquitetura-da-rede-neural)
+
+---
+
+### <a name="normalize_input"></a> `normalize_input`
+
+| Comando de Terminal  | `--normalize_input <value>`        |
+| :--                  | :--                                |
+| **Arquivo .cfg**     | **`normalize_input = <value>`**    |
+| Tipo                 | bool                               |
+| **Valor default**    | **True**                           |
+
+Variável que controle se é para normalizar ou não pixels de entrada da rede neural.
+
+---
+
+### <a name="is_recurrent"></a> `is_recurrent`
+
+| Comando de Terminal  | `--is_recurrent <value>`        |
+| :--                  | :--                             |
+| **Arquivo .cfg**     | **`is_recurrent = <value>`**    |
+| Tipo                 | bool                            |
+| **Valor default**    | **False**                       |
+
+Variável que diz ao script principal se a arquitetura de rede neural possui ou não camadas do tipo recorrente. Logo, se o seu modelo possuir camadas deste tipo, essa variável tem que ser enviada com o valor **True** em conjunto com a variável **network_model**, se não o script jogará uma exceção. Caso seu modelo não possua camadas do tipo recorrente, essa variável não precisa ser mandada, já que seu valor padrão é False.
 
 ---
 
