@@ -254,7 +254,7 @@ Nome do agente, além de identificação do agente será utilizado para nomear o
 
 Nome do ambiente (environment) a ser executado. Atualmente são suportados todos os jogos de atari disponíveis pela biblioteca OpenAi gym e o ambiente tridimensional Doom.
 
-O nome dos jogos de atari, deverão seguir o seguinte template \<nome do jogo de atari\>NoFrameSkip-v4. É possível ver todos os jogos de atari disponíveis no seguinte [link](https://gym.openai.com/envs/#atari). Assim, para treinar o agente no ambiente breakout, devemos passar para a variável env o valor BreakoutNoFrameSkip-v4 (env = BreakoutNoFrameSkip-v4 ou --env BreakoutNoFrameSkip-v4).
+O nome dos jogos de atari, deverão seguir o seguinte template \<nome do jogo de atari\>NoFrameSkip-v4. É possível ver todos os jogos de atari disponíveis no seguinte [link](https://gym.openai.com/envs/#atari). Assim, para treinar o agente no ambiente breakout, devemos passar para a variável env o valor BreakoutNoFrameSkip-v4 (env = BreakoutNoFrameSkip-v4 ou --env BreakoutNoFrameSkip-v4). Com a parte do "NoFrameSkip" dizemos a biblioteca que não queremos a que a mesma realize o frame skipping, desta forma temos mais controle para realizar esta etapa em nosso código (dentro do arquivo (WrapperGym.py)[Environments/WrapperGym.py]).
  
 Para executar o ambiente VizDoom, basta enviar para a variável env o valor doom (env = Doom ou --env Doom). 
 
@@ -325,6 +325,126 @@ Variável que controle se é para normalizar ou não pixels de entrada da rede n
 Variável que diz ao script principal se a arquitetura de rede neural possui ou não camadas do tipo recorrente. Logo, se o seu modelo possuir camadas deste tipo, essa variável tem que ser enviada com o valor **True** em conjunto com a variável **network_model**, se não o script jogará uma exceção. Caso seu modelo não possua camadas do tipo recorrente, essa variável não precisa ser mandada, já que seu valor padrão é False.
 
 ---
+
+### <a name="frame_skip"></a> `frame_skip`
+
+| Comando de Terminal  | `--frame_skip <value>`        |
+| :--                  | :--                           |
+| **Arquivo .cfg**     | **`frame_skip = <value>`**    |
+| Tipo                 | int                           |
+| **Valor default**    | **4**                         |
+
+Um frame válido será considerado apenas a cada \<frame_skip\> frames. Por exemplo, com um frame_skip igual a 4, somente o último frame de uma sequência de 4 frames renderizados será enviado ao nosso código para a criação do nosso estado. Os outros 3 frames são "descartados". Uma excelente discussão esclarecendo as ambiguidades do artigo do DQN em relação as variáveis frame_skip e history_size pode ser vista [aqui](https://danieltakeshi.github.io/2016/11/25/frame-skipping-and-preprocessing-for-deep-q-networks-on-atari-2600-games/). O termo frame em outros tópicos se refere exclusivamente ao frames válidos que são considerados pelo script.
+
+---
+
+### <a name="num_simul_frames"></a> `num_simul_frames`
+
+| Comando de Terminal  | `--num_simul_frames <value>`        |
+| :--                  | :--                                 |
+| **Arquivo .cfg**     | **`num_simul_frames = <value>`**    |
+| Tipo                 | int                                 |
+| **Valor default**    | **10000000**                        |
+
+Número de frames no qual o agente será treinado. 
+
+---
+
+### <a name="discount_rate"></a> `discount_rate`
+
+| Comando de Terminal  | `--discount_rate <value>`           |
+| :--                  | :--                                 |
+| **Arquivo .cfg**     | **`discount_rate = <value>`**       |
+| Tipo                 | float                               |
+| **Valor default**    | **0.99**                            |
+
+Fator de desconto (discount rate) gamma. 
+
+---
+
+### <a name="lr"></a> `lr`
+
+| Comando de Terminal  | `--lr <value>`           |
+| :--                  | :--                      |
+| **Arquivo .cfg**     | **`lr = <value>`**       |
+| Tipo                 | float                    |
+| **Valor default**    | **0.00025**              |
+
+Taxa de aprendizado das redes neurais. 
+
+---
+
+### <a name="epsilon"></a> `epsilon`
+
+| Comando de Terminal  | `--epsilon <value>`      |
+| :--                  | :--                      |
+| **Arquivo .cfg**     | **`epsilon = <value>`**  |
+| Tipo                 | float                    |
+| **Valor default**    | **1.0**                  |
+
+**Valor inicial** da variável épsilon da política de aprendizado e-greedy (epsilon-greedy). Essa variável balanceia o quanto de exploração de novos conhecimentos vs exploração de conhecimentos prévios o agente deve realizar. Essa variável decai ao longo da simulação. 
+
+---
+
+### <a name="e_min"></a> `e_min`
+
+| Comando de Terminal  | `--e_min <value>`        |
+| :--                  | :--                      |
+| **Arquivo .cfg**     | **`e_min = <value>`**    |
+| Tipo                 | float                    |
+| **Valor default**    | **0.1**                  |
+
+**Valor final** da variável épsilon da política de aprendizado e-greedy (épsilon-greedy) após o decaimento.
+
+---
+
+### <a name="decay_mode"></a> `decay_mode`
+
+| Comando de Terminal | `--decay_mode <value>`    |
+| :--                 | :--                       |
+| **Arquivo .cfg**    | **`decay_mode = <value>`**|
+| Tipo                | string                    |
+| Escolhas possíveis  | linear, exponential       |
+| **Valor default**   | **linear**                |
+
+Variável que escolhe o tipo de decaimento da variável épsilon. Existem dois modos possíveis de decaimento da variável épsilon nesse repositório, o modo linear e exponencial.
+
+---
+
+### <a name="e_lin_decay"></a> `e_lin_decay`
+
+| Comando de Terminal  | `--e_lin_decay <value>`        |
+| :--                  | :--                            |
+| **Arquivo .cfg**     | **`e_lin_decay = <value>`**    |
+| Tipo                 | int                            |
+| **Valor default**    | **1000000**                    |
+
+Número de frames no qual o **decaimento linear** de épsilon chegará ao seu valor final. Usando os valores padrão, a variável épsilon decairá linearmente de 1.0 (100% de jogadas aleatórias) para 0.1 (10% de jogadas aleatórias) em 1 milhão de frames.
+
+---
+### <a name="e_exp_decay"></a> `e_exp_decay`
+
+| Comando de Terminal  | `--e_exp_decay <value>`        |
+| :--                  | :--                            |
+| **Arquivo .cfg**     | **`e_exp_decay = <value>`**    |
+| Tipo                 | int                            |
+| **Valor default**    | **200000**                     |
+
+Constante de tempo do **decaimento exponencial** de épsilon, em outras palavras, em uma constante de tempo o valor de épsilon terá decaído em 63.2% do seu valor inicial. O decaimento exponencial se dará da seguinte forma:
+
+|Número de constantes de tempo|Decaimento do valor total|
+|---                          |---                      |
+|1                            |63.2%                    |
+|2                            |86.5%                    |
+|3                            |95%                      |
+|4                            |98.2%                    |
+|5                            |99.3%                    |
+
+Assim, em aproximadamente 5 constantes de tempo o valor de épsilon chega ao seu valor mínimo.
+
+---
+
+
 
 ## Referências
 Se esse código foi útil para sua pesquisa, por favor considere citar:
