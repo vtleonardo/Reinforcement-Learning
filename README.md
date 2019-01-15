@@ -444,6 +444,177 @@ Assim, em aproximadamente 5 constantes de tempo o valor de épsilon chega ao seu
 
 ---
 
+### <a name="target_update"></a> `target_update`
+
+| Comando de Terminal  | `--target_update <value>`      |
+| :--                  | :--                            |
+| **Arquivo .cfg**     | **`target_update = <value>`**  |
+| Tipo                 | int                            |
+| **Valor default**    | **10000**                      |
+
+Número de frames no qual os parâmetros da Q-target network serão atualizados com os valores da Q-network.
+
+---
+
+### <a name="num_states_stored"></a> `num_states_stored`
+
+| Comando de Terminal  | `--num_states_stored <value>`      |
+| :--                  | :--                                |
+| **Arquivo .cfg**     | **`num_states_stored = <value>`**  |
+| Tipo                 | int                                |
+| **Valor default**    | **1000000**                        |
+
+Número de experiências (estados) que serão armazenadas na replay memory.
+
+---
+
+### <a name="batch_size"></a> `batch_size`
+
+| Comando de Terminal  | `--batch_size <value>`      |
+| :--                  | :--                         |
+| **Arquivo .cfg**     | **`batch_size = <value>`**  |
+| Tipo                 | int                         |
+| **Valor default**    | **32**                      |
+
+Tamanho do batch que será utilizado para treinar as redes neurais. Em outras palavras, o número de experiências (estados) que serão amostrados da replay memory e usados para treinar a rede neural.
+
+---
+
+### <a name="input_shape"></a> `input_shape`
+
+| Comando de Terminal  | `--input_shape <value>`      |
+| :--                  | :--                          |
+| **Arquivo .cfg**     | **`input_shape = <value>`**  |
+| Tipo                 | string                       |
+| **Valor default**    | **"84,84"**                  |
+
+Dimensões nas quais os frames provindos das bibliotecas GYM/ViZDoom serão redimensionados e então amontoados para formarem as experiências/estados que serão utilizados pelo algoritmo de reinforcement learning. As dimensões devem ser colocadas entre aspas e com cada dimensão separada por virgula ou espaço seguindo o template: **"Largura, Altura, Número de canal de cores"**. Caso apenas Largura e Altura sejam enviados é assumido que a imagem será em escala de cinza (número de canal de cores = 1). Por exemplo, caso desejemos treinar nosso algoritmo com estados coloridos de tamanho 64 x 64 devemos enviar a essa variável o seguinte valor: "64,64,3".  
+
+---
+
+### <a name="history_size"></a> `history_size`
+
+| Comando de Terminal  | `--history_size <value>`      |
+| :--                  | :--                           |
+| **Arquivo .cfg**     | **`history_size = <value>`**  |
+| Tipo                 | int                           |
+| **Valor default**    | **4**                         |
+
+Número de frames em sequência que serão amontoados para formarem uma experiência/estado, desta forma, o agente possuirá uma "memória", e conseguirá por exemplo saber a direção, velocidade e aceleração de objetos no ambiente. No caso da arquitetura DQN, os estados serão um volume único com formato de "Largura, Altura, Número de canal de cores * History Size". Já na arquitetura DRQN, os estados serão uma sequência de 4 volumes com formato "Largura, Altura, Número de canal de cores". Por exemplo, considere um batch de 32 amostras amostrados da replay memory, no qual cada estado é formado de frames em escala de cinza com tamanho de 84x84 pixels. A tabela a seguir mostra o formato dos tensores que serão enviados às devidas redes neurais.
+
+|Arquitetura| Formado do Estado   |
+| ---       | ---                 |
+| DQN       | 32, 84, 84, 4       |
+| DRQN      | 32, 4, 84, 84, 1    |
+
+---
+
+### <a name="num_random_play"></a> `num_random_play`
+
+| Comando de Terminal  | `--num_random_play <value>`      |
+| :--                  | :--                              |
+| **Arquivo .cfg**     | **`num_random_play = <value>`**  |
+| Tipo                 | int                              |
+| **Valor default**    | **50000**                        |
+
+Número de estados gerados por jogadas aleatórias feitas pelo agente antes de começar o treinamento das redes neurais com o propósito de preencher a replay memory.
+
+---
+### <a name="loss_type"></a> `loss_type`
+
+| Comando de Terminal | `--loss_type <value>`     |
+| :--                 | :--                       |
+| **Arquivo .cfg**    | **`loss_type = <value>`** |
+| Tipo                | string                    |
+| Escolhas possíveis  | huber, MSE                |
+| **Valor default**   | **huber**                 |
+
+Tipo de loss function que será utilizada para treinar as redes neurais do agente.
+
+---
+### <a name="optimizer"></a> `optimizer`
+
+| Comando de Terminal | `--optimizer <value>`     |
+| :--                 | :--                       |
+| **Arquivo .cfg**    | **`optimizer = <value>`** |
+| Tipo                | string                    |
+| Escolhas possíveis  | rmsprop, adam             |
+| **Valor default**   | **rmsprop**               |
+
+Tipo de optimizer que será utilizado para treinar as redes neurais do agente.
+
+---
+### <a name="load_weights"></a> `load_weights`
+
+| Comando de Terminal  | `--load_weights <value>`        |
+| :--                  | :--                             |
+| **Arquivo .cfg**     | **`load_weights = <value>`**    |
+| Tipo                 | bool                            |
+| **Valor default**    | **False**                       |
+
+Variável que diz ao script principal se é para carregar ou não os pesos de um rede neural de um arquivo externo .h5.
+
+---
+
+### <a name="weights_load_path"></a> `weights_load_path`
+
+| Comando de Terminal  | `--weights_load_path <value>`      |
+| :--                  | :--                                |
+| **Arquivo .cfg**     | **`weights_load_path = <value>`**  |
+| Tipo                 | string (path do sistema)           |
+| **Valor default**    | **""**                             |
+
+
+Caminho do sistema operacional (path) para o arquivo .h5 que contêm os parâmetros das redes neurais a serem carregados. O valor padrão é uma string vazia. **Um parâmetro obrigatório para o TEST MODE**
+
+---
+
+### <a name="steps_save_weights"></a> `steps_save_weights`
+
+| Comando de Terminal  | `--steps_save_weights <value>`      |
+| :--                  | :--                                 |
+| **Arquivo .cfg**     | **`steps_save_weights = <value>`**  |
+| Tipo                 | int                                 |
+| **Valor default**    | **50000**                           |
+
+A cada \<steps_save_weights\> frames os pesos das redes neurais serão salvos no disco em um arquivo .h5.
+
+---
+### <a name="steps_save_plot"></a> `steps_save_plot`
+
+| Comando de Terminal  | `--steps_save_plot <value>`      |
+| :--                  | :--                                 |
+| **Arquivo .cfg**     | **`steps_save_plot = <value>`**  |
+| Tipo                 | int                                 |
+| **Valor default**    | **10000**                           |
+
+A cada \<steps_save_plot\> frames as variáveis de plot serão salvas no disco em arquivo .csv.
+
+---
+### <a name="to_save_episodes"></a> `to_save_episodes`
+
+| Comando de Terminal  | `--to_save_episodes <value>`        |
+| :--                  | :--                                 |
+| **Arquivo .cfg**     | **`to_save_episodes = <value>`**    |
+| Tipo                 | bool                                |
+| **Valor default**    | **False**                           |
+
+Variável que controla se é para salvar ou não os episódios no disco como um arquivo .gif.
+
+---
+### <a name="steps_save_episodes"></a> `steps_save_episodes`
+
+| Comando de Terminal  | `--steps_save_episodes <value>`      |
+| :--                  | :--                                  |
+| **Arquivo .cfg**     | **`steps_save_episodes = <value>`**  |
+| Tipo                 | int                                  |
+| **Valor default**    | **50**                               |
+
+Caso o arquivo tenha que salvar os episódios ([to_save_episodes](#to_save_episodes)), eles serão salvos a cada \<steps_save_episodes\> episódios como um arquivo de imagem animada .gif.
+
+---
+
+
 
 
 ## Referências
