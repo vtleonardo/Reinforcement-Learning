@@ -580,6 +580,18 @@ Caminho do sistema operacional (path) para o arquivo .h5 que contêm os parâmet
 A cada \<steps_save_weights\> frames os pesos das redes neurais serão salvos no disco em um arquivo .h5.
 
 ---
+### <a name="path_save_weights"></a> `path_save_weights`
+
+| Comando de Terminal  | `--path_save_weights <value>`      |
+| :--                  | :--                                |
+| **Arquivo .cfg**     | **`path_save_weights = <value>`**  |
+| Tipo                 | string (path do sistema)           |
+| **Valor default**    | **..\Weights**                     |
+
+
+Caminho do sistema operacional (path) para a pasta no qual serão salvos os pesos das redes neurais em arquivos de extensão .h5.
+
+---
 ### <a name="steps_save_plot"></a> `steps_save_plot`
 
 | Comando de Terminal  | `--steps_save_plot <value>`      |
@@ -588,9 +600,32 @@ A cada \<steps_save_weights\> frames os pesos das redes neurais serão salvos no
 | Tipo                 | int                                 |
 | **Valor default**    | **10000**                           |
 
-A cada \<steps_save_plot\> frames as variáveis de plot serão salvas no disco em arquivo .csv.
+A cada \<steps_save_plot\> frames as variáveis para plot armazenadas por episódio serão salvas no disco em arquivo .csv. As variáveis por episódio salvas são:
+|Variáveis          |
+| ---               |
+| Rewards           |
+| Loss              |
+| Q-value médio     |
+| Número de frames  |
+| Tempo             |
+| Frames por segundo|
+| Epsilon           |
 
 ---
+
+### <a name="path_save_plot"></a> `path_save_plot`
+
+| Comando de Terminal  | `--path_save_plot <value>`         |
+| :--                  | :--                                |
+| **Arquivo .cfg**     | **`path_save_plot = <value>`**     |
+| Tipo                 | string (path do sistema)           |
+| **Valor default**    | **..\Plot**                        |
+
+
+Caminho do sistema operacional (path) para a pasta no qual serão salvos as variáveis a serem plotadas em arquivo .csv.
+
+---
+
 ### <a name="to_save_episodes"></a> `to_save_episodes`
 
 | Comando de Terminal  | `--to_save_episodes <value>`        |
@@ -614,6 +649,64 @@ Caso o arquivo tenha que salvar os episódios ([to_save_episodes](#to_save_episo
 
 ---
 
+### <a name="path_save_episodes"></a> `path_save_episodes`
+
+| Comando de Terminal  | `--path_save_episodes <value>`      |
+| :--                  | :--                                |
+| **Arquivo .cfg**     | **`path_save_episodes = <value>`**  |
+| Tipo                 | string (path do sistema)           |
+| **Valor default**    | **..\Episodes**                    |
+
+
+Caminho do sistema operacional (path) para a pasta no qual serão salvos os episódios como uma imagem animada em formato .gif.
+
+---
+### <a name="to_save_episodes"></a> `to_save_episodes`
+
+| Comando de Terminal  | `--to_save_episodes <value>`        |
+| :--                  | :--                                 |
+| **Arquivo .cfg**     | **`to_save_episodes = <value>`**    |
+| Tipo                 | bool                                |
+| **Valor default**    | **False**                           |
+
+Variável que controla se é para salvar ou não os episódios no disco como um arquivo .gif.
+
+---
+
+---
+### <a name="silent_mode"></a> `silent_mode`
+
+| Comando de Terminal  | `--silent_mode <value>`             |
+| :--                  | :--                                 |
+| **Arquivo .cfg**     | **`silent_mode = <value>`**         |
+| Tipo                 | bool                                |
+| **Valor default**    | **False**                           |
+
+Caso essa variável seja verdadeira, nenhuma mensagem será exibida ao usuário.
+
+---
+### <a name="multi_gpu"></a> `multi_gpu`
+
+| Comando de Terminal  | `--multi_gpu <value>`               |
+| :--                  | :--                                 |
+| **Arquivo .cfg**     | **`multi_gpu = <value>`**           |
+| Tipo                 | bool                                |
+| **Valor default**    | **False**                           |
+
+Caso o usuário possua mais de uma gpu disponível e deseje usá-las para o treinamento do agente. (O gerenciamento das gpus em paralelo é feito pela biblioteca Keras)
+
+---
+### <a name="gpu_device"></a> `gpu_device`
+
+| Comando de Terminal  | `--gpu_device <value>`               |
+| :--                  | :--                                  |
+| **Arquivo .cfg**     | **`gpu_device = <value>`**           |
+| Tipo                 | int                                  |
+| **Valor default**    | **0**                                |
+
+Caso o arquivo tenha que salvar os episódios ([to_save_episodes](#to_save_episodes)), eles serão salvos a cada \<steps_save_episodes\> episódios como um arquivo de imagem animada .gif.
+
+---
 
 
 
