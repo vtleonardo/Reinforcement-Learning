@@ -704,7 +704,7 @@ Caso o usuário possua mais de uma gpu disponível e deseje usá-las para o trei
 | Tipo                 | int                                  |
 | **Valor default**    | **0**                                |
 
-Caso o arquivo tenha que salvar os episódios ([to_save_episodes](#to_save_episodes)), eles serão salvos a cada \<steps_save_episodes\> episódios como um arquivo de imagem animada .gif.
+Variável que permite a escolha de qual gpu a ser utilizada para o treinamento das redes neurais dos agentes. Assim, caso o usuário possua mais que uma gpu e não deseje utilizar todas elas em apenas um treinamento é possível escolher com essa variável qual gpu utilizar para o treinamento, bastanto mandar o ID da gpu e atribuido o valor False para a variável [multi_gpu](#multi_gpu). Desta forma é possível, caso haja recursos computacionais suficientes (memória, processamento) simular vários agentes simultaneamente. **Enviar o gpu_device igual -1 e a variável [multi_gpu](#multi_gpu) False fará o treinamento da rede neural rodar no processador**
 
 ---
 
