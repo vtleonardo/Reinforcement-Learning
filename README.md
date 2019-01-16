@@ -211,6 +211,12 @@ to_render = True
 to_save_states = False
 ````
 ## Documentação
+
+[agent_mode](#agent_mode)
+[agent_name](#agent_name)
+[env](#env)
+[include_score](#include_score)
+
 ---
 ### <a name="agent_mode"></a> `agent_mode`
 
@@ -648,19 +654,6 @@ Variável que controla se é para salvar ou não os episódios no disco como um 
 Caso o arquivo tenha que salvar os episódios ([to_save_episodes](#to_save_episodes)), eles serão salvos a cada \<steps_save_episodes\> episódios como um arquivo de imagem animada .gif.
 
 ---
-
-### <a name="path_save_episodes"></a> `path_save_episodes`
-
-| Comando de Terminal  | `--path_save_episodes <value>`      |
-| :--                  | :--                                |
-| **Arquivo .cfg**     | **`path_save_episodes = <value>`**  |
-| Tipo                 | string (path do sistema)           |
-| **Valor default**    | **..\Episodes**                    |
-
-
-Caminho do sistema operacional (path) para a pasta no qual serão salvos os episódios como uma imagem animada em formato .gif.
-
----
 ### <a name="to_save_episodes"></a> `to_save_episodes`
 
 | Comando de Terminal  | `--to_save_episodes <value>`        |
@@ -672,6 +665,16 @@ Caminho do sistema operacional (path) para a pasta no qual serão salvos os epis
 Variável que controla se é para salvar ou não os episódios no disco como um arquivo .gif.
 
 ---
+### <a name="path_save_episodes"></a> `path_save_episodes`
+
+| Comando de Terminal  | `--path_save_episodes <value>`      |
+| :--                  | :--                                |
+| **Arquivo .cfg**     | **`path_save_episodes = <value>`**  |
+| Tipo                 | string (path do sistema)           |
+| **Valor default**    | **..\Episodes**                    |
+
+
+Caminho do sistema operacional (path) para a pasta no qual serão salvos os episódios como uma imagem animada em formato .gif.
 
 ---
 ### <a name="silent_mode"></a> `silent_mode`
@@ -704,10 +707,65 @@ Caso o usuário possua mais de uma gpu disponível e deseje usá-las para o trei
 | Tipo                 | int                                  |
 | **Valor default**    | **0**                                |
 
-Variável que permite a escolha de qual gpu a ser utilizada para o treinamento das redes neurais dos agentes. Assim, caso o usuário possua mais que uma gpu e não deseje utilizar todas elas em apenas um treinamento é possível escolher com essa variável qual gpu utilizar para o treinamento, bastanto mandar o ID da gpu e atribuido o valor False para a variável [multi_gpu](#multi_gpu). Desta forma é possível, caso haja recursos computacionais suficientes (memória, processamento) simular vários agentes simultaneamente. **Enviar o gpu_device igual -1 e a variável [multi_gpu](#multi_gpu) False fará o treinamento da rede neural rodar no processador**
+Variável que permite a escolha de qual gpu a ser utilizada para o treinamento das redes neurais dos agentes. Assim, caso o usuário possua mais que uma gpu e não deseje utilizar todas elas em apenas um treinamento é possível escolher com essa variável qual gpu utilizar para o treinamento, bastando atribuir o ID da gpu a essa variável e o valor False para a variável [multi_gpu](#multi_gpu). Desta forma é possível, caso haja recursos computacionais suficientes (memória, processamento) simular vários agentes simultaneamente. **Enviar o gpu_device igual -1 e a variável [multi_gpu](#multi_gpu) False fará o treinamento da rede neural rodar no processador.**
 
 ---
+### <a name="multi_threading"></a> `multi_threading`
 
+| Comando de Terminal  | `--multi_threading <value>`         |
+| :--                  | :--                                 |
+| **Arquivo .cfg**     | **`multi_threading = <value>`**     |
+| Tipo                 | bool                                |
+| **Valor default**    | **False**                           |
+
+Se essa variável for ativada, a parte da amostragem de experiências para o treinamento da rede neural é feita paralelamente com o restante do algoritmo de aprendizagem desta forma reduzindo o tempo necessário de processamento de cada episódio. Para mais detalhes consultar o tópico [Performance](https://github.com/Leonardo-Viana/Reinforcement-Learning#performance).
+
+---
+### <a name="to_render"></a> `to_render`
+
+| Comando de Terminal  | `--to_render <value>`               |
+| :--                  | :--                                 |
+| **Arquivo .cfg**     | **`to_render = <value>`**           |
+| Tipo                 | bool                                |
+| **Valor default**    | **False**                           |
+
+Variável que controle se o ambiente será renderizado (mostrado na tela) para o usuário ou não, durante o treinamento ou teste. Ao renderizar o ambiente, o treinamento sofrerá uma queda enorme de processamento por episódio.
+
+---
+### <a name="to_save_states"></a> `to_save_states`
+
+| Comando de Terminal  | `--to_save_states <value>`          |
+| :--                  | :--                                 |
+| **Arquivo .cfg**     | **`to_save_states = <value>`**      |
+| Tipo                 | bool                                |
+| **Valor default**    | **False**                           |
+
+Variável que controla se é para salvar ou não os estados/experiências no disco como um arquivo .gif durante o modo TEST. Os estados salvos são utilizados pela biblioteca de plot, para o plot de zonas de ativação e zonas de máxima ativação.
+
+---
+### <a name="path_save_states"></a> `path_save_states`
+
+| Comando de Terminal  | `--path_save_states <value>`       |
+| :--                  | :--                                |
+| **Arquivo .cfg**     | **`path_save_states = <value>`**   |
+| Tipo                 | string (path do sistema)           |
+| **Valor default**    | **..\States**                      |
+
+
+Caminho do sistema operacional (path) para a pasta no qual serão salvos os estados como uma imagem animada em formato .gif.
+
+---
+### <a name="random_seed"></a> `random_seed`
+
+| Comando de Terminal  | `--random_seed <value>`               |
+| :--                  | :--                                  |
+| **Arquivo .cfg**     | **`random_seed = <value>`**           |
+| Tipo                 | int                                  |
+| **Valor default**    | **-1**                                |
+
+Variável que fixa a semente dos metódos (pseudo)estocásticos. Se o valor dessa variável é -1, nenhuma semente é fixada.
+
+---
 
 
 ## Referências
