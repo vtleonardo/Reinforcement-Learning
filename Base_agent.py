@@ -11,7 +11,7 @@ import random
 from Environments import WrapperGym, WrapperDoom
 import tensorflow as tf
 from tensorflow import set_random_seed
-from utils import printd, folder_exists, str2bool, read_cfg
+from utils import printd, folder_exists, str2bool, read_cfg, readPath
 import utils
 import imageio
 import argparse
@@ -53,7 +53,7 @@ class Agent:
                  e_min=0.1,
                  decay_mode="linear",
                  e_lin_decay=1000000,
-                 e_exp_decay=300,
+                 e_exp_decay=200000,
                  target_update=10000,
                  num_states_stored=1000000,
                  batch_size=32,
@@ -103,7 +103,7 @@ class Agent:
                     Networks.py and send the name of the method to this argument to be implemented by the agent.
 
         :param  normalize_input : bool (Default: True)
-                    Variable that controls if it's to normalize the state's pixels or not.
+                    Variable that controls if it's to normalize the state's pixels or not (NN's input).
 
         :param  frame_skip : int (Default : 4)
                     Total number of frames that will be skipped between states.
@@ -131,9 +131,9 @@ class Agent:
         :param  e_lin_decay : int (Default: 1 000 000)
                     Number of frames for epsilon to reach its final value linearly (e_min).
 
-        :param  e_exp_decay : int (Default:300 [ie 63.2% of decay in 300 episodes])
+        :param  e_exp_decay : int (Default:200000 [ie 63.2% of decay in 200000 episodes])
                     Exponential decay rate in EPISODES (The decay is slowly with bigger values since the
-                    decay equation is exp^[-1/e_exp_decay]).
+                    decay equation is exp^[-current_frame_number/e_exp_decay]).
 
         :param  target_update : int (Default:10 000)
                     Number of frames that the parameters of Q_target will be updated with the parameters of Q.
@@ -212,8 +212,6 @@ class Agent:
                     the algorithm, in other words, the experience of a time step t can only be sampled at time
                     t+1. However, tests show that is no perceptible effect on the
                     learning.
-        :param  multi_gpu : bool (Default : False)
-                    If false, you can select what gpu to use (if there is more than one).
 
         :param  is_recurrent : bool (Default : False)
                     If your model has any recurrent layer set this flag to True.
@@ -919,22 +917,24 @@ def agent_arg_parser(parser):
         help="Mode to execute the algorithm. Type:str. Default: train")
     parser.add_argument("--agent_name", default="DQN",
         help="Agent's name, it will be passed to the saved files (weights,episodes,plot). Type:str. "
-                             "Default: DQN")
+        "Default: DQN")
     parser.add_argument("--env", default='PongNoFrameskip-v4',
         help=" The name of the environment where the agent will interact. Type: str."
-                             " Default:PongNoFrameskip-v4")
+        " Default:PongNoFrameskip-v4")
     parser.add_argument("--include_score", default=False, type=str2bool,
         help="If its to include in the state image the score from the environment (atari game)."
-                             " Type: bool. Default: False. [GYM ATARI EXCLUSIVE]")
-    parser.add_argument("--config_file_path", default="DoomScenarios/labyrinth.cfg",
+        " Type: bool. Default: False. [GYM ATARI EXCLUSIVE]")
+    parser.add_argument("--config_file_path", default="../DoomScenarios/labyrinth.cfg", type=readPath,
         help="Path to .cfg file that contains the configuration to the Doom's environment. Type: str. "
-                             "Default:../DoomScenarios/labyrinth.cfg")
+        "Default:../DoomScenarios/labyrinth.cfg [DOOM EXCLUSIVE]")
     parser.add_argument("--network_model", default="DQN",
         help="Neural Network's architecture to be used. The name should match one of the methods inside the "
         "Networks.py. You can create you own model inside the Networks.py and send the name of the method "
         "to this argument. Type; str. Default:DQN")
     parser.add_argument("--normalize_input", default=True, type=str2bool,
-        help="Flag that controls if it's to save episodes on the disk. Type:bool. Default:True")
+        help="Flag that controls if it's to normalize or not the neural network's input. Type:bool. Default:True")
+    parser.add_argument("--is_recurrent", default=False, type=str2bool,
+        help="If your model has any recurrent layer set this flag to True. Type:bool. Default:False")
     parser.add_argument("--frame_skip", default=4, type=int,
         help=" Total number of frames that will be skipped between states.. Type:int. Default:4")
     parser.add_argument("--num_simul_frames", default=10000000, type=int,
@@ -954,9 +954,9 @@ def agent_arg_parser(parser):
         "Type: str. Default: linear")
     parser.add_argument("--e_lin_decay", default=1000000, type=int,
         help="Number of frames for epsilon reach its final value linearly (e_min). Type: int. Default:1000000")
-    parser.add_argument("--e_exp_decay", default=300, type=int,
+    parser.add_argument("--e_exp_decay", default=200000, type=int,
         help="Exponential decay rate in EPISODES (The decay is slowly with bigger values since the decay"
-        "equation is exp^[-1/e_exp_decay]). Type:int. Default:300")
+        "equation is exp^[-current_episode/e_exp_decay]). Type:int. Default:300")
     parser.add_argument("--target_update", default=10000, type=int,
         help="Number of frames that the parameters of Q_target will be updated with the parameters of Q"
         "[See the DQN paper for more details]. Type:int. Default:10000")
@@ -975,9 +975,18 @@ def agent_arg_parser(parser):
     parser.add_argument("--num_random_play", default=50000, type=int,
         help="Number of states generated by actions chosen randomly that will be stored in the replay memory"
         "before the agent's training begins. Type:int. Default:50000")
+    parser.add_argument("--loss_type", default="huber", choices=["huber", "mse"],
+        help="Name of the type of loss function that will be used to train the DQN Network. There are two "
+        "possible types: \"huber\" and \"MSE\". Type: str. Default: \"huber\"")
+    parser.add_argument("--optimizer", default="rmsprop", choices=["rmsprop", "adam"],
+        help="Name of the type of optimizer that will be used to train the DQN Network. There are two possible "
+        "types: \"rmsprop\" and \"adam\". The first one uses the setting described on the DQN paper, "
+        "the second uses the tensorflow/keras default parameters. Type:str. Default:\"rmsprop\"")
     parser.add_argument("--load_weights", default=False, type=str2bool,
         help="Variable that controls if it's to load the weights from a external .h5 file generated by "
         "another simulation. Type:bool. Default (Train): False. Default(Test): False")
+    parser.add_argument("--weights_load_path", default="",type=readPath,
+        help="Path to .h5 file that contains the pre-treined weights. Default: None. REQUIRED IN TEST MODE")
     parser.add_argument("--steps_save_weights", default=50000, type=int,
         help="Desired number of frames to save the weights. Type:int. Default: 50000")
     parser.add_argument("--steps_save_plot", default=10000, type=int,
@@ -986,23 +995,14 @@ def agent_arg_parser(parser):
         help="Flag that controls if it's to save episodes on the disk. Type:bool. Default:False")
     parser.add_argument("--steps_save_episodes", default=50, type=int,
         help="Number of episodes that an episode will be saved on the disk as .gif. Type: int. Default:50")
-    parser.add_argument("--path_save_episodes", default="Episodes",
-        help="Path to the folder where will be saved the episode as .gif file. Type: str. Default:\"Episodes\"")
-    parser.add_argument("--weights_load_path", default="",
-        help="Path to .h5 file that contains the pre-treined weights. Default: None. REQUIRED IN TEST MODE")
-    parser.add_argument("--loss_type", default="huber", choices=["huber", "mse"],
-        help="Name of the type of loss function that will be used to train the DQN Network. There are two "
-        "possible types: \"huber\" and \"MSE\". Type: str. Default: \"huber\"")
-    parser.add_argument("--optimizer", default="rmsprop", choices=["rmsprop", "adam"],
-        help="Name of the type of optimizer that will be used to train the DQN Network. There are two possible "
-        "types: \"rmsprop\" and \"adam\". The first one uses the setting described on the DQN paper, "
-        "the second uses the tensorflow/keras default parameters. Type:str. Default:\"rmsprop\"")
-    parser.add_argument("--path_save_plot", default="Plot",
+    parser.add_argument("--path_save_episodes", default="Episodes",type=readPath,
+        help="Path to the folder where will be saved the episode as .gif file. Type: str. Default:..\\Episodes")
+    parser.add_argument("--path_save_plot", default="Plot", type=readPath,
         help="Folder's path where will be saved the .csv file with the algorithm's information. Type:str."
-        "Default:\"<this_folder>\\Plot\"")
-    parser.add_argument("--path_save_weights", default="Weights",
+        "Default:..\\Plot")
+    parser.add_argument("--path_save_weights", default="Weights", type=readPath,
         help="Folder's path where will be saved the .h5 file with the Neural Network Weights. Type:str. "
-        "Default:\"<this_folder>\\Weights\"")
+        "Default:..\\Weights")
     parser.add_argument("--silent_mode", default=False, type=str2bool,
         help="If it's active no message will be displayed on the prompt. Type:bool. Default:False.")
     parser.add_argument("--multi_gpu", default=False, type=str2bool,
@@ -1017,11 +1017,9 @@ def agent_arg_parser(parser):
         help="If this mode is active the environment will be rendered. Type:bool. Default:False")
     parser.add_argument("--to_save_states", default=False, type=str2bool,
         help="Controls if it to save the states in TEST MODE. Type:bool. Default:False")
-    parser.add_argument("--path_save_states", default="States",
+    parser.add_argument("--path_save_states", default="States", type=readPath,
         help="Folder's path where will be saved the state as .gif images. Type:str. Default : States. "
-        "Default:\"<this_folder>\\States\" TEST MODE ONLY")
-    parser.add_argument("--is_recurrent", default=False, type=str2bool,
-        help="If your model has any recurrent layer set this flag to True. Type:bool. Default:False")
+        "Default:..\\States [TEST MODE ONLY]")
     parser.add_argument("--random_seed", default=-1, type=int,
         help="Seed to the random methods used by this agent. If the value is -1. No seed is set at all."
         " Type:int. Default:-1")

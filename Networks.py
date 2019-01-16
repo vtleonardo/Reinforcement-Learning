@@ -72,3 +72,4 @@ def DRQN(state_input_shape, actions_num, name, normalize):
     output = Dense(actions_num)(hidden)
     model = Model(inputs=input, outputs=output)
     return model
+

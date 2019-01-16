@@ -4,9 +4,11 @@
 
 import os
 import re
-#Varibles of the printd Debug function.
+
+# Varibles of the printd Debug function.
 DEBUG = True
 DEBUG_lvl = 1
+
 
 def printd(str, lvl=1):
     """
@@ -15,6 +17,7 @@ def printd(str, lvl=1):
     """
     if DEBUG and DEBUG_lvl >= lvl:
         print("{}".format(str))
+
 
 def folder_exists(path_save):
     """
@@ -27,21 +30,22 @@ def folder_exists(path_save):
     if not (os.path.exists(path_save)):
         os.mkdir(path_save)
 
+
 def read_cfg(file):
     appended_text = []
     with open(file) as f:
         for line in f:
-            content = line.strip().replace(" ","")
+            content = line.strip().replace(" ", "")
             if len(content) and content[0] != "#" and content[0] != ";":
                 if content[0] != "+":
-                    key,value = content.split("=",1)
+                    key, value = content.split("=", 1)
                     appended_text.append("--{}".format(key))
-                    if ".." == value[:2]:
-                        value=os.path.join(os.path.dirname(__file__),value[3:])
+                    readPath(value)
                     appended_text.append(value)
                 else:
-                    appended_text[-1]="{}{}".format(appended_text[-1],content[1:])
+                    appended_text[-1] = "{}{}".format(appended_text[-1], content[1:])
     return appended_text
+
 
 def str2bool(v):
     if v.lower() in ('yes', 'true', 't', 'y', '1'):
@@ -50,3 +54,9 @@ def str2bool(v):
         return False
     else:
         raise Exception('Boolean value expected.')
+
+
+def readPath(path):
+    if path.lower()[:2] == "..":
+        path = os.path.join(os.path.dirname(__file__), path[3:])
+    return path
