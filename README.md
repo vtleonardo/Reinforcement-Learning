@@ -16,7 +16,7 @@
 Para melhorar o tempo de processamento gasto no treinamento dos agentes foi desenvolvido uma abordagem para o algoritmo de reinforcement learning rodar em paralelo. Essa abordagem consiste basicamente em amostrar as experiências da replay memory em paralelo enquanto o algoritmo de decisão é executado, assim quanto chegamos na parte de treinamento da rede neural o custo computacional da amostragem já foi executado. A seguir temos algumas imagens comparativas entre as performances em frames/segundo do modo serial (single-threading) e paralelo (multi-threading) no treinamento de agente para jogar o jogo de Atari 2600 Pong. 
 
 <p align="center">
- <img src="docs/fps_bar.png">
+ <img src="docs/images/fps_bar.png" height="300" width="600">
 </p>
 *Os testes de performance foram realizado em cpu core i7 4790K e gpu nvidia geforce gtx 970*
 
@@ -24,7 +24,7 @@ Para melhorar o tempo de processamento gasto no treinamento dos agentes foi dese
 Como podemos observar na imagem abaixo, embora a versão em paralelo introduza um "atraso" de uma amostragem, ambos os algoritmos aprenderam com sucesso a jogar o jogo Pong.
 
 <p align="center">
- <img src="docs/pong_desemp_reward.png">
+ <img src="docs/images/pong_desemp_reward.png" height="400" width="500">
 </p>
 
 ## Instalação
@@ -77,7 +77,7 @@ A grande vantagem de se utilizar o arquivo .cfg é o fato de não precisar copia
 Antes do começo do treinamento do agente, o script exibe um resumo das configurações e hiperparâmetros que serão utilizados em sua execução, desta forma, é possível checar se esta tudo de acordo com o planejado.
 
 <p align="center">
- <img src="docs/summary.png">
+ <img src="docs/images/summary.png" height="70%" width="70%">
 </p>
 
 ## Referências
