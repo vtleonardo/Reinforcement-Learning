@@ -210,12 +210,58 @@ agent_name = doomh4
 to_render = True
 to_save_states = False
 ````
-## Documentação
+# Documentação
+## Configurações gerais/iniciais
+* [agent_mode](#agent_mode)
+* [agent_name](#agent_name)
+* [env](#env)
+## Atari GYM exclusivo
+* [include_score](#include_score)
+## DOOM exclusivo
+* [config_file_path](#config_file_path)
+## Redes Neurais
+* [network_model](#network_model)
+* [normalize_input](#normalize_input)
+* [is_recurrent](#is_recurrent)
+## Aprendizado
+* [frame_skip](#frame_skip)
+* [num_simul_frames](#num_simul_frames)
+* [discount_rate](#discount_rate)
+* [lr](#lr)
+* [epsilon](#epsilon)
+* [e_min](#e_min)
+* [decay_mode](#decay_mode)
+* [e_lin_decay](#e_lin_decay)
+* [e_exp_decay](#e_exp_decay)
+* [target_update](#target_update)
+* [num_states_stored](#num_states_stored)
+* [batch_size](#batch_size)
+* [input_shape](#input_shape)
+* [history_size](#history_size)
+* [num_random_play](#num_random_play)
+* [loss_type](#loss_type)
+* [optimizer](#optimizer)
+## Configurações gerais
+* [load_weights](#load_weights)
+* [weights_load_path](#weights_load_path)
+* [steps_save_weights](#steps_save_weights)
+* [path_save_weights](#path_save_weights)
+* [steps_save_plot](#steps_save_plot)
+* [path_save_plot](#path_save_plot)
+* [to_save_episodes](#to_save_episodes)
+* [steps_save_episodes](#steps_save_episodes)
+* [to_save_episodes](#to_save_episodes)
+* [path_save_episodes](#path_save_episodes)
+* [silent_mode](#silent_mode)
+* [multi_gpu](#multi_gpu)
+* [gpu_device](#gpu_device)
+* [multi_threading](#multi_threading)
+* [to_render](#to_render)
+* [random_seed](#random_seed)
+## Exclusivo do modo de teste
+* [to_save_states](#to_save_states)
+* [path_save_states](#path_save_states)
 
-[agent_mode](#agent_mode)
-[agent_name](#agent_name)
-[env](#env)
-[include_score](#include_score)
 
 ---
 ### <a name="agent_mode"></a> `agent_mode`
@@ -731,6 +777,16 @@ Se essa variável for ativada, a parte da amostragem de experiências para o tre
 
 Variável que controle se o ambiente será renderizado (mostrado na tela) para o usuário ou não, durante o treinamento ou teste. Ao renderizar o ambiente, o treinamento sofrerá uma queda enorme de processamento por episódio.
 
+### <a name="random_seed"></a> `random_seed`
+
+| Comando de Terminal  | `--random_seed <value>`               |
+| :--                  | :--                                  |
+| **Arquivo .cfg**     | **`random_seed = <value>`**           |
+| Tipo                 | int                                  |
+| **Valor default**    | **-1**                                |
+
+Variável que fixa a semente dos métodos (pseudo)estocásticos. Se o valor dessa variável é -1, nenhuma semente é fixada.
+
 ---
 ### <a name="to_save_states"></a> `to_save_states`
 
@@ -739,6 +795,7 @@ Variável que controle se o ambiente será renderizado (mostrado na tela) para o
 | **Arquivo .cfg**     | **`to_save_states = <value>`**      |
 | Tipo                 | bool                                |
 | **Valor default**    | **False**                           |
+| Exclusivo do modo    | Test                               |
 
 Variável que controla se é para salvar ou não os estados/experiências no disco como um arquivo .gif durante o modo TEST. Os estados salvos são utilizados pela biblioteca de plot, para o plot de zonas de ativação e zonas de máxima ativação.
 
@@ -750,23 +807,12 @@ Variável que controla se é para salvar ou não os estados/experiências no dis
 | **Arquivo .cfg**     | **`path_save_states = <value>`**   |
 | Tipo                 | string (path do sistema)           |
 | **Valor default**    | **..\States**                      |
+| Exclusivo do modo    | Test                               |
 
 
 Caminho do sistema operacional (path) para a pasta no qual serão salvos os estados como uma imagem animada em formato .gif.
 
 ---
-### <a name="random_seed"></a> `random_seed`
-
-| Comando de Terminal  | `--random_seed <value>`               |
-| :--                  | :--                                  |
-| **Arquivo .cfg**     | **`random_seed = <value>`**           |
-| Tipo                 | int                                  |
-| **Valor default**    | **-1**                                |
-
-Variável que fixa a semente dos metódos (pseudo)estocásticos. Se o valor dessa variável é -1, nenhuma semente é fixada.
-
----
-
 
 ## Referências
 Se esse código foi útil para sua pesquisa, por favor considere citar:
