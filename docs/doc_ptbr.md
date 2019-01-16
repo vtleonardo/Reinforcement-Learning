@@ -38,7 +38,6 @@
 * [path_save_plot](#path_save_plot)
 * [to_save_episodes](#to_save_episodes)
 * [steps_save_episodes](#steps_save_episodes)
-* [to_save_episodes](#to_save_episodes)
 * [path_save_episodes](#path_save_episodes)
 * [silent_mode](#silent_mode)
 * [multi_gpu](#multi_gpu)
@@ -488,17 +487,7 @@ Variável que controla se é para salvar ou não os episódios no disco como um 
 Caso o arquivo tenha que salvar os episódios ([to_save_episodes](#to_save_episodes)), eles serão salvos a cada \<steps_save_episodes\> episódios como um arquivo de imagem animada .gif.
 
 ---
-### <a name="to_save_episodes"></a> `to_save_episodes`
 
-| Comando de Terminal  | `--to_save_episodes <value>`        |
-| :--                  | :--                                 |
-| **Arquivo .cfg**     | **`to_save_episodes = <value>`**    |
-| Tipo                 | bool                                |
-| **Valor default**    | **False**                           |
-
-Variável que controla se é para salvar ou não os episódios no disco como um arquivo .gif.
-
----
 ### <a name="path_save_episodes"></a> `path_save_episodes`
 
 | Comando de Terminal  | `--path_save_episodes <value>`      |
