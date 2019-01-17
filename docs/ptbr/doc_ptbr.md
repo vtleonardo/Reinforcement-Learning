@@ -137,7 +137,7 @@ Para mais detalhes sobre os arquivos .cfg usados pela VizDoom, consulte esse [li
 | Tipo                 | string                             |
 | **Valor default**    | **DQN**                            |
 
-Nome da função que define a arquitetura da rede neural dentro do arquivo [Networks.py](Networks.py). Para mais detalhes sobre a implementação de sua própria arquitetura de rede neural consultar o tópico: [Definindo a arquitetura da rede neural](https://github.com/Leonardo-Viana/Reinforcement-Learning#definindo-a-arquitetura-da-rede-neural)
+Nome da função que define a arquitetura da rede neural dentro do arquivo [Networks.py](Networks.py). Para mais detalhes sobre a implementação de sua própria arquitetura de rede neural consultar o tópico: [Definindo a arquitetura da rede neural](https://github.com/Leonardo-Viana/Reinforcement-Learning/docs/ptbr/nn_ptbr.md)
 
 ---
 
