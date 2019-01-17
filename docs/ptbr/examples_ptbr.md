@@ -137,7 +137,7 @@ O resumo da simulação pode ser visto na imagem abaixo.
 </p>
 
 ## Transfer Learning
-Utilizando das opções de configuração possíveis para os scripts nesse repositório, podemos aplicar a técnica de transfer learning. Ou seja, podemos carregar um agente treinado em um ambiente e ver enquanto tempo o mesmo domina um novo ambiente. A seguir temos um exemplo de um agente treinado na fase labyrinth, aprendendo a navegar em outra fase a labyrinth_test com configurações de aprendizado bem mais rígidas.
+Utilizando das opções de configuração possíveis para os scripts nesse repositório, podemos aplicar a técnica de transfer learning. Ou seja, podemos carregar um agente treinado em um ambiente e ver em quanto tempo o mesmo domina um novo ambiente. A seguir temos um exemplo de um agente treinado na fase labyrinth, aprendendo a navegar em outra fase a labyrinth_test com configurações de aprendizado bem mais rígidas.
 
 ```
 agent_mode = train
