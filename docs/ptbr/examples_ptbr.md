@@ -4,7 +4,7 @@ A seguir serão apresentados alguns exemplos. Todos os parâmetros podem ser pas
 python Base_agent.py --help
 ````
 ### Pong treinado com DQN básico
-Como primeiro exemplo treinaremos um agente utilizando os hiperparâmetros especificados pelo excelente artigo [Speeding up DQN on PyTorch: how to solve Pong in 30 minutes](Reinforcement-Learning/blob/master/README.md#[3]). O arquivo Base_agent.cfg deverá possuir :
+Como primeiro exemplo treinaremos um agente utilizando os hiperparâmetros especificados pelo excelente artigo [Speeding up DQN on PyTorch: how to solve Pong in 30 minutes](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/README.md#[3]). O arquivo Base_agent.cfg deverá possuir :
 
 ```
 agent_name = DQNPong30
