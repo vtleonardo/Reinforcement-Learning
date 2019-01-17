@@ -99,3 +99,7 @@ Se esse código foi útil para sua pesquisa, por favor considere citar:
 Marc G Bellemare, Alex Graves, Martin Riedmiller, Andreas K Fidjeland, Georg
 Ostrovski, et al. [Human-level control through deep reinforcement learning](https://www.nature.com/articles/nature14236). Nature,
 518(7540):529, 2015.
+- <a name = "[3]"></a>[3] Max Lapan. Speeding up dqn on pytorch: how to solve pong in 30 minutes. 23 de
+novembro 2017. Disponível em <https://medium.com/mlreview/speeding-up-dqn-
+on-pytorch-solving-pong-in-30-minutes-81a1bd2dff55>. Acesso em: 07 de novembro
+de 2018.
