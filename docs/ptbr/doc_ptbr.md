@@ -440,6 +440,7 @@ Caminho do sistema operacional (path) para a pasta no qual serão salvos os peso
 | **Valor default**    | **10000**                           |
 
 A cada \<steps_save_plot\> frames as variáveis para plot armazenadas por episódio serão salvas no disco em arquivo .csv. As variáveis por episódio salvas são:
+
 |Variáveis          |
 | ---               |
 | Rewards           |
