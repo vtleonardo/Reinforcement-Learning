@@ -168,6 +168,9 @@ Outra opção para configurarmos nosso script seria executar os comandos diretam
 ````
 python Base_agent.py --agent_mode train --env Doom --agent_name grayh4-LSTM --network_model DRQN --is_recurrent True --load_weights True --weights_load_path ../Weights/Pretrained/Doom/Labyrinth/grayh4-LSTM-weights-Doom-labyrinth-5000000.h5 --config_file_path ../DoomScenarios/labyrinth_test.cfg --optimizer adam --lr 1e-4 --num_random_play 0 --epsilon 0.05 --num_states_stored 50000 --num_simul_frames 500000 --steps_save_weights 50000 --history_size 4 --to_save_episodes True --steps_save_episodes 100 --multi_threading True 
 ````
-
+O resumo da simulação pode ser visto na imagem abaixo.
+<p align="center">
+ <img src="https://raw.githubusercontent.com/Leonardo-Viana/Reinforcement-Learning/master/docs/images/summary-doomDRQN-transfer.png" height="70%" width="70%">
+</p>
 
 
