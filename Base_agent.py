@@ -316,16 +316,23 @@ class Agent:
         self.steps_save_plot = steps_save_plot
         self.to_save_episodes = to_save_episodes
         self.steps_save_episodes = steps_save_episodes
+
+        self.path_save_episodes = os.path.join(self.root_path, "Episodes")
+        self.path_save_plot = os.path.join(self.root_path, "Plot")
+        self.path_save_weights = os.path.join(self.root_path, "Weights")
         # Checking if the default paths exists.
-        if path_save_episodes == "Episodes":
-            self.path_save_episodes = os.path.join(self.root_path, path_save_episodes)
+        if path_save_episodes == "Episodes" or path_save_episodes == self.path_save_episodes:
             folder_exists(self.path_save_episodes)
-        if path_save_plot == "Plot":
-            self.path_save_plot = os.path.join(self.root_path, path_save_plot)
+        else:
+            self.path_save_episodes = path_save_episodes
+        if path_save_plot == "Plot" or path_save_plot == self.path_save_plot:
             folder_exists(self.path_save_plot)
-        if path_save_weights == "Weights":
-            self.path_save_weights = os.path.join(self.root_path, path_save_weights)
+        else:
+            self.path_save_plot = path_save_plot
+        if path_save_weights == "Weights" or path_save_weights == self.path_save_weights:
             folder_exists(self.path_save_weights)
+        else:
+            self.path_save_weights = path_save_weights
 
         # Creating a log file
         self.LOG_FILENAME = os.path.join(self.path_save_plot, '{}-Training-{}.txt'.format(self.agent_name,
