@@ -106,7 +106,7 @@ O seguinte script irá treinar o agente nomeado de "grayh4-LSTM" na fase labyrin
 </p>
 
 ### Testando um agente treinado
-O script Base_agent.py possui dois modos de execução treinamento (**train**) ou teste (**test**). O modo de treinamento é o default no qual o agente é treinado utilizando a premissa do reinforcement learning. Já no modo teste, a maioria dos hiperparâmetros de aprendizado são ignorados, o objetivo deste modo é o teste de um agente treinado. Para o script executar corretamente é necessário especificar qual a arquitetura de rede neural usada no treinamento. A seguir vemos um exemplo para o arquivo .cfg para o teste de um agente treinado com o DRQN (os pesos treinados desta simulação encontram-se neste repositório) com o jogo serendo renderizado:
+O script Base_agent.py possui dois modos de execução treinamento (**train**) ou teste (**test**). O modo de treinamento é o default no qual o agente é treinado utilizando a premissa do reinforcement learning. Já no modo teste, a maioria dos hiperparâmetros de aprendizado são ignorados, o objetivo deste modo é o teste de um agente treinado. Para o script executar corretamente é necessário especificar qual a arquitetura de rede neural usada no treinamento. A seguir vemos um exemplo para o arquivo .cfg para o teste de um agente treinado com o DRQN (os pesos treinados desta simulação encontram-se neste repositório) com o jogo sendo renderizado:
 
 ````
 agent_mode = test
@@ -128,5 +128,12 @@ python Base_agent.py
 ````
 Outra opção para configurarmos nosso script seria executar os comandos diretamente no terminal em conjunto com a execução do script:
 ````
-python Base_agent.py --agent_mode test --env Doom --load_weights True --weights_load_path ../Weights/Pretrained/Doom/Labyrinth/grayh4-weights-Doom-labyrinth-5000000.h5 --agent_name doomh4 --to_render True --to_save_states False
+python Base_agent.py --agent_mode test --env Doom --config_file_path ../DoomScenarios/labyrinth.cfg --network_model DRQN --is_recurrent True --input_shape "84,84,1" --history_size 4 --load_weights True --weights_load_path ../Weights/Pretrained/Doom/Labyrinth/grayh4-LSTM-weights-Doom-labyrinth-5000000.h5 --agent_name doomh4-lstm-test --to_render True --to_save_states False
 ````
+
+O resumo da simulação pode ser visto na imagem abaixo.
+<p align="center">
+ <img src="https://raw.githubusercontent.com/Leonardo-Viana/Reinforcement-Learning/master/docs/images/summary-doomDRQN-test.png" height="70%" width="70%">
+</p>
+
+
