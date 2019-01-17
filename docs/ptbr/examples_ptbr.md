@@ -170,7 +170,7 @@ python Base_agent.py --agent_mode train --env Doom --agent_name grayh4-LSTM --ne
 ````
 O resumo da simulação pode ser visto na imagem abaixo.
 <p align="center">
- <img src="https://raw.githubusercontent.com/Leonardo-Viana/Reinforcement-Learning/master/docs/images/summary-doomDRQN-transfer.png" height="80%" width="80%">
+ <img src="https://raw.githubusercontent.com/Leonardo-Viana/Reinforcement-Learning/master/docs/images/summary-doomDRQN-transfer.png" height="90%" width="90%">
 </p>
 
 
