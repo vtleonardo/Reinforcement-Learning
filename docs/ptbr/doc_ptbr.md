@@ -88,7 +88,7 @@ Nome do agente, além de identificação do agente será utilizado para nomear o
 | :--                 | :--                       |
 | **Arquivo .cfg**    | **`env = <value>`**       |
 | Tipo                | string                    |
-| **Valor default**   | **PongNoFrameSkip-v4**    |
+| **Valor default**   | **PongNoFrameskip-v4**    |
 
 
 Nome do ambiente (environment) a ser executado. Atualmente são suportados todos os jogos de atari disponíveis pela biblioteca OpenAi gym e o ambiente tridimensional Doom.
