@@ -4,11 +4,12 @@ A seguir serão apresentados alguns exemplos. Todos os parâmetros podem ser pas
 python Base_agent.py --help
 ````
 ### Pong treinado com DQN básico
-Como primeiro exemplo treinaremos um agente utilizando os hiperparâmetros especificados pelo excelente artigo [Speeding up DQN on PyTorch: how to solve Pong in 30 minutes](https://medium.com/mlreview/speeding-up-dqn-on-pytorch-solving-pong-in-30-minutes-81a1bd2dff55)[[3]](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/README.md#[3])(Os hiperparâmetros não especificados nesse artigo serão assumidos como sendo iguais ao de [1](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/README.md#[1])). O arquivo Base_agent.cfg deverá possuir :
+Como primeiro exemplo treinaremos um agente utilizando os hiperparâmetros especificados pelo excelente artigo [Speeding up DQN on PyTorch: how to solve Pong in 30 minutes](https://medium.com/mlreview/speeding-up-dqn-on-pytorch-solving-pong-in-30-minutes-81a1bd2dff55)[[3]](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/README.md#[3])(Os hiperparâmetros não especificados nesse artigo serão assumidos como sendo iguais ao de [[1]](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/README.md#[1])). O arquivo Base_agent.cfg deverá possuir :
 ```
 agent_mode = train
 agent_name = DQNPong30
 env = PongNoFrameskip-v4
+# Variável exclusiva dos jogos de atari
 include_score = False
 network_model = DQN
 normalize_input = True
@@ -73,13 +74,11 @@ Ambas as opções de configuração irão treinar o agente com hiperparâmetros 
 </p>
 
 ### Treinamento de um agente dentro do VizDoom 
-Esse repositório possui em suas dependencias dois mapas para o jogo Doom, **labyrinth e labyrinth_test**, que possuem como objetivo ensinar o agente a navegação tridimensional (mais detalhes sobre esses mapas no tópico [Mapas de Doom]). Para treinar o agente na fase labyrinth utilizando a arquitetura de rede neural DRQN proposta por [POR LINK do ARTIGO DRQN] podemos utilizar os seguintes comandos:
-````
-python Base_agent.py --env Doom --agent_name grayh4-LSTM --network_model DRQN --is_recurrent True --optimizer adam --lr 1e-4 --num_random_play 50000 --num_states_stored 250000 --e_lin_decay 250000 --num_simul_frames 5000000 --steps_save_weights 50000 --history_size 4 --input_shape (84,84,1) --to_save_episodes True steps_save_episodes 100 --multi_threading True
-````
-Ou podemos escrever dentro do arquivo Base_agent.cfg os seguintes comandos:
+Esse repositório possui em suas dependencias dois mapas para o jogo Doom, **labyrinth e labyrinth_test**, que possuem como objetivo ensinar o agente a navegação tridimensional (mais detalhes sobre esses mapas no tópico [Mapas de Doom]). Para treinar o agente na fase labyrinth utilizando a arquitetura de rede neural DRQN (proposta inicialmente em [Deep recurrent q-learning for partially obser-
+vable mdps](https://arxiv.org/abs/1507.06527)[[2]](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/README.md#[2])) podemos utilizar os seguintes comandos no arquivo .cfg:
 ````
 env = Doom
+config_file_path = ../DoomScenarios/labyrinth_test.cfg
 agent_name = grayh4-LSTM
 network_model = DRQN
 is_recurrent = True
@@ -90,16 +89,20 @@ num_states_stored = 250000
 e_lin_decay = 250000
 num_simul_frames = 5000000
 steps_save_weights = 50000
-history_size = 4
-input_shape = (84,84,1)
 to_save_episodes = True
 steps_save_episodes = 100
 multi_threading = True
 ````
-E depois basta executar o script Base_agent.py sem nenhum argumento:
+Após salvarmos o arquivo de configuração .cfg basta executar o script Base_agent.py sem nenhum argumento:
 ````
 python Base_agent.py
 ````
+Outra opção para configurarmos nosso script seria executar os comandos diretamente no terminal em conjunto com a execução do script:
+````
+python Base_agent.py --env Doom --agent_name grayh4-LSTM --config_file_path ../DoomScenarios/labyrinth_test.cfg --network_model DRQN --is_recurrent True --optimizer adam --lr 1e-4 --num_random_play 50000 --num_states_stored 250000 --e_lin_decay 250000 --num_simul_frames 5000000 --steps_save_weights 50000 --to_save_episodes True steps_save_episodes 100 --multi_threading True
+````
+O seguinte script irá treinar o agente
+
 ### Testando um agente treinado
 O script Base_agent.py possui dois modos de execução treinamento (**train**) ou teste (**test**). O modo de treinamento é o default no qual o agente é treinado utilizando a premissa do reinforcement learning. Já no modo teste, a maioria dos hiperparâmetros de aprendizado são ignorados, o objetivo deste modo é o teste de um agente treinado. A seguir vemos um exemplo do teste de um agente treinado com o DQN (os pesos treinados desta simulação encontram-se neste repositório) com o jogo serendo renderizado:
 ````
