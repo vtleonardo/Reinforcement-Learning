@@ -4,29 +4,73 @@ A seguir serão apresentados alguns exemplos. Todos os parâmetros podem ser pas
 python Base_agent.py --help
 ````
 ### Pong treinado com DQN básico
-Como primeiro exemplo treinaremos um agente utilizando os hiperparâmetros especificados pelo excelente artigo [Speeding up DQN on PyTorch: how to solve Pong in 30 minutes](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/README.md#[3]). O arquivo Base_agent.cfg deverá possuir :
-
+Como primeiro exemplo treinaremos um agente utilizando os hiperparâmetros especificados pelo excelente artigo [Speeding up DQN on PyTorch: how to solve Pong in 30 minutes](https://medium.com/mlreview/speeding-up-dqn-on-pytorch-solving-pong-in-30-minutes-81a1bd2dff55)[[3]](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/README.md#[3])(Os hiperparâmetros não especificados nesse artigo serão assumidos como sendo iguais ao de [1](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/README.md#[1])). O arquivo Base_agent.cfg deverá possuir :
+```
+agent_mode = train
+agent_name = DQNPong30
+env = PongNoFrameskip-v4
+include_score = False
+network_model = DQN
+normalize_input = True
+is_recurrent = False
+frame_skip = 4
+num_simul_frames = 1000000
+discount_rate = 0.99
+lr = 1e-4
+epsilon = 1.0
+e_min = 0.02
+decay_mode = linear
+e_lin_decay = 100000
+target_update = 1000
+num_states_stored = 100000
+batch_size = 32
+input_shape = "84,84,1"
+history_size = 4
+num_random_play = 10000
+loss_type = huber
+optimizer = adam
+load_weights = False
+steps_save_weights = 50000
+path_save_weights = ..\Weights
+steps_save_plot = 10000
+path_save_plot = ..\Plot
+to_save_episodes = True
+path_save_episodes = ..\Episodes
+silent_mode = False
+steps_save_episodes = 50
+multi_gpu = False
+gpu_device = 0
+multi_threading = False
+to_render = False
+random_seed = 1
+```
+Ao invés de toda vez termos que digitar todos esses comandos, podemos utilizar os valores default (padrão) das variáveis para diminuir consideravelmente o número de comandos. Os valores padrões das variáveis podem ser visto no [DOC](/docs/ptbr/doc_ptbr.md). Desta forma o mesmo arquivo .cfg pode ser escrito da seguinte forma:
 ```
 agent_name = DQNPong30
 num_simul_frames = 1000000
+lr = 1e-4
 e_min = 0.02
 e_lin_decay = 100000
 target_update = 1000
 num_states_stored = 100000
 num_random_play = 10000
 optimizer = adam
-lr = 1e-4
+to_save_episodes = True
 random_seed = 1
 ```
-E depois basta executar o script Base_agent.py sem nenhum argumento:
+Após salvarmos o arquivo de configuração .cfg basta executar o script Base_agent.py sem nenhum argumento:
 ````
 python Base_agent.py
 ````
-Outra opção seria executar os comandos no terminal em conjunto com a execução do script:
+Outra opção para configurarmos nosso script seria executar os comandos diretamente no terminal em conjunto com a execução do script:
 ````
-python Base_agent.py --agent_name "DQNPong30" --num_simul_frames 1000000 --e_min 0.02 --e_lin_decay 100000 --target_update 1000 --num_states_stored 100000 --num_random_play 10000 --optimizer adam --lr 1e-4 --random_seed 1
+python Base_agent.py --agent_name "DQNPong30" --num_simul_frames 1000000 --lr 1e-4 --e_min 0.02 --e_lin_decay 100000 --target_update 1000 --num_states_stored 100000 --num_random_play 10000 --optimizer adam  --to_save_episodes True --random_seed 1
 ````
-Ambas as opções de configuração irão treinar o agente com hiperparâmetros especificados pelo artigo acima com a random seed fixa (em 1) durante 1 milhão de frames. 
+Ambas as opções de configuração irão treinar o agente com hiperparâmetros especificados pelo artigo acima com a random seed fixa (em 1) durante 1 milhão de frames como visto no resumo apresentado abaixo. **Sempre cheque o resumo apresentado pelos scripts no começo da execução para ver se todos os parâmetros estão de acordo com suas expectativas**.
+
+<p align="center">
+ <img src="docs/images/summary-pong30.png" height="70%" width="70%">
+</p>
 
 ### Treinamento de um agente dentro do VizDoom 
 Esse repositório possui em suas dependencias dois mapas para o jogo Doom, **labyrinth e labyrinth_test**, que possuem como objetivo ensinar o agente a navegação tridimensional (mais detalhes sobre esses mapas no tópico [Mapas de Doom]). Para treinar o agente na fase labyrinth utilizando a arquitetura de rede neural DRQN proposta por [POR LINK do ARTIGO DRQN] podemos utilizar os seguintes comandos:
