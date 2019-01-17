@@ -77,7 +77,7 @@ Ambas as opções de configuração irão treinar o agente com hiperparâmetros 
 Esse repositório possui em suas dependencias dois mapas para o jogo Doom, **labyrinth e labyrinth_test**, que possuem como objetivo ensinar o agente a navegação tridimensional (mais detalhes sobre esses mapas no tópico [Mapas de Doom]). Para treinar o agente na fase labyrinth utilizando a arquitetura de rede neural DRQN (proposta inicialmente em [Deep recurrent q-learning for partially observable mdps](https://arxiv.org/abs/1507.06527)[[2]](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/README.md#[2])) podemos utilizar os seguintes comandos no arquivo .cfg:
 ````
 env = Doom
-config_file_path = ../DoomScenarios/labyrinth_test.cfg
+config_file_path = ../DoomScenarios/labyrinth.cfg
 agent_name = grayh4-LSTM
 network_model = DRQN
 is_recurrent = True
@@ -100,7 +100,10 @@ Outra opção para configurarmos nosso script seria executar os comandos diretam
 ````
 python Base_agent.py --env Doom --agent_name grayh4-LSTM --config_file_path ../DoomScenarios/labyrinth_test.cfg --network_model DRQN --is_recurrent True --optimizer adam --lr 1e-4 --num_random_play 50000 --num_states_stored 250000 --e_lin_decay 250000 --num_simul_frames 5000000 --steps_save_weights 50000 --to_save_episodes True --steps_save_episodes 100 --multi_threading True
 ````
-O seguinte script irá treinar o agente
+O seguinte script irá treinar o agente nomeado de "grayh4-LSTM" na fase labyrinth com a arquitetura de rede neural DRQN (com camadas recorrentes do tipo LSTM) ao longo de 5 milhões de frames. Essa simulação toma vantagem do modo [multi-threading](https://github.com/Leonardo-Viana/Reinforcement-Learning#performance) para deixar a treinamento mais rápido. O resumo da simulação pode ser visto na imagem abaixo.
+<p align="center">
+ <img src="https://raw.githubusercontent.com/Leonardo-Viana/Reinforcement-Learning/master/docs/images/summary-doomDRQN.png" height="70%" width="70%">
+</p>
 
 ### Testando um agente treinado
 O script Base_agent.py possui dois modos de execução treinamento (**train**) ou teste (**test**). O modo de treinamento é o default no qual o agente é treinado utilizando a premissa do reinforcement learning. Já no modo teste, a maioria dos hiperparâmetros de aprendizado são ignorados, o objetivo deste modo é o teste de um agente treinado. A seguir vemos um exemplo do teste de um agente treinado com o DQN (os pesos treinados desta simulação encontram-se neste repositório) com o jogo serendo renderizado:
