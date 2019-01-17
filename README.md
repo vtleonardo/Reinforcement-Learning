@@ -16,7 +16,7 @@
 Para melhorar o tempo de processamento gasto no treinamento dos agentes foi desenvolvido uma abordagem para o algoritmo de reinforcement learning rodar em paralelo. Essa abordagem consiste basicamente em amostrar as experiências da replay memory em paralelo enquanto o algoritmo de decisão é executado, assim quanto chegamos na parte de treinamento da rede neural o custo computacional da amostragem já foi executado. A seguir temos algumas imagens comparativas entre as performances em frames/segundo do modo serial (single-threading) e paralelo (multi-threading) no treinamento de agente para jogar o jogo de Atari 2600 Pong. 
 
 <p align="center">
- <img src="docs/fps_bar.png">
+ <img src="docs/images/fps_bar.png" height="300" width="600">
 </p>
 *Os testes de performance foram realizado em cpu core i7 4790K e gpu nvidia geforce gtx 970*
 
@@ -24,7 +24,7 @@ Para melhorar o tempo de processamento gasto no treinamento dos agentes foi dese
 Como podemos observar na imagem abaixo, embora a versão em paralelo introduza um "atraso" de uma amostragem, ambos os algoritmos aprenderam com sucesso a jogar o jogo Pong.
 
 <p align="center">
- <img src="docs/pong_desemp_reward.png">
+ <img src="docs/images/pong_desemp_reward.png" height="400" width="500">
 </p>
 
 ## Instalação
@@ -70,146 +70,15 @@ Para a instalação do ViZDoom no windows consultar esse [link](https://github.c
 Uma vez com todas as bibliotecas instaladas e o ambiente virtual configurado, basta dar download ou clonar esse repositório e executar o arquivo Base_agent.py para o treinamento de um agente com o algoritmo de reinforcement learning DQN ou DRQN.
 
 ## Utilização
-Para começar o treinamento do agente em seu ambiente de escolha basta executar o arquivo Base_agent.py com as configurações de treinamento desejadas. Essas opções podem ser passadas via comandos de terminal ou escritas no arquivo Base_agent.cfg. **Caso algum comando de terminal seja enviado, a configuração de execução do script será feita exclusivamente por eles, e os parâmetros não enviados terão seus valores atribuídos como default.** Se nenhum parâmetro for enviado via terminal, o script procurará por um arquivo de mesmo nome com extensão .cfg. Dentro deste arquivo caso encontre configurações validas às mesmas serão lidas e de forma similar a configuração via terminal, os valores não definidos serão atribuídos aos seus valores default. Se nenhuma das opções de configuração acima seja feita, o agente será treinado com seus valores default, ou seja, serão utilizados os hiperparâmetros demonstrados no artigo [Human-level control through deep reinforcement learning](https://www.nature.com/articles/nature14236) para o treinamento de um agente no jogo Pong.
+Para começar o treinamento do agente em seu ambiente de escolha basta executar o arquivo Base_agent.py com as configurações de treinamento desejadas. Essas opções podem ser passadas via comandos de terminal ou escritas no arquivo Base_agent.cfg. **Caso algum comando de terminal seja enviado, a configuração de execução do script será feita exclusivamente por eles, e os parâmetros não enviados terão seus valores atribuídos como default.** Se nenhum parâmetro for enviado via terminal, o script procurará por um arquivo de mesmo nome com extensão .cfg. Dentro deste arquivo caso encontre configurações validas às mesmas serão lidas e de forma similar a configuração via terminal, os valores não definidos serão atribuídos aos seus valores default. Se nenhuma das opções de configuração acima seja feita, o agente será treinado com seus valores default, ou seja, serão utilizados os hiperparâmetros demonstrados no artigo [Human-level control through deep reinforcement learning](https://www.nature.com/articles/nature14236)[[1]](#[1]) para o treinamento de um agente no jogo Pong.
 
 A grande vantagem de se utilizar o arquivo .cfg é o fato de não precisar copiar e colar (ou escrever) comandos gigantes no terminal, além de facilitar o debug em caso de algum contratempo na inicialização de algum hiperparâmetro. Mais detalhes sobre a configuração dos arquivos .cfg pode ser vista no tópico [Arquivos CFG](#).
 
 Antes do começo do treinamento do agente, o script exibe um resumo das configurações e hiperparâmetros que serão utilizados em sua execução, desta forma, é possível checar se esta tudo de acordo com o planejado.
 
 <p align="center">
- <img src="docs/summary.png">
+ <img src="docs/images/summary.png" height="70%" width="70%">
 </p>
-
-
-
-## Definindo a arquitetura da rede neural
-É possível definir sua propria arquitetura de rede neural para o treinamento do seu agente. Para isso basta criar dentro do arquivo Networks.py sua própria rede neural como uma função utilizando a biblioteca [Keras](https://keras.io/) **(A arquitetura pode ser criada com a functional ou sequential API)**. Dessa forma, você pode experimentar de forma rápida e sem complicações os efeitos de diferentes arquiteturas, como por exemplo, camadas recorrentes, métodos de regularização (Dropout, distância L2), normalização, batch normalization no aprendizado do agente. Após definida sua arquitetura, o nome da função deve ser enviado como um argumento via comando de terminal com o comando:
-
-````
-python Base_agent.py --network_model "<nome_da_sua_funcao>"
-````
-Ou escrito no arquivo Base_agent.cfg como:
-````
-network_model = <nome_da_sua_funcao>
-````
-Caso a arquitetura possua camadas do tipo recorrente é necessario atribuir o valor verdadeiro a variável **is_recurrent** na hora da execução do script principal. Desta forma caso sua arquitetura seja recorrente o comando será:
-
-````
-python Base_agent.py --network_model "<nome_da_sua_funcao_recorrente> --is_recurrent True"
-````
-Ou escrito no arquivo Base_agent.cfg como:
-````
-network_model = <nome_da_sua_funcao_recorrente>
-is_recurrent = True
-````
-
-### Requisitos
-A rede neural desensolvida deve ter como entrada um tensor de dimensão **state_input_shape** e um nome igual a **name**, além da possibilidade da escolha se os pixel das entrada serão normalizados ou não pela variável **normalize** e deve possuir como saída um tensor com formato igual **actions_num**. A função deve ter como retorno o modelo Keras implementado pela função. Os parâmetros **state_input_shape**, **name**, **actions_num** e **normalize** são enviados ao arquivo Networks.py pelo script principal, que por sua vez, espera como retorno o modelo implementado. A seguir temos um exemplo de implementação da arquitetura (com a functional API do Keras) utilizada no artigo [Human-level control through deep reinforcement learning](https://www.nature.com/articles/nature14236) dentro de uma função chamada **DQN**:
-
-````
-def DQN(state_input_shape, actions_num, name, normalize):
-    input = Input(state_input_shape, name=name)
-    if normalize:
-        lamb = Lambda(lambda x: (2 * x - 255) / 255.0, )(input)
-        conv_1 = Conv2D(32, (8, 8), strides=(4, 4), activation='relu')(lamb)
-    else:
-        conv_1 = Conv2D(32, (8, 8), strides=(4, 4), activation='relu')(input)
-    conv_2 = Conv2D(64, (4, 4), strides=(2, 2), activation='relu')(conv_1)
-    conv_3 = Conv2D(64, (3, 3), strides=(1, 1), activation='relu')(conv_2)
-    conv_flattened = Flatten()(conv_3)
-    hidden = Dense(512, activation='relu')(conv_flattened)
-    output = Dense(actions_num)(hidden)
-    model = Model(inputs=input, outputs=output)
-    return model
-````
-Essa é a arquitetura padrão executada, caso nenhuma outra seja especificada na execução do agente. Dentro do arquivo [Networks.py](Networks.py) há outras arquiteturas de redes neurais (com camadadas recorrentes, métodos de normalização) que servem como exemplo.
-
-## Arquivos de configuração .CFG
-Os arquivos de extensão .cfg são arquivos que possuem configurações para a execução do algoritmo de reinforcement learning. Esses arquivos são uma alternativa que facilita a execução e o debug dos treinamentos/testes dos agentes nos ambientes escolhidos. Ao invés de digitar toda vez longos códigos no terminal para a execução do script, escrevemos essa configuração em arquivo .cfg de mesmo nome do script a ser executado, como por exemplo, Base_agent.cfg ou Plot_rl.cfg para os scripts Base_agent.py e Plot_rl.py respectivamente. De baixo dos panos, o que script faz é ler o arquivo .cfg e transformar as linhas válidas de código dentro do mesmo em comando de terminais e envia ao arquivo Argparser antes de inicializar qualquer coisa, assim, uma linha de código env = Doom se transforma em --env Doom e é enviada o método main do arquivo executado.
-Um cuidado necessário na execução de nosso script configurado um arquivo .cfg é que :**Caso algum comando de terminal seja enviado, a configuração de execução do script será feita exclusivamente por eles, e os parâmetros não enviados terão seus valores atribuídos como default.** Se nenhum parâmetro for enviado via terminal, o script procurará por um arquivo de mesmo nome com extensão .cfg. Dentro deste arquivo caso encontre configurações validas às mesmas serão lidas e de forma similar a configuração via terminal, os valores não definidos serão atribuídos aos seus valores default.
-
-### Escrevendo os arquivos .cfg
-As regras de escrita dos arquivos .cfg são as seguintes:
-- Linhas começando com os caracteres **#** ou **;** são tratadas como comentários.
-- Linhas começando com o caractere **+** são continuações de linhas anteriores. Por exemplo, para um path do sistema que é muito longo.
-- As linhas não são Case sensitive, ou seja, não há distinção entre minúscula ou maiúscula (ENV = DOOM é igual a env = Doom).
-- Cada linha **deve possuir apenas um par de chave = valor**. Por exemplo, agent_mode = train em uma linha, e na próxima env = doom e assim por diante.
-- Se um argumento não estiver especificado no arquivo .cfg e seja necessário para execução da tarefa desejada, seu valor padrão será carregado. Isto foi feito, para evitar a fatiga de toda vez ter escrever parâmetros que tem seus valores frequentes entre simulações. Para ver quais são os valores padrões de cada variável verificar o [DOC] e para exemplos e cuidados sobre esses valores verificar a sessão de [Exemplos](#Exemplo).
-- Caminhos relativos ao diretório principal, podem ser inseridos utilizando os dois pontos (..) antes do path. Por exemplo: para acessar o diretório Weights, ao invés de especificarmos todo o path do sistema, podemos inserir apenas: ../Weights
-- Os comandos serão lidos em sequência, logo, em caso de comandos repetidos apenas o último sera válido.
-
-## Exemplos
-A seguir serão apresentados alguns exemplos. Todos os parâmetros podem ser passados via comandos de terminal na execução do script ou via arquivo .cfg (como visto na sessão [Utilização](https://github.com/Leonardo-Viana/Reinforcement-Learning#utiliza%C3%A7%C3%A3o)). Relembrando que os parâmetros não configurados possuem seus valores iguais ao default. Para mais informações sobre cada opção disponivel e seus valores default verificar o [DOC](www.somelink.com) ou utilizar o comando de terminal:
-````
-python Base_agent.py --help
-````
-### Pong treinado com DQN básico
-Como primeiro exemplo treinaremos um agente utilizando os hiperparâmetros especificados pelo excelente artigo [Speeding up DQN on PyTorch: how to solve Pong in 30 minutes](https://medium.com/mlreview/speeding-up-dqn-on-pytorch-solving-pong-in-30-minutes-81a1bd2dff55). O arquivo Base_agent.cfg deverá possuir :
-
-```
-agent_name = DQNPong30
-num_simul_frames = 1000000
-e_min = 0.02
-e_lin_decay = 100000
-target_update = 1000
-num_states_stored = 100000
-num_random_play = 10000
-optimizer = adam
-lr = 1e-4
-random_seed = 1
-```
-E depois basta executar o script Base_agent.py sem nenhum argumento:
-````
-python Base_agent.py
-````
-Outra opção seria executar os comandos no terminal em conjunto com a execução do script:
-````
-python Base_agent.py --agent_name "DQNPong30" --num_simul_frames 1000000 --e_min 0.02 --e_lin_decay 100000 --target_update 1000 --num_states_stored 100000 --num_random_play 10000 --optimizer adam --lr 1e-4 --random_seed 1
-````
-Ambas as opções de configuração irão treinar o agente com hiperparâmetros especificados pelo artigo acima com a random seed fixa (em 1) durante 1 milhão de frames. 
-
-### Treinamento de um agente dentro do VizDoom 
-Esse repositório possui em suas dependencias dois mapas para o jogo Doom, **labyrinth e labyrinth_test**, que possuem como objetivo ensinar o agente a navegação tridimensional (mais detalhes sobre esses mapas no tópico [Mapas de Doom]). Para treinar o agente na fase labyrinth utilizando a arquitetura de rede neural DRQN proposta por [POR LINK do ARTIGO DRQN] podemos utilizar os seguintes comandos:
-````
-python Base_agent.py --env Doom --agent_name grayh4-LSTM --network_model DRQN --is_recurrent True --optimizer adam --lr 1e-4 --num_random_play 50000 --num_states_stored 250000 --e_lin_decay 250000 --num_simul_frames 5000000 --steps_save_weights 50000 --history_size 4 --input_shape (84,84,1) --to_save_episodes True steps_save_episodes 100 --multi_threading True
-````
-Ou podemos escrever dentro do arquivo Base_agent.cfg os seguintes comandos:
-````
-env = Doom
-agent_name = grayh4-LSTM
-network_model = DRQN
-is_recurrent = True
-optimizer = adam
-lr = 1e-4
-num_random_play = 50000
-num_states_stored = 250000
-e_lin_decay = 250000
-num_simul_frames = 5000000
-steps_save_weights = 50000
-history_size = 4
-input_shape = (84,84,1)
-to_save_episodes = True
-steps_save_episodes = 100
-multi_threading = True
-````
-E depois basta executar o script Base_agent.py sem nenhum argumento:
-````
-python Base_agent.py
-````
-### Testando um agente treinado
-O script Base_agent.py possui dois modos de execução treinamento (**train**) ou teste (**test**). O modo de treinamento é o default no qual o agente é treinado utilizando a premissa do reinforcement learning. Já no modo teste, a maioria dos hiperparâmetros de aprendizado são ignorados, o objetivo deste modo é o teste de um agente treinado. A seguir vemos um exemplo do teste de um agente treinado com o DQN (os pesos treinados desta simulação encontram-se neste repositório) com o jogo serendo renderizado:
-````
-python Base_agent.py --agent_mode test --env Doom --load_weights True --weights_load_path ../Weights/Pretrained/Doom/Labyrinth/grayh4-weights-Doom-labyrinth-5000000.h5 --agent_name doomh4 --to_render True --to_save_states False
-````
-````
-agent_mode = test
-env = Doom
-load_weights = True
-weights_load_path = ../Weights/Pretrained/Doom/Labyrinth/grayh4-weights-Doom-labyrinth-5000000.h5
-agent_name = doomh4
-to_render = True
-to_save_states = False
-````
 
 ## Referências
 Se esse código foi útil para sua pesquisa, por favor considere citar:
@@ -223,3 +92,15 @@ Se esse código foi útil para sua pesquisa, por favor considere citar:
   url = {https://github.com/Leonardo-Viana/Reinforcement-Learning},
 }
 ```
+
+## Referências bibliográficas
+
+- <a name = "[1]"></a>[1] Volodymyr Mnih, Koray Kavukcuoglu, David Silver, Andrei A Rusu, Joel Veness,
+Marc G Bellemare, Alex Graves, Martin Riedmiller, Andreas K Fidjeland, Georg
+Ostrovski, et al. [Human-level control through deep reinforcement learning](https://www.nature.com/articles/nature14236). Nature,
+518(7540):529, 2015.
+- <a name = "[2]"></a>[2] Matthew Hausknecht and Peter Stone. [Deep recurrent q-learning for partially obser-
+vable mdps](https://arxiv.org/abs/1507.06527). CoRR, abs/1507.06527, 2015.
+- <a name = "[3]"></a>[3] Max Lapan. Speeding up dqn on pytorch: how to solve pong in 30 minutes. 23 de
+novembro 2017. Disponível em <https://medium.com/mlreview/speeding-up-dqn-on-pytorch-solving-pong-in-30-minutes-81a1bd2dff55>. Acesso em: 07 de novembro de 2018.
+- <a name = "[4]"></a>[4] Daniel Seita. Frame Skipping and Pre-Processing for Deep Q-Networks on Atari 2600 Games. 25 de novembro de 2016. Disponível em <https://danieltakeshi.github.io/2016/11/25/frame-skipping-and-preprocessing-for-deep-q-networks-on-atari-2600-games/>. Acesso em: 04 de janeiro de 2019.
