@@ -146,7 +146,7 @@ agent_name = grayh4-LSTM
 network_model = DRQN
 is_recurrent = True
 load_weights = True
-weights_load_path = ../Weights/Weights-certos/grayh4-LSTM-weights-Doom-labyrinth-5000000.h5
+weights_load_path = ../Weights/Pretrained/Doom/Labyrinth/grayh4-LSTM-weights-Doom-labyrinth-5000000.h5
 config_file_path = ../DoomScenarios/labyrinth_test.cfg
 optimizer = adam
 lr = 1e-4
@@ -166,7 +166,7 @@ python Base_agent.py
 ````
 Outra opção para configurarmos nosso script seria executar os comandos diretamente no terminal em conjunto com a execução do script:
 ````
-python Base_agent.py --agent_mode train --env Doom --agent_name grayh4-LSTM --network_model DRQN --is_recurrent True --load_weights True --weights_load_path ../Weights/Weights-certos/grayh4-LSTM-weights-Doom-labyrinth-5000000.h5 --config_file_path ../DoomScenarios/labyrinth_test.cfg --optimizer adam --lr 1e-4 --num_random_play 0 --epsilon 0.05 --num_states_stored 50000 --num_simul_frames 500000 --steps_save_weights 50000 --history_size 4 --to_save_episodes True --steps_save_episodes 100 --multi_threading True 
+python Base_agent.py --agent_mode train --env Doom --agent_name grayh4-LSTM --network_model DRQN --is_recurrent True --load_weights True --weights_load_path ../Weights/Pretrained/Doom/Labyrinth/grayh4-LSTM-weights-Doom-labyrinth-5000000.h5 --config_file_path ../DoomScenarios/labyrinth_test.cfg --optimizer adam --lr 1e-4 --num_random_play 0 --epsilon 0.05 --num_states_stored 50000 --num_simul_frames 500000 --steps_save_weights 50000 --history_size 4 --to_save_episodes True --steps_save_episodes 100 --multi_threading True 
 ````
 
 
