@@ -69,7 +69,7 @@ python Base_agent.py --agent_name "DQNPong30" --num_simul_frames 1000000 --lr 1e
 Ambas as opções de configuração irão treinar o agente com hiperparâmetros especificados pelo artigo acima com a random seed fixa (em 1) durante 1 milhão de frames como visto no resumo apresentado abaixo. **Sempre cheque o resumo apresentado pelos scripts no começo da execução para ver se todos os parâmetros estão de acordo com suas expectativas**.
 
 <p align="center">
- <img src="docs/images/summary-pong30.png" height="70%" width="70%">
+ <img src="https://raw.githubusercontent.com/Leonardo-Viana/Reinforcement-Learning/master/docs/images/summary-pong30.png" height="70%" width="70%">
 </p>
 
 ### Treinamento de um agente dentro do VizDoom 
