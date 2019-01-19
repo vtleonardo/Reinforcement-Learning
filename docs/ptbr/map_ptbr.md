@@ -34,4 +34,4 @@ A modelagem de ambos os mapas como uma MDP (Markov Decision Process) pode ser vi
   - \+10 ao atingir o objetivo final (a plataforma de recarga de bateria).
  - **Fim de episódio:** Quando o agente chegar a plataforma de recarga de bateria ou o tempo acabar (3000 frames de jogo)
  
- **Cada [frame_skip](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/ptbr/doc_ptbr.md#frame_skip) números de frames são iguais a 1 frame de simulação. Por exemplo 3000 frames de jogo são iguais 750 frames de simulação se usarmos a variável frame_skip igual a 4, isto é, devido ao fato que a mesma ação é executa por 4 frames de jogo dentro do algoritmo**
+ **Cada [frame_skip](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/ptbr/doc_ptbr.md#frame_skip) números de frames de jogo são iguais a 1 frame de simulação. Por exemplo 3000 frames de jogo são iguais 750 frames de simulação se usarmos a variável frame_skip igual a 4, isto é, devido ao fato que a mesma ação é executa por 4 frames de jogo dentro do algoritmo**
