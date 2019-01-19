@@ -1,5 +1,5 @@
 # Exemplos
-A seguir serão apresentados alguns exemplos. Todos os parâmetros podem ser passados via comandos de terminal na execução do script ou via arquivo .cfg (como visto na sessão [Utilização](https://github.com/Leonardo-Viana/Reinforcement-Learning#utiliza%C3%A7%C3%A3o)). Relembrando que os parâmetros não configurados possuem seus valores iguais ao default. Para mais informações sobre cada opção disponível e seus valores default verificar o [DOC](/docs/ptbr/doc_ptbr.md) ou utilizar o comando de terminal:
+As configurações dos scripts podem ser passadas via comandos de terminal ou escritas em arquivo de extensão .cfg com o mesmo nome do script a ser executado. Os parâmetros não configurados possuem seus valores iguais ao default. **Caso algum comando de terminal seja enviado, a configuração de execução do script será feita exclusivamente por eles, e os parâmetros não enviados terão seus valores atribuídos como default.**  Se nenhum parâmetro for enviado via terminal, o script procurará por um arquivo de mesmo nome com extensão .cfg e de forma semelhante os parâmetros que não forem encontrados dentro deste arquivo possuirão seus valores default ativados (para mais informações sobre os arquivos .cfg consultar o tópico [Arquivos de configuração .CFG](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/ptbr/cfg_ptbr.md)). Se nenhuma das opções de configuração acima seja feita, o agente será treinado com seus valores default, ou seja, serão utilizados os hiperparâmetros demonstrados no artigo [Human-level control through deep reinforcement learning](https://www.nature.com/articles/nature14236)[[1]](#[1]) para o treinamento de um agente no jogo Pong. Para mais informações sobre cada opção disponível e seus valores default verificar o [DOC](/docs/ptbr/doc_ptbr.md) ou utilizar o comando de terminal:
 ````
 python Base_agent.py --help
 ````
@@ -170,7 +170,7 @@ python Base_agent.py --agent_mode train --env Doom --agent_name grayh4-LSTM --ne
 ````
 O resumo da simulação pode ser visto na imagem abaixo.
 <p align="center">
- <img src="https://raw.githubusercontent.com/Leonardo-Viana/Reinforcement-Learning/master/docs/images/summary-doomDRQN-transfer.png" height="70%" width="70%">
+ <img src="https://raw.githubusercontent.com/Leonardo-Viana/Reinforcement-Learning/master/docs/images/summary-doomDRQN-transfer.png" height="90%" width="90%">
 </p>
 
 
