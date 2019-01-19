@@ -3,7 +3,7 @@
 Juntos com os scripts que compões esse repositório, foram criadas duas fases para o ambiente ViZDoom. Para a criação desses 
 mapas foi pensado em um ambiente que imitasse algum problema de robótica móvel em relação a parte de navegação. O problema 
 escolhido foi o de um robô móvel navegando de volta para sua plataforma de recarga de bateria. Assim, foram criados mapas
-no quais o agente tem como objetivo encontrar sua plataforma de recarga de bateria o mais rápido possível. Logo, o agente é 
+nos quais o agente tem como objetivo encontrar sua plataforma de recarga de bateria o mais rápido possível. Logo, o agente é 
 incentivado a não perder tempo realizando ações em um mesmo lugar e a evitar colisões de qualquer tipo com o ambiente. 
 
 
