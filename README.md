@@ -7,14 +7,30 @@
 
 - [Modo de execução em paralelo do algoritmo de RL disponível](#performance).
 - Ambientes bidimensionais ([OpenAi Gym](https://github.com/openai/gym)) e tridimensionais ([ViZDoom](https://github.com/mwydmuch/ViZDoom)) para o treinamento e teste de agentes.
-- Configuração do treinamento/teste do agente via comandos no terminal ou via arquivos de configuração .cfg.
-- Armazenamento de informações do treinamento em arquivos .csv e dos pesos das redes neurais como .h5.
-- Facilidade e robustez para definir os hiperparâmetros sem a necessidade de modificar o código.
-- Facilidade para a criação de arquiteturas de redes neurais sem a necessidade de modificar o código principal.
-- Simulação com frames monocromáticos ou coloridos (RGB).
+- [Dois mapas exclusivos para o ViZDoom simulando um problema de robótica móvel](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/ptbr/map_ptbr.md).
+- Configuração do treinamento/teste do agente via comandos no terminal ou via arquivos de configuração .cfg (Ver as sessões de [ exemplos](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/ptbr/examples_ptbr.md) e a [documentação](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/ptbr/doc_ptbr.md)).
+- Armazenamento de informações do treinamento em arquivos .csv ([mais detalhes aqui](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/ptbr/doc_ptbr.md#steps_save_plot)) e dos pesos das redes neurais como .h5.
+- Facilidade e robustez para definir os hiperparâmetros sem a necessidade de modificar o código (Ver a sessão dos [arquivos .cfg](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/ptbr/cfg_ptbr.md)).
+- Facilidade para a criação de arquiteturas de redes neurais sem a necessidade de modificar o código principal (Ver a sessão [Definindo a arquitetura da rede neural](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/ptbr/nn_ptbr.md)).
+- Simulação com frames monocromáticos ou coloridos (RGB) ([mais detalhes aqui](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/ptbr/doc_ptbr.md#input_shape)).
 - Armazenamento dos episódios ao longo do treinamento e dos estados ao longo de um teste como imagens .gif.
+  - Exemplo de um episódio salvo do mapa labyrinth:
+  <p align="center">
+   <img src="docs/images/episode-Doom.gif" height="84" width="84">
+  </p>
+  
+   - Exemplo de um estado salvo do jogo Pong (treinado com estados coloridos):
+  <p align="center">
+   <img src="docs/images/pong-color-state.gif" height="84" width="84">
+  </p>
+- Pesos pré-treinados para o mapa labyrinth de ViZDoom acompanhando esse repositório ([mais informações aqui](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/ptbr/info-weights_ptbr.md)).
+
 - Plot dos mapas de ativação, zonas de máxima ativação na imagem de entrada e imagens de entrada que maximizam determinados filtros para cada uma das camadas de convolução de um modelo treinado.
-- Pesos pré-treinados para os jogos Pong e para os dois mapas de ViZDoom que acompanham esse repositório.
+
+<p align="center">
+ <img src="docs/images/pong-zonas.png" height="50%" width="50%">
+</p>
+
 
 ## <a name="performance"></a>  Performance 
 Um dos principais diferenciais desse repositório é a possibilidade de executar os treinamentos dos agentes em modo paralelo otimizando assim os recursos computacionais disponíveis e diminuindo assim o tempo de simulação. O modo em paralelo consiste basicamente em amostrar as experiências da replay memory em paralelo enquanto o algoritmo de decisão é executado, assim quanto chegamos na parte de treinamento da rede neural o custo computacional da amostragem já foi executado. A figura a seguir demonstra como são executadas as abordagens serial (single-threading) e paralelo (multi-threading). 
