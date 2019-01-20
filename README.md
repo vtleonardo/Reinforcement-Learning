@@ -18,15 +18,12 @@
   <p align="center">
    <img src="docs/images/episode-Doom.gif" height="84" width="84">
   </p>
-  
    - Exemplo de um estado salvo do jogo Pong (treinado com estados coloridos):
   <p align="center">
    <img src="docs/images/pong-color-state.gif" height="84" width="84">
   </p>
 - Pesos pré-treinados para o mapa labyrinth de ViZDoom acompanhando esse repositório ([mais informações aqui](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/ptbr/info-weights_ptbr.md)).
-
 - Plot dos mapas de ativação, zonas de máxima ativação na imagem de entrada e imagens de entrada que maximizam determinados filtros para cada uma das camadas de convolução de um modelo treinado.
-
 <p align="center">
  <img src="docs/images/pong-zonas.png" height="50%" width="50%">
 </p>
