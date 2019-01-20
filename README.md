@@ -1,4 +1,7 @@
 # Reinforcement-Learning
+
+[!](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/images/pong-result.mp4)
+
 ## Características do código
 
 - Modo de execução em paralelo do algoritmo de RL disponível.
