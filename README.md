@@ -22,6 +22,9 @@ A seguir temos algumas imagens comparativas entre as performances em frames/segu
 <p align="center">
  <img src="docs/images/fps_bar.png" height="300" width="600">
 </p>
+|Processamento|Frames/segundo médio|Tempo de simulação|
+| ---         | ---                | ---              |
+| 
 *Os testes de performance foram realizado em cpu core i7 4790K e gpu nvidia geforce gtx 970*
 
 ## Instalação
