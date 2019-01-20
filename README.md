@@ -16,7 +16,7 @@
 - Plot dos mapas de ativação, zonas de máxima ativação na imagem de entrada e imagens de entrada que maximizam determinados filtros para cada uma das camadas de convolução de um modelo treinado.
 - Pesos pré-treinados para os jogos Pong e para os dois mapas de ViZDoom que acompanham esse repositório.
 
-<a name="performance"></a> ## Performance 
+## <a name="performance"></a>  Performance 
 Um dos principais diferenciais desse repositório é a possibilidade de executar os treinamentos dos agentes em modo paralelo otimizando assim os recursos computacionais disponíveis e diminuindo assim o tempo de simulação. O modo em paralelo consiste basicamente em amostrar as experiências da replay memory em paralelo enquanto o algoritmo de decisão é executado, assim quanto chegamos na parte de treinamento da rede neural o custo computacional da amostragem já foi executado. A figura a seguir demonstra como são executadas as abordagens serial (single-threading) e paralelo (multi-threading). 
 <p align="center">
  <img src="docs/images/multi-threading.png" height="100%" width="100%">
