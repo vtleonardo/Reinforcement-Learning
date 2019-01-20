@@ -20,13 +20,6 @@ Para melhorar o tempo de processamento gasto no treinamento dos agentes foi dese
 </p>
 *Os testes de performance foram realizado em cpu core i7 4790K e gpu nvidia geforce gtx 970*
 
-
-Como podemos observar na imagem abaixo, embora a versão em paralelo introduza um "atraso" de uma amostragem, ambos os algoritmos aprenderam com sucesso a jogar o jogo Pong.
-
-<p align="center">
- <img src="docs/images/pong_desemp_reward.png" height="400" width="500">
-</p>
-
 ## Instalação
 O código foi todo escrito e testado em python 3.6 com Windows 10. Para execução do código as seguintes bibliotecas se fazem necessárias:
 
