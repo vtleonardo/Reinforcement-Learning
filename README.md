@@ -23,10 +23,6 @@ Um dos principais diferenciais desse repositório é a possibilidade de executar
 </p>
 A seguir temos algumas imagens comparativas entre as performances em frames/segundo do modo serial e paralelo no treinamento de agente para jogar o jogo de Atari 2600 Pong. Como pode ser visto a versão em paralelo é em média 50% mais rápida que a versão padrão (serial).
 
-<p align="center">
- <img src="docs/images/fps_bar.png" height="300" width="600">
-</p>
-
 |Processamento|Frames/segundo médio|Tempo de simulação|
 | ---         | ---                | ---              |
 | | |
