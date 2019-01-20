@@ -1,6 +1,6 @@
-# Reinforcement-Learning
-
-<video src="https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/images/pong-result.mp4" poster="pongposter.jpg" width="320" height="200" controls preload></video>
+# Reinforcement-Learning                                                                                                                 <video width="320" height="240" controls>
+  <source src="https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/images/pong-result.mp4" type="video/mp4">
+</video>
 ## Características do código
 
 - Modo de execução em paralelo do algoritmo de RL disponível.
