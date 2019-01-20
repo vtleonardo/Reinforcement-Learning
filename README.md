@@ -1,4 +1,6 @@
-# Reinforcement-Learning                                                                                                                 <video width="320" height="240" controls>
+# Reinforcement-Learning
+
+<video width="320" height="240" controls>
   <source src="https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/images/pong-result.mp4" type="video/mp4">
 </video>
 
