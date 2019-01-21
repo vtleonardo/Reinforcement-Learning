@@ -1,6 +1,7 @@
 # Reinforcement-Learning
-Neste repositório é feita a implementação dos algoritmos de deep reinforcement learning DQN e DRQN. O deep reinforcement learning é uma técnica que objetiva treinar uma inteligência artificial, chamado de agente, a completar da melhor maneira possível um determinado objetivo dentro de um ambiente normalmente estocástico possuindo como entrada os pixels da tela do ambiente. Nesta metodologia, o agente utiliza redes neurais para aprender pelo metodo de tentativa e erro qual a melhor ação a ser tomada em cada estado (imagem da tela do ambiente) para maximizar a premiação total. 
+Neste repositório é feita a implementação dos algoritmos de deep reinforcement learning DQN e DRQN em python 3.6. O deep reinforcement learning é uma técnica que objetiva treinar uma inteligência artificial, chamado de agente, a completar da melhor maneira possível um determinado objetivo dentro de um ambiente normalmente estocástico possuindo como entrada os pixels da tela do ambiente. Nesta metodologia, o agente utiliza redes neurais para aprender pelo metodo de tentativa e erro qual a melhor ação a ser tomada em cada estado (imagem da tela do ambiente) para maximizar a premiação total. 
 
+Embora exitam inúmeros scripts que implementem os algoritmos descritos acima, a maioria os implementa de uma maneira simples muitas vezes sem se preucupar com o desempenho ou quanto tempo de simulação (e consequentemente a energia gasta no processo) para treinar os agentes. Performance também é importante nos algoritmos de inteligência artificial afinal existem várias formas de implementar o mesmo algoritmo. Para os scripts nesse repositório foram procuradas as melhores formas para reduzir o tempo de simulação gasto para treinar os agentes, aproveitando o máximo da computação vetorizada pelas bibliotecas Numpy e Tensorflow. Foi desenvolvido um modo simples, para diminuir consideravelmente (em média de 35%) o tempo necessário de simulação, ao paralelizar de forma simples os algoritmos DQN/DRQN([mais detalhes no tópico performance](#performance)). 
 
 <p align="center">
  <img src="docs/images/pong-result.gif" height="50%" width="50%">
@@ -8,7 +9,7 @@ Neste repositório é feita a implementação dos algoritmos de deep reinforceme
 
 ## Características do código
 
-- [Modo de execução em paralelo do algoritmo de RL disponível](#performance).
+- [Modo de execução em paralelo do algoritmo de RL disponível](#performance)(Treinamento em média 35% mais rápido que o modo padrão).
 - Ambientes bidimensionais ([OpenAi Gym](https://github.com/openai/gym)) e tridimensionais ([ViZDoom](https://github.com/mwydmuch/ViZDoom)) para o treinamento e teste de agentes.
 - [Dois mapas exclusivos para o ViZDoom simulando um problema de robótica móvel](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/ptbr/map_ptbr.md).
 - Configuração do treinamento/teste do agente via comandos no terminal ou via arquivos de configuração .cfg (Ver as sessões de [ exemplos](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/ptbr/examples_ptbr.md) e a [documentação](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/ptbr/doc_ptbr.md)).
