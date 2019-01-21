@@ -35,6 +35,10 @@ Embora exitam inúmeros scripts que implementem os algoritmos descritos acima, a
 
 
 ## <a name="performance"></a>  Performance 
+Durante o desenvolvimento do algoritmo foram buscadas as melhores maneiras de aumentar o processamento de frames/segundo. A parte que demanda mais tempo de processamento é a utilização das redes neurais. Durante o cálculo do erro de treinamento das redes neurais, necessitamos dos resultados de ambas as redes neurais Q e \(\hat{Q}\) para todas as N amostras colhidas da \textit{Replay Memory}. Logo, essa parte do código foi pensada de forma a aproveitar o máximo da computação vetorizada, assim \textit{for loops} em python nativo foram substituídos pela vetorização em Numpy (principal biblioteca matemática do python) e posteriormente foram mudados para vetorização em Tensorflow e seu processamento mudado da CPU para a GPU (para tomar vantagem do paralelismo massivo das GPUs). Depois do uso da redes neurais, a parte que mais utiliza recursos de processamento é a amostragem das experiências a medida que \textit{Replay Memory} aumenta. 
+
+Com esses dois problemas em mente foi pensado em uma abordagem de processamento em paralelo (\textit{multi-threading}) do algoritmo DQN/DRQN.
+
 Um dos principais diferenciais desse repositório é a possibilidade de executar os treinamentos dos agentes em modo paralelo otimizando assim os recursos computacionais disponíveis e diminuindo assim o tempo de simulação. O modo em paralelo consiste basicamente em amostrar as experiências da replay memory em paralelo enquanto o algoritmo de decisão é executado, assim quanto chegamos na parte de treinamento da rede neural o custo computacional da amostragem já foi executado. A figura a seguir demonstra como são executadas as abordagens serial (single-threading) e paralelo (multi-threading). 
 <p align="center">
  <img src="docs/images/multi-threading.png" height="100%" width="100%">
