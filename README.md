@@ -5,7 +5,7 @@ Embora exitam inúmeros scripts que implementem os algoritmos descritos acima, a
 
 Outro aspecto importante que deve ser levado em conta além da performance é a experiência do usuário. Os scripts desse repositório foram feitos de tal forma a dar uma maior flexibilidade na escolha dos parâmetros de simulação sem a necessidade de alteração dentro do código principal. O usuário tem total controle sobre a simulação, podendo definir suas próprias arquiteturas de redes neurais, simular com frames coloridos e de tamanho desejado, escolha de qualquer um dos ambientes de Atari 2600 oferecidos pela biblioteca GYM ou dos mapas tridimensionais do ambiente ViZDoom, modo teste, renderização ou não para o usuário, continuação de treinamento, transfer learning entre outros (mais detalhes em [Características do código](#features)).
 
-<a name="features"></a>## Características do código
+ ## <a name="features"></a> Características do código
 
 - [Modo de execução em paralelo do algoritmo de RL disponível](#performance) (treinamento em média 35% mais rápido que o modo padrão).
 - Ambientes bidimensionais ([OpenAi Gym](https://github.com/openai/gym)) e tridimensionais ([ViZDoom](https://github.com/mwydmuch/ViZDoom)) para o treinamento e teste de agentes.
