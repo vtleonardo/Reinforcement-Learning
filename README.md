@@ -34,10 +34,10 @@ Depois do uso das redes neurais, a parte que mais utiliza recursos de processame
 </p>
 A seguir temos algumas imagens comparativas entre as performances em frames/segundo do modo serial e paralelo no treinamento de agente para jogar o jogo de Atari 2600 Pong. Como pode ser visto a versão em paralelo possui um tempo em média 35% menor de simulação que a versão padrão (serial).
 
-|Processamento|Frames/segundo médio|Tempo de simulação|
-| ---         | ---                | ---              |
-| Serial      |                    |                  |
-| Paralelo    |                    |                  |                  
+|Processamento|Frames/segundo em média|Tempo de simulação|
+| ---         | ---                   | ---              |
+| Serial      |                       |                  |
+| Paralelo    |                       |                  |                  
 
 *Os testes de performance foram realizado em cpu core i7 4790K e gpu nvidia geforce gtx 970*
 
