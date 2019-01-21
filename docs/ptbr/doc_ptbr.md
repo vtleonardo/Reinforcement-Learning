@@ -474,8 +474,12 @@ Caminho do sistema operacional (path) para a pasta no qual serão salvos as vari
 | Tipo                 | bool                                |
 | **Valor default**    | **False**                           |
 
-Variável que controla se é para salvar ou não os episódios no disco como um arquivo .gif.
+Variável que controla se é para salvar ou não os episódios no disco como um arquivo .gif. A seguir temos um exemplo de um episódio salvo do mapa labyrinth:
 
+  <p align="center">
+   <img src="https://raw.githubusercontent.com/Leonardo-Viana/Reinforcement-Learning/master/docs/images/episode-Doom.gif" height="84" width="84">
+  </p>
+  
 ---
 ### <a name="steps_save_episodes"></a> `steps_save_episodes`
 
@@ -575,7 +579,11 @@ Variável que fixa a semente dos métodos (pseudo)estocásticos. Se o valor dess
 | **Valor default**    | **False**                           |
 | Exclusivo do modo    | Test                               |
 
-Variável que controla se é para salvar ou não os estados/experiências no disco como um arquivo .gif durante o modo TEST. Os estados salvos são utilizados pela biblioteca de plot, para o plot de zonas de ativação e zonas de máxima ativação.
+Variável que controla se é para salvar ou não os estados/experiências no disco como um arquivo .gif durante o modo TEST. Os estados salvos são utilizados pela biblioteca de plot, para o plot de zonas de ativação e zonas de máxima ativação. A seguir termos um exemplo de um estado salvo do jogo Pong (treinado com estados coloridos):
+
+  <p align="center">
+   <img src="https://raw.githubusercontent.com/Leonardo-Viana/Reinforcement-Learning/master/docs/images/pong-color-state.gif" height="84" width="84">
+  </p>
 
 ---
 ### <a name="path_save_states"></a> `path_save_states`
