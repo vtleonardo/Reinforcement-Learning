@@ -3,10 +3,6 @@ Neste repositório é feita a implementação dos algoritmos de deep reinforceme
 
 Embora exitam inúmeros scripts que implementem os algoritmos descritos acima, a maioria os implementa de uma maneira simples muitas vezes sem se preucupar com o desempenho ou quanto tempo de simulação (e consequentemente a energia gasta no processo) para treinar os agentes. Performance também é importante nos algoritmos de inteligência artificial afinal existem várias formas de implementar o mesmo algoritmo. Para os scripts nesse repositório foram procuradas as melhores formas para reduzir o tempo de simulação gasto para treinar os agentes, aproveitando o máximo da computação vetorizada pelas bibliotecas Numpy e Tensorflow. Foi desenvolvido um modo simples, para diminuir consideravelmente (em média de 35%) o tempo necessário de simulação, ao paralelizar de forma simples os algoritmos DQN/DRQN([mais detalhes no tópico performance](#performance)). 
 
-<p align="center">
- <img src="docs/images/pong-result.gif" height="50%" width="50%">
-</p>
-
 ## Características do código
 
 - [Modo de execução em paralelo do algoritmo de RL disponível](#performance)(Treinamento em média 35% mais rápido que o modo padrão).
@@ -30,7 +26,7 @@ Embora exitam inúmeros scripts que implementem os algoritmos descritos acima, a
 
 Durante o desenvolvimento do algoritmo foram buscadas as melhores maneiras de aumentar o processamento de frames/segundo. A parte que demanda mais tempo de processamento é a utilização das redes neurais. Durante o cálculo do erro de treinamento das redes neurais, necessitamos dos resultados de ambas as redes neurais Q e Q_target para todas as N amostras colhidas da replay memory. Logo, essa parte do código foi pensada de forma a aproveitar o máximo da computação vetorizada, assim *for loops* em python nativo foram substituídos pela vetorização em Numpy (principal biblioteca matemática do python) e posteriormente foram mudados para vetorização em Tensorflow. Assim se o usuário possuir uma GPU, o código tomará vantagem do paralelismo massivo fornecida pelas mesmas para a execução mais rápida do algoritmo. 
 
-Depois do uso da redes neurais, a parte que mais utiliza recursos de processamento é a amostragem das experiências a medida que replay memory aumenta. Para uma atenuação deste problema foi desenvolvido uma abordagem de processamento em paralelo (multi-threading) para os algoritmos DQN e DRQN. O modo em paralelo consiste basicamente em amostrar as experiências da replay memory em paralelo enquanto o algoritmo de decisão é executado, assim quanto chegamos na parte de treinamento da rede neural o custo computacional da amostragem já foi executado. A figura a seguir demonstra como são executadas as abordagens serial (single-threading) e paralelo (multi-threading). 
+Depois do uso das redes neurais, a parte que mais utiliza recursos de processamento é a amostragem das experiências a medida que replay memory aumenta. Para uma atenuação deste problema foi desenvolvido uma abordagem de processamento em paralelo (multi-threading) para os algoritmos DQN e DRQN. O modo em paralelo consiste basicamente em amostrar as experiências da replay memory em paralelo enquanto o algoritmo de decisão é executado, assim quanto chegamos na parte de treinamento da rede neural o custo computacional da amostragem já foi executado. A figura a seguir demonstra como são executadas as abordagens serial (single-threading) e paralelo (multi-threading). 
 <p align="center">
  <img src="docs/images/multi-threading.png" height="100%" width="100%">
 </p>
