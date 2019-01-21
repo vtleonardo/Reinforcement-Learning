@@ -43,48 +43,15 @@ A seguir temos algumas imagens comparativas entre as performances em frames/segu
 
 *Os testes de performance foram realizado em cpu core i7 4790K e gpu nvidia geforce gtx 970*
 
-## Instalação
-O código foi todo escrito e testado em python 3.6 com Windows 10. Para execução do código as seguintes bibliotecas se fazem necessárias:
+## Documentação
 
-````
-Tensorflow (cpu ou gpu)
-Keras
-Pandas
-Imageio
-OpenCV
-Matplotlib
-OpenAI Gym
-ViZDoom
-````
-
-Para a instalação das bibliotecas acima recomenda-se criar um [ambiente virtual](https://conda.io/docs/user-guide/tasks/manage-environments.html) com o [miniconda](https://conda.io/docs/user-guide/install/index.html). Com o ambiente virtual ativado a instalação das bibliotecas com o miniconda pode ser feita com os seguintes comandos:
-Versão cpu do tensorflow
-````
-conda install tensorflow
-````
-Versão gpu do tensorflow
-````
-conda install tensorflow-gpu
-````
-Para as demais bibliotecas
-````
-conda install keras
-conda install pandas
-conda install imageio
-conda install opencv
-conda install matplotlib
-````
-Para a instalação da biblioteca open ai gym em conjunto com o ambiente de ATARI 2600 no windows, utiize o seguintes comandos:
-````
-pip install gym
-pip install --no-index -f https://github.com/Kojoley/atari-py/releases atari_py
-````
-Para mais detalhes sobre a execução dos jogos de atari no windows, consultar esse [link](https://stackoverflow.com/questions/42605769/openai-gym-atari-on-windows).
-
-Para a instalação do ViZDoom no windows consultar esse [link](https://github.com/mwydmuch/ViZDoom/blob/master/doc/Building.md#windows_bin)
-
-Uma vez com todas as bibliotecas instaladas e o ambiente virtual configurado, basta dar download ou clonar esse repositório e executar o arquivo Base_agent.py para o treinamento de um agente com o algoritmo de reinforcement learning DQN ou DRQN.
-
+- [Instalação](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/ptbr/installation_ptbr.md)
+- [Documentação](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/ptbr/doc_ptbr.md)
+- [Arquivos de configuração .CFG](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/ptbr/cfg_ptbr.md)
+- [Definindo a arquitetura da rede neural](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/ptbr/nn_ptbr.md)
+- [Informações sobre os mapas deste repositório (ViZDoom)](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/ptbr/map_ptbr.md)
+- [Informações sobre os pesos pré-treinados](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/ptbr/info-weights_ptbr.md)
+- [Exemplos](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/ptbr/examples_ptbr.md)
 
 
 ## Referências
