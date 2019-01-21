@@ -1,4 +1,7 @@
 # Reinforcement-Learning
+Neste repositório é feita a implementação dos algoritmos de deep reinforcement learning DQN e DRQN. O deep reinforcement learning é uma técnica que objetiva treinar uma inteligência artificial, chamado de agente, a completar da melhor maneira possível um determinado objetivo dentro de um ambiente normalmente estocástico possuindo como entrada os pixels da tela do ambiente. Nesta metodologia, o agente utiliza redes neurais para aprender pelo metodo de tentativa e erro qual a melhor ação a ser tomada em cada estado (imagem da tela do ambiente) para maximizar a premiação total. 
+
+
 <p align="center">
  <img src="docs/images/pong-result.gif" height="50%" width="50%">
 </p>
