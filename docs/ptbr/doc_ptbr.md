@@ -63,9 +63,9 @@
 
 Variável que escolhe o modo de execução do algoritmo de reinforcement learning. Existem duas opções disponíveis: train e test. 
 
-A opção de **train** treina um agente com base no algoritmo de reinforcement learning DQN ou em suas variantes, ou seja, o agente irá aprender a otimizar os pesos de sua rede neural com base em suas experiências vividas dentro do ambiente para maximizar sua premiação final. Logo, neste modo o algoritmo armazena as experiências passadas, otimiza a rede neural com os hiperparâmetros de aprendizagem.
+A opção de **train** treina um agente com base no algoritmo de reinforcement learning DQN ou em suas variantes. Ou seja, o agente irá aprender a otimizar os pesos de sua rede neural com base em suas experiências vividas dentro do ambiente para maximizar sua premiação final. Logo, neste modo o algoritmo armazena as experiências passadas e otimiza a rede neural com os hiperparâmetros de aprendizagem.
 
-A opção de **test** é usada para testar um agente que já aprendeu dentro de um ambiente. Essa opção é basicamente para o programador avaliar o desempenho do agente, gravar episódios, armazenar estados para plot.
+A opção de **test** é usada para testar um agente que já aprendeu dentro de um ambiente. Essa opção é basicamente para o programador avaliar o desempenho do agente, gravar episódios e armazenar estados para plot.
 
 ---
 
@@ -78,7 +78,7 @@ A opção de **test** é usada para testar um agente que já aprendeu dentro de 
 | **Valor default**   | **DQN**                   |
 
 
-Nome do agente, além de identificação do agente será utilizado para nomear os arquivos que serão salvos (Weights, Plot, Episódios, Estados).
+Nome do agente. Além disso, é a identificação que será utilizada para nomear os arquivos que serão salvos (Weights, Plot, Episódios, Estados).
 
 ---
 
@@ -91,9 +91,9 @@ Nome do agente, além de identificação do agente será utilizado para nomear o
 | **Valor default**   | **PongNoFrameskip-v4**    |
 
 
-Nome do ambiente (environment) a ser executado. Atualmente são suportados todos os jogos de atari disponíveis pela biblioteca OpenAi gym e o ambiente tridimensional Doom.
+Nome do ambiente (environment) a ser executado. Atualmente são suportados todos os jogos de atari disponíveis pela biblioteca OpenAi gym e o ambiente tridimensional ViZDoom.
 
-O nome dos jogos de atari, deverão seguir o seguinte template \<nome do jogo de atari\>NoFrameSkip-v4. É possível ver todos os jogos de atari disponíveis no seguinte [link](https://gym.openai.com/envs/#atari). Assim, para treinar o agente no ambiente breakout, devemos passar para a variável env o valor BreakoutNoFrameSkip-v4 (env = BreakoutNoFrameSkip-v4 ou --env BreakoutNoFrameSkip-v4). Com a parte do "NoFrameSkip" dizemos a biblioteca que não queremos a que a mesma realize o frame skipping, desta forma temos mais controle para realizar esta etapa em nosso código (dentro do arquivo (WrapperGym.py)[Environments/WrapperGym.py]).
+Os nomes dos jogos de atari deverão seguir o seguinte template \<nome do jogo de atari\>NoFrameSkip-v4. É possível ver todos os jogos de atari disponíveis no seguinte [link](https://gym.openai.com/envs/#atari). Assim, para treinar o agente no ambiente breakout, devemos enviar para a variável env o valor BreakoutNoFrameSkip-v4 (env = BreakoutNoFrameSkip-v4 ou --env BreakoutNoFrameSkip-v4). Com a parte do "NoFrameSkip" especificamos à biblioteca que não queremos que a mesma realize o frame skipping. Desta forma temos mais controle para realizar esta etapa em nosso código (dentro do arquivo (WrapperGym.py)[Environments/WrapperGym.py]).
  
 Para executar o ambiente VizDoom, basta enviar para a variável env o valor doom (env = Doom ou --env Doom). 
 
@@ -123,7 +123,7 @@ Variável **exclusiva dos jogos de atari da biblioteca GYM** que controla se o s
 | Exclusivo do ambiente| ViZDOOM                            |
 
 
-Caminho do sistema operacional (path) para o arquivo que carrega a fase de escolha do VizDoom. A configuração da fase do VizDoom no qual o agente será treinado é feita por um arquivo .cfg, cada fase do VizDoom deverá possuir um arquivo .cfg correspondente. Portanto, para treinarmos os agente em uma fase específica do VizDoom devemos carregar seu arquivo .cfg enviando para essa variável o seu caminho dentro do sistema operacional.
+Caminho do sistema operacional (path) para o arquivo que carrega a fase de escolha do VizDoom. A configuração da fase do VizDoom no qual o agente será treinado é feita por um arquivo .cfg, cada fase do VizDoom deverá possuir um arquivo .cfg correspondente. Portanto, para treinarmos os agentes em uma fase específica do VizDoom devemos carregar seu arquivo .cfg enviando para essa variável o seu caminho dentro do sistema operacional.
 
 Para mais detalhes sobre os arquivos .cfg usados pela VizDoom, consulte esse [link](https://github.com/mwydmuch/ViZDoom/blob/master/doc/ConfigFile.md)
 
@@ -149,7 +149,7 @@ Nome da função que define a arquitetura da rede neural dentro do arquivo [Netw
 | Tipo                 | bool                               |
 | **Valor default**    | **True**                           |
 
-Variável que controle se é para normalizar ou não pixels de entrada da rede neural.
+Variável que controla se é para normalizar ou não pixels de entrada da rede neural.
 
 ---
 
@@ -173,7 +173,7 @@ Variável que diz ao script principal se a arquitetura de rede neural possui ou 
 | Tipo                 | int                           |
 | **Valor default**    | **4**                         |
 
-Um frame válido será considerado apenas a cada \<frame_skip\> frames. Por exemplo, com um frame_skip igual a 4, somente o último frame de uma sequência de 4 frames renderizados será enviado ao nosso código para a criação do nosso estado. Os outros 3 frames são "descartados". Uma excelente discussão esclarecendo as ambiguidades do artigo do DQN em relação as variáveis frame_skip e [history_size](#history_size) pode ser vista [aqui](https://danieltakeshi.github.io/2016/11/25/frame-skipping-and-preprocessing-for-deep-q-networks-on-atari-2600-games/)[[4]](https://github.com/Leonardo-Viana/Reinforcement-Learning#%5B4%5D). O termo frame em outros tópicos se refere exclusivamente ao frames válidos que são considerados pelo script.
+Um frame válido será considerado apenas a cada \<frame_skip\> frames. Por exemplo, com um frame_skip igual a 4, somente o último frame de uma sequência de 4 frames renderizados será enviado ao código para a criação do estado. Os outros 3 frames são "descartados". Uma excelente discussão esclarecendo as ambiguidades do artigo do DQN em relação as variáveis frame_skip e [history_size](#history_size) pode ser vista [aqui](https://danieltakeshi.github.io/2016/11/25/frame-skipping-and-preprocessing-for-deep-q-networks-on-atari-2600-games/)[[4]](https://github.com/Leonardo-Viana/Reinforcement-Learning#%5B4%5D). O termo frame em outros tópicos se refere exclusivamente aos frames válidos que são considerados pelo script.
 
 ---
 
@@ -279,7 +279,7 @@ Constante de tempo do **decaimento exponencial** de épsilon, em outras palavras
 |4                            |98.2%                    |
 |5                            |99.3%                    |
 
-Assim, em aproximadamente 5 constantes de tempo o valor de épsilon chega ao seu valor mínimo.
+Assim, em aproximadamente 5 constantes de tempo, o valor de épsilon chega ao seu valor mínimo.
 
 ---
 
@@ -327,7 +327,7 @@ Tamanho do batch que será utilizado para treinar as redes neurais. Em outras pa
 | Tipo                 | string                       |
 | **Valor default**    | **"84,84"**                  |
 
-Dimensões nas quais os frames provindos das bibliotecas GYM/ViZDoom serão redimensionados e então amontoados para formarem as experiências/estados que serão utilizados pelo algoritmo de reinforcement learning. As dimensões devem ser colocadas entre aspas e com cada dimensão separada por virgula ou espaço seguindo o template: **"Largura, Altura, Número de canal de cores"**. Caso apenas Largura e Altura sejam enviados é assumido que a imagem será em escala de cinza (número de canal de cores = 1). Por exemplo, caso desejemos treinar nosso algoritmo com estados coloridos de tamanho 64 x 64 devemos enviar a essa variável o seguinte valor: "64,64,3".  
+Dimensões nas quais os frames provindos das bibliotecas GYM/ViZDoom serão redimensionados e então amontoados para formarem as experiências/estados que serão utilizados pelo algoritmo de reinforcement learning. Os valores devem ser colocados entre aspas e com cada dimensão separada por vírgula ou espaço, seguindo o template: **"Largura, Altura, Número de canal de cores"**. Caso apenas Largura e Altura sejam enviados, é assumido que a imagem será em escala de cinza (número de canal de cores = 1). Por exemplo, para treinar o algoritmo com estados coloridos de tamanho 64 x 64 devemos enviar a essa variável o seguinte valor: "64,64,3".  
 
 ---
 
@@ -339,7 +339,7 @@ Dimensões nas quais os frames provindos das bibliotecas GYM/ViZDoom serão redi
 | Tipo                 | int                           |
 | **Valor default**    | **4**                         |
 
-Número de frames em sequência que serão amontoados para formarem uma experiência/estado, desta forma, o agente possuirá uma "memória", e conseguirá por exemplo saber a direção, velocidade e aceleração de objetos no ambiente. No caso da arquitetura DQN, os estados serão um volume único com formato de "Largura, Altura, Número de canal de cores * History Size". Já na arquitetura DRQN, os estados serão uma sequência de 4 volumes com formato "Largura, Altura, Número de canal de cores". Por exemplo, considere um batch de 32 amostras amostrados da replay memory, no qual cada estado é formado de frames em escala de cinza com tamanho de 84x84 pixels. A tabela a seguir mostra o formato dos tensores que serão enviados às devidas redes neurais.
+Número de frames em sequência que serão amontoados para formarem uma experiência/estado. Desta forma, o agente possuirá uma "memória", e conseguirá por exemplo saber a direção, velocidade e aceleração de objetos no ambiente. No caso da arquitetura DQN, os estados serão um volume único com formato de "Largura, Altura, Número de canal de cores * History Size". Já na arquitetura DRQN, os estados serão uma sequência de 4 volumes com formato "Largura, Altura, Número de canal de cores". Por exemplo, considere um batch de 32 amostras colhidas da replay memory, no qual cada estado é formado de frames em escala de cinza com tamanho de 84x84 pixels. A tabela a seguir mostra o formato dos tensores que serão enviados às devidas redes neurais.
 
 |Arquitetura| Formado do Estado   |
 | ---       | ---                 |
@@ -524,7 +524,7 @@ Caso essa variável seja verdadeira, nenhuma mensagem será exibida ao usuário.
 | Tipo                 | bool                                |
 | **Valor default**    | **False**                           |
 
-Caso o usuário possua mais de uma gpu disponível e deseje usá-las para o treinamento do agente. (O gerenciamento das gpus em paralelo é feito pela biblioteca Keras)
+Caso o usuário possua mais de uma gpu disponível e deseje usá-las para o treinamento do agente, o valor verdadeiro tem que ser atribuído a essa variável. (O gerenciamento das gpus em paralelo é feito pela biblioteca Keras)
 
 ---
 ### <a name="gpu_device"></a> `gpu_device`
@@ -535,7 +535,7 @@ Caso o usuário possua mais de uma gpu disponível e deseje usá-las para o trei
 | Tipo                 | int                                  |
 | **Valor default**    | **0**                                |
 
-Variável que permite a escolha de qual gpu a ser utilizada para o treinamento das redes neurais dos agentes. Assim, caso o usuário possua mais que uma gpu e não deseje utilizar todas elas em apenas um treinamento é possível escolher com essa variável qual gpu utilizar para o treinamento, bastando atribuir o ID da gpu a essa variável e o valor False para a variável [multi_gpu](#multi_gpu). Desta forma é possível, caso haja recursos computacionais suficientes (memória, processamento) simular vários agentes simultaneamente. **Enviar o gpu_device igual -1 e a variável [multi_gpu](#multi_gpu) False fará o treinamento da rede neural rodar no processador.**
+Variável que permite a escolha de qual gpu a ser utilizada para o treinamento das redes neurais dos agentes. Assim, caso o usuário possua mais que uma gpu e não deseje utilizar todas elas em apenas um treinamento, é possível escolher com essa variável qual gpu utilizar, bastando atribuir o ID da gpu a essa variável e o valor False para a variável [multi_gpu](#multi_gpu). Desta forma é possível, caso haja recursos computacionais suficientes (memória, processamento), simular vários agentes simultaneamente. **Enviar o gpu_device igual -1 e a variável [multi_gpu](#multi_gpu) False fará o treinamento da rede neural rodar no processador.**
 
 ---
 ### <a name="multi_threading"></a> `multi_threading`
@@ -546,7 +546,7 @@ Variável que permite a escolha de qual gpu a ser utilizada para o treinamento d
 | Tipo                 | bool                                |
 | **Valor default**    | **False**                           |
 
-Se essa variável for ativada, a parte da amostragem de experiências para o treinamento da rede neural é feita paralelamente com o restante do algoritmo de aprendizagem desta forma reduzindo o tempo necessário de processamento de cada episódio. Para mais detalhes consultar o tópico [Performance](https://github.com/Leonardo-Viana/Reinforcement-Learning#performance).
+Se essa variável for ativada, a parte da amostragem de experiências para o treinamento da rede neural é feita paralelamente com o restante do algoritmo de aprendizagem, reduzindo, dessa forma, o tempo necessário de processamento de cada episódio. Para mais detalhes consultar o tópico [Performance](https://github.com/Leonardo-Viana/Reinforcement-Learning#performance).
 
 ---
 ### <a name="to_render"></a> `to_render`
@@ -557,7 +557,7 @@ Se essa variável for ativada, a parte da amostragem de experiências para o tre
 | Tipo                 | bool                                |
 | **Valor default**    | **False**                           |
 
-Variável que controle se o ambiente será renderizado (mostrado na tela) para o usuário ou não, durante o treinamento ou teste. Ao renderizar o ambiente, o treinamento sofrerá uma queda enorme de processamento por episódio.
+Variável que controla se o ambiente será renderizado (mostrado na tela) para o usuário ou não, durante o treinamento ou teste. Ao renderizar o ambiente, o treinamento sofrerá uma queda enorme de processamento por episódio.
 
 ### <a name="random_seed"></a> `random_seed`
 
@@ -579,7 +579,7 @@ Variável que fixa a semente dos métodos (pseudo)estocásticos. Se o valor dess
 | **Valor default**    | **False**                           |
 | Exclusivo do modo    | Test                               |
 
-Variável que controla se é para salvar ou não os estados/experiências no disco como um arquivo .gif durante o modo TEST. Os estados salvos são utilizados pela biblioteca de plot, para o plot de zonas de ativação e zonas de máxima ativação. A seguir termos um exemplo de um estado salvo do jogo Pong (treinado com estados coloridos):
+Variável que controla se é para salvar ou não os estados/experiências no disco como um arquivo .gif durante o modo TEST. Os estados salvos são utilizados pela biblioteca de plot, para o plot de zonas de ativação e zonas de máxima ativação. A seguir, temos um exemplo de um estado salvo do jogo Pong (treinado com estados coloridos):
 
   <p align="center">
    <img src="https://raw.githubusercontent.com/Leonardo-Viana/Reinforcement-Learning/master/docs/images/pong-color-state.gif" height="84" width="84">
