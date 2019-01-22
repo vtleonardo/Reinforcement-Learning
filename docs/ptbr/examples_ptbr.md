@@ -1,5 +1,5 @@
 # Exemplos
-As configurações dos scripts podem ser passadas via comandos de terminal ou escritas em arquivo de extensão .cfg com o mesmo nome do script a ser executado. Os parâmetros não configurados possuem seus valores iguais ao default. **Caso algum comando de terminal seja enviado, a configuração de execução do script será feita exclusivamente por eles, e os parâmetros não enviados terão seus valores atribuídos como default.**  Se nenhum parâmetro for enviado via terminal, o script procurará por um arquivo de mesmo nome com extensão .cfg e de forma semelhante os parâmetros que não forem encontrados dentro deste arquivo possuirão seus valores default ativados (para mais informações sobre os arquivos .cfg consultar o tópico [Arquivos de configuração .CFG](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/ptbr/cfg_ptbr.md)). Se nenhuma das opções de configuração acima seja feita, o agente será treinado com seus valores default, ou seja, serão utilizados os hiperparâmetros demonstrados no artigo [Human-level control through deep reinforcement learning](https://www.nature.com/articles/nature14236)[[1]](#[1]) para o treinamento de um agente no jogo Pong. Para mais informações sobre cada opção disponível e seus valores default verificar o [DOC](/docs/ptbr/doc_ptbr.md) ou utilizar o comando de terminal:
+As configurações dos scripts podem ser passadas via comandos de terminal ou escritas em arquivo de extensão .cfg com o mesmo nome do script a ser executado. Os parâmetros não configurados possuem seus valores iguais ao default. **Caso algum comando de terminal seja enviado, a configuração de execução do script será feita exclusivamente pelo terminal, e os parâmetros não enviados terão seus valores atribuídos como default.**  Se nenhum parâmetro for enviado via terminal, o script procurará por um arquivo de mesmo nome com extensão .cfg e de forma semelhante os parâmetros que não forem encontrados dentro deste arquivo possuirão seus valores default ativados (para mais informações sobre os arquivos .cfg consultar o tópico [Arquivos de configuração .CFG](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/ptbr/cfg_ptbr.md)). Se nenhuma das opções de configuração acima for feita, o agente será treinado com seus valores default. Ou seja, serão utilizados os hiperparâmetros demonstrados no artigo [Human-level control through deep reinforcement learning](https://www.nature.com/articles/nature14236)[[1]](#[1]) para o treinamento de um agente no jogo Pong. Para mais informações sobre cada opção disponível e seus valores default verificar o [DOC](/docs/ptbr/doc_ptbr.md) ou utilizar o comando de terminal:
 ````
 python Base_agent.py --help
 ````
@@ -45,7 +45,7 @@ multi_threading = False
 to_render = False
 random_seed = 1
 ```
-Ao invés de toda vez termos que digitar todos esses comandos, podemos utilizar os valores default (padrão) das variáveis para diminuir consideravelmente o número de comandos. Os valores padrões das variáveis podem ser visto no [DOC](/docs/ptbr/doc_ptbr.md). Desta forma o mesmo arquivo .cfg pode ser escrito da seguinte forma:
+Ao invés de toda vez termos que digitar todos esses comandos, podemos utilizar os valores default (padrão) das variáveis para diminuir consideravelmente o número de comandos. Os valores padrões das variáveis podem ser vistos no [DOC](/docs/ptbr/doc_ptbr.md). Assim, o mesmo arquivo .cfg pode ser escrito da seguinte forma:
 ```
 agent_name = DQNPong30
 num_simul_frames = 1000000
@@ -74,7 +74,7 @@ Ambas as opções de configuração irão treinar o agente com hiperparâmetros 
 </p>
 
 ## Treinamento de um agente dentro do VizDoom 
-Esse repositório possui em suas dependencias dois mapas para o jogo Doom, **labyrinth e labyrinth_test**, que possuem como objetivo ensinar o agente a navegação tridimensional (mais detalhes sobre esses mapas no tópico [Mapas de Doom]). Para treinar o agente na fase labyrinth utilizando a arquitetura de rede neural DRQN (proposta inicialmente em [Deep recurrent q-learning for partially observable mdps](https://arxiv.org/abs/1507.06527)[[2]](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/README.md#[2])) podemos utilizar os seguintes comandos no arquivo .cfg:
+Esse repositório possui em suas dependências dois mapas para o jogo Doom, **labyrinth e labyrinth_test**, que possuem como objetivo ensinar o agente a navegação tridimensional (mais detalhes sobre esses mapas no tópico [Mapas de Doom](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/ptbr/map_ptbr.md)). Para treinar o agente na fase labyrinth utilizando a arquitetura de rede neural DRQN (proposta inicialmente em [Deep recurrent q-learning for partially observable mdps](https://arxiv.org/abs/1507.06527)[[2]](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/README.md#[2])) podemos utilizar os seguintes comandos no arquivo .cfg:
 ````
 env = Doom
 config_file_path = ../DoomScenarios/labyrinth.cfg
@@ -106,7 +106,7 @@ O seguinte script irá treinar o agente nomeado de "grayh4-LSTM" na fase labyrin
 </p>
 
 ## Testando um agente treinado
-O script Base_agent.py possui dois modos de execução treinamento (**train**) ou teste (**test**). O modo de treinamento é o default no qual o agente é treinado utilizando a premissa do reinforcement learning. Já no modo teste, a maioria dos hiperparâmetros de aprendizado são ignorados, o objetivo deste modo é o teste de um agente treinado. Para o script executar corretamente é necessário especificar qual a arquitetura de rede neural usada no treinamento. A seguir vemos um exemplo para o arquivo .cfg para o teste de um agente treinado com o DRQN (os pesos treinados desta simulação encontram-se neste repositório) com o jogo sendo renderizado:
+O script Base_agent.py possui dois modos de execução treinamento (**train**) ou teste (**test**). O modo de treinamento é o default no qual o agente é treinado utilizando a premissa do reinforcement learning. Já no modo teste, a maioria dos hiperparâmetros de aprendizado são ignorados, o objetivo deste modo é o teste de um agente treinado. Para o script executar corretamente é necessário especificar qual a arquitetura de rede neural usada no treinamento. A seguir, vemos um exemplo para o arquivo .cfg para o teste de um agente treinado com o DRQN (os pesos treinados desta simulação encontram-se neste repositório) com o jogo sendo renderizado:
 
 ````
 agent_mode = test
@@ -137,7 +137,7 @@ O resumo da simulação pode ser visto na imagem abaixo.
 </p>
 
 ## Transfer Learning
-Utilizando das opções de configuração possíveis para os scripts nesse repositório, podemos aplicar a técnica de transfer learning. Ou seja, podemos carregar um agente treinado em um ambiente e ver em quanto tempo o mesmo domina um novo ambiente. A seguir temos um exemplo de um agente treinado na fase labyrinth, aprendendo a navegar em outra fase a labyrinth_test com configurações de aprendizado bem mais rígidas.
+Utilizando as opções de configuração possíveis para os scripts nesse repositório, podemos aplicar a técnica de transfer learning. Ou seja, podemos carregar um agente treinado em um ambiente e ver em quanto tempo o mesmo domina um novo ambiente. A seguir, temos um exemplo de um agente treinado na fase labyrinth, aprendendo a navegar em outra fase a labyrinth_test com configurações de aprendizado bem mais rígidas.
 
 ```
 agent_mode = train
