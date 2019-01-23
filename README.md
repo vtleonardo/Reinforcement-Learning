@@ -38,6 +38,8 @@ A seguir temos algumas imagens comparativas entre as performances em frames/segu
 | Serial      | 94.9                  | 5 horas e 54 minutos |
 | Paralelo    | 66.39                 | 8 horas e 23 minutos |                  
 
+Um ponto importante a se ressaltar na abordagem em paralelo é o fato que a mesma introduz um atraso de uma amostragem no algoritmo. Ou seja, a experiência de uma iteração *t* só poderá ser amostrada na próxima iteração *t+1*. Isto é devido ao fato que a amostragem já vai ter ocorrido no momento que o agente estiver interagindo com o ambiente. Entretanto, como podemos observar pelas imagens do treinamento abaixo, o processo de aprendizagem é minimamente afetado. De fato, como todas as experiências são amostradas uniformemente da replay memory, com a memória cheia com 100 mil experiências, temos a probabilidade 0.001% de uma experiência ser escolhida. Assim, podemos concluir que o processo de aprendizagem dos algoritmos DQN e DRQN é robusto o suficiente ao ponto de não ser afetado por este atraso de uma amostragem. Assim, o modo multi-threading é recomendado para as simulações realizadas utilizando os scripts deste repositório devido a seu processamento mais rápido.
+
 <p align="center">
  <img src="https://raw.githubusercontent.com/Leonardo-Viana/Reinforcement-Learning/master/docs/images/rewards_q.png" height="100%" width="100%">
 </p>
