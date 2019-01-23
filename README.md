@@ -11,7 +11,7 @@ Aos desenvolvedores e interessados, cabe salientar que todos os códigos pertenc
 
  ## <a name="features"></a> Características do código
 
-- [Modo de execução em paralelo do algoritmo de RL disponível](#performance) (chegando a ser em média 30% mais rápido que o modo padrão).
+- [Modo de execução em paralelo do algoritmo de RL disponível](#performance) (chegando a ser 30% mais rápido que o modo padrão).
 - Ambientes bidimensionais ([OpenAi Gym](https://github.com/openai/gym)) e tridimensionais ([ViZDoom](https://github.com/mwydmuch/ViZDoom)) para o treinamento e teste de agentes.
 - [Dois mapas exclusivos para o ViZDoom simulando um problema de robótica móvel](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/ptbr/map_ptbr.md).
 - Configuração do treinamento/teste do agente via comandos no terminal ou via arquivos de configuração .cfg (Ver as sessões de [ exemplos](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/ptbr/examples_ptbr.md) e a [documentação](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/ptbr/doc_ptbr.md)).
@@ -31,7 +31,7 @@ Depois do uso das redes neurais, a parte que mais utiliza recursos de processame
 <p align="center">
  <img src="https://raw.githubusercontent.com/Leonardo-Viana/Reinforcement-Learning/master/docs/images/multi-threading.png" height="100%" width="100%">
 </p>
-A seguir temos algumas imagens comparativas entre as performances em frames/segundo do modo serial e paralelo no treinamento de agente para o jogo de Atari 2600 Pong treinado por 2 milhões de frames. Como pode ser observado, a versão em paralelo possui um tempo em média 30% menor de simulação que a versão padrão (serial).
+A seguir temos algumas imagens comparativas entre as performances em frames/segundo do modo serial e paralelo no treinamento de agente para o jogo de Atari 2600 Pong treinado por 2 milhões de frames. Como pode ser observado, a versão em paralelo possui um tempo em média 30% menor de simulação que a versão padrão (serial). 
 
 |Processamento|Frames/segundo em média|Tempo de simulação    |
 | ---         | ---                   | ---                  |
