@@ -29,7 +29,7 @@ Durante o desenvolvimento do algoritmo foram buscadas as melhores maneiras de au
 
 Depois do uso das redes neurais, a parte que mais utiliza recursos de processamento é a amostragem das experiências a medida que replay memory for preenchida. Para uma atenuação deste problema foi desenvolvida uma abordagem de processamento em paralelo (multi-threading) para os algoritmos DQN e DRQN. O modo em paralelo consiste basicamente em amostrar as experiências da replay memory paralelamente enquanto o algoritmo de decisão é executado. Assim, quando chegamos na parte de treinamento da rede neural o custo computacional da amostragem já foi executado. A figura a seguir demonstra como são executadas as abordagens serial (single-threading) e paralelo (multi-threading). 
 <p align="center">
- <img src="docs/images/multi-threading.png" height="100%" width="100%">
+ <img src="https://raw.githubusercontent.com/Leonardo-Viana/Reinforcement-Learning/master/docs/images/multi-threading.png" height="100%" width="100%">
 </p>
 A seguir temos algumas imagens comparativas entre as performances em frames/segundo do modo serial e paralelo no treinamento de agente para o jogo de Atari 2600 Pong treinado por 2 milhões de frames. Como pode ser observado, a versão em paralelo possui um tempo em média 30% menor de simulação que a versão padrão (serial).
 
@@ -38,6 +38,12 @@ A seguir temos algumas imagens comparativas entre as performances em frames/segu
 | Serial      | 94.9                  | 5 horas e 54 minutos |
 | Paralelo    | 66.39                 | 8 horas e 23 minutos |                  
 
+<p align="center">
+ <img src="https://raw.githubusercontent.com/Leonardo-Viana/Reinforcement-Learning/master/docs/images/rewards_q.png" height="100%" width="100%">
+</p>
+<p align="center">
+ <img src="https://raw.githubusercontent.com/Leonardo-Viana/Reinforcement-Learning/master/docs/images/loss_fps.png" height="100%" width="100%">
+</p>
 *Os testes de performance foram realizado em cpu core i7 4790K e gpu nvidia geforce gtx 970*
 
 
