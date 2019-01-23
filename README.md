@@ -1,7 +1,7 @@
 # Reinforcement-Learning
 Neste repositório é feita a implementação dos algoritmos de deep reinforcement learning **DQN e DRQN** em python. O Deep Q-Network (DQN) introduzido pelo artigo [Human-level control through deep reinforcement learning[1]](#[1]) é um algoritmo que aplica redes neurais profundas (deep learning) ao problema de reinforcement learning (aprendizado por reforço). O objetivo do reinforcement learning é, basicamente, o de ensinar uma inteligência artificial como mapear o estado atual em que se encontra no ambiente em ações, de tal forma a maximizar a premiação ao final da tarefa. No caso do DQN, os estados são imagens da tela do ambiente. Logo, a rede neural profunda é treinada a medida em que o agente interage com o ambiente (via reinforcement learning), de tal forma a transformar esses dados de alta dimensão (imagens) em ações (botões a serem pressionados). Já o Deep Recurrent Q-Network (DRQN) é uma versão do DQN proposta pelo artigo [Deep recurrent q-learning for partially observable mdps[2]](#[2]) que substitui a última camada densa da rede neural profunda do DQN por uma do tipo recorrente (LSTM). Desta forma, o agente treinado por esse algoritmo lida melhor com ambientes parcialmente observáveis como, por exemplo, os mapas tridimensionais do ViZDoom.
 
-Embora existam inúmeros scripts que implementem os algoritmos descritos acima, a maioria os implementa de uma maneira simples sem se preocupar com o desempenho, ou seja, quanto tempo de simulação levará e consequentemente a energia gasta no processo para treinar os agentes. Para otimizar o desempenho dos algoritmos, os scripts nesse repositório aproveitam o máximo da computação vetorizada pelas bibliotecas Numpy e Tensorflow para reduzir o tempo de simulação gasto para treinar os agentes. Além disso, foi desenvolvido um método para diminuir consideravelmente (em média de 35%) o tempo necessário de simulação, ao paralelizar de forma simples os algoritmos DQN/DRQN (mais detalhes sobre as otimizações de desempenho no tópico [performance](#performance)). 
+Embora existam inúmeros scripts que implementem os algoritmos descritos acima, a maioria os implementa de uma maneira simples sem se preocupar com o desempenho, ou seja, quanto tempo de simulação levará e consequentemente a energia gasta no processo para treinar os agentes. Para otimizar o desempenho dos algoritmos, os scripts nesse repositório aproveitam o máximo da computação vetorizada pelas bibliotecas Numpy e Tensorflow para reduzir o tempo de simulação gasto para treinar os agentes. Além disso, foi desenvolvido um método para diminuir consideravelmente (alguns exemplos tiveram a redução no tempo de simulação em 30%) o tempo necessário de simulação, ao paralelizar de forma simples os algoritmos DQN/DRQN (mais detalhes sobre as otimizações de desempenho no tópico [performance](#performance)). 
 
 Outro aspecto importante que deve ser levado em conta além da performance é a experiência do usuário. Os scripts desse repositório foram feitos de tal forma a dar uma maior flexibilidade na escolha dos parâmetros de simulação, sem a necessidade de alteração dentro do código principal. O usuário tem total controle sobre a simulação, podendo definir suas próprias arquiteturas de redes neurais, simular com frames coloridos e de tamanho desejado e escolher qualquer um dos ambientes de Atari 2600 oferecidos pela biblioteca GYM ou dos mapas tridimensionais do ambiente ViZDoom. Além disso, este repositório apresenta possibilidade de visualização do agente treinado pelo modo teste, renderização ou não para o usuário, continuação de treinamento, transfer learning entre outros (mais detalhes em [características do código](#features)). 
 
@@ -11,7 +11,7 @@ Aos desenvolvedores e interessados, cabe salientar que todos os códigos pertenc
 
  ## <a name="features"></a> Características do código
 
-- [Modo de execução em paralelo do algoritmo de RL disponível](#performance) (treinamento em média 35% mais rápido que o modo padrão).
+- [Modo de execução em paralelo do algoritmo de RL disponível](#performance) (chegando a ser em média 30% mais rápido que o modo padrão).
 - Ambientes bidimensionais ([OpenAi Gym](https://github.com/openai/gym)) e tridimensionais ([ViZDoom](https://github.com/mwydmuch/ViZDoom)) para o treinamento e teste de agentes.
 - [Dois mapas exclusivos para o ViZDoom simulando um problema de robótica móvel](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/ptbr/map_ptbr.md).
 - Configuração do treinamento/teste do agente via comandos no terminal ou via arquivos de configuração .cfg (Ver as sessões de [ exemplos](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/ptbr/examples_ptbr.md) e a [documentação](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/ptbr/doc_ptbr.md)).
@@ -21,13 +21,6 @@ Aos desenvolvedores e interessados, cabe salientar que todos os códigos pertenc
 - Simulação com frames monocromáticos ou coloridos (RGB) ([mais detalhes aqui](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/ptbr/doc_ptbr.md#input_shape)).
 - Armazenamento dos [episódios ao longo do treinamento](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/ptbr/doc_ptbr.md#-to_save_episodes) e dos [estados ao longo de um teste](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/ptbr/doc_ptbr.md#-to_save_states) como imagens .gif.
 - Pesos pré-treinados para o mapa labyrinth de ViZDoom acompanhando esse repositório ([mais informações aqui](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/ptbr/info-weights_ptbr.md)).
-<!--
-- Plot dos mapas de ativação, zonas de máxima ativação na imagem de entrada e imagens de entrada que maximizam determinados filtros para cada uma das camadas de convolução de um modelo treinado.
-<p align="center">
- <img src="https://raw.githubusercontent.com/Leonardo-Viana/Reinforcement-Learning/master/docs/images/pong-zonas.png" height="100%" width="100%">
-</p>
-*Clique na imagem para abrir a imagem em tamanho real.
---->
 
 
 ## <a name="performance"></a>  Performance 
@@ -38,14 +31,16 @@ Depois do uso das redes neurais, a parte que mais utiliza recursos de processame
 <p align="center">
  <img src="docs/images/multi-threading.png" height="100%" width="100%">
 </p>
-A seguir temos algumas imagens comparativas entre as performances em frames/segundo do modo serial e paralelo no treinamento de agente para o jogo de Atari 2600 Pong. Como pode ser observado, a versão em paralelo possui um tempo em média 35% menor de simulação que a versão padrão (serial).
+A seguir temos algumas imagens comparativas entre as performances em frames/segundo do modo serial e paralelo no treinamento de agente para o jogo de Atari 2600 Pong treinado por 2 milhões de frames. Como pode ser observado, a versão em paralelo possui um tempo em média 30% menor de simulação que a versão padrão (serial).
 
-|Processamento|Frames/segundo em média|Tempo de simulação|
-| ---         | ---                   | ---              |
-| Serial      |                       |                  |
-| Paralelo    |                       |                  |                  
+|Processamento|Frames/segundo em média|Tempo de simulação    |
+| ---         | ---                   | ---                  |
+| Serial      | 94.9                  | 5 horas e 54 minutos |
+| Paralelo    | 66.39                 | 8 horas e 23 minutos |                  
 
 *Os testes de performance foram realizado em cpu core i7 4790K e gpu nvidia geforce gtx 970*
+
+
 
 ## Documentação
 
