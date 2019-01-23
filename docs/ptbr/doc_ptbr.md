@@ -579,7 +579,7 @@ Variável que fixa a semente dos métodos (pseudo)estocásticos. Se o valor dess
 | **Valor default**    | **False**                           |
 | Exclusivo do modo    | Test                               |
 
-Variável que controla se é para salvar ou não os estados/experiências no disco como um arquivo .gif durante o modo TEST. Os estados salvos são utilizados pela biblioteca de plot, para o plot de zonas de ativação e zonas de máxima ativação. A seguir, temos um exemplo de um estado salvo do jogo Pong (treinado com estados coloridos):
+Variável que controla se é para salvar ou não os estados/experiências no disco como um arquivo .gif durante o modo TEST. Os estados salvos podem ser utilizados para o plot de zonas de máxima ativação para cada camada de convolução. A seguir, temos um exemplo de um estado salvo do jogo Pong (treinado com estados coloridos):
 
   <p align="center">
    <img src="https://raw.githubusercontent.com/Leonardo-Viana/Reinforcement-Learning/master/docs/images/pong-color-state.gif" height="84" width="84">
