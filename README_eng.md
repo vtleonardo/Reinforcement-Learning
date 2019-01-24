@@ -31,7 +31,7 @@ During the algorithm development, it was sought the best ways to improve the pro
 Besides the use of neural networks, the part that uses the most processing resources is the sampling of experiences from the replay memory as the replay memory is fulfilled. For attenuation of this problem, parallel processing (multi-threading) approach was developed for the DQN and DRQN algorithms. The parallel mode basically consists of sampling the experiences from the replay memory in parallel while the decision algorithm is executed. Thus, when we arrive at the training part of the neural network, the computational cost of the samples has already been executed. The following figure demonstrates how the serial (single-threading) and parallel (multi-threading) approaches are performed.
 
 <p align="center">
- <img src="https://raw.githubusercontent.com/Leonardo-Viana/Reinforcement-Learning/master/docs/images/multi-threading.png" height="100%" width="100%">
+ <img src="https://raw.githubusercontent.com/Leonardo-Viana/Reinforcement-Learning/master/docs/images/multi-threading_eng.png" height="100%" width="100%">
 </p>
 
 Following, there are some comparative images between the performances in frames/second of the serial mode and the parallel mode for an agent trained in the game of Atari 2600 Pong with 2 million frames. As can be seen, the parallel version takes 30% less simulation time to conclude the training in comparison to the standard version (serial version).
