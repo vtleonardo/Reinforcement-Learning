@@ -45,7 +45,7 @@ multi_threading = False
 to_render = False
 random_seed = 1
 ```
-Instead of every time have to type all these commands, we can use the default values to reduce considerably the number of commands. The default values of the variables can be seen in the [Documentation](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/doc.md). Hence, the same file .cfg can be written as:
+Instead of every time we have to type all these commands, we can use the default values to reduce considerably the number of commands. The default values of the variables can be seen in the [Documentation](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/doc.md). Hence, the same file .cfg can be written as:
 ```
 agent_name = DQNPong30
 num_simul_frames = 1000000
