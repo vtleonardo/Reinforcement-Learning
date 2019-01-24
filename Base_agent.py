@@ -818,7 +818,7 @@ class Agent:
                                                        axis=0)
                     else:
                         saved_episode = np.concatenate((saved_episode, state_next), axis=2)
-                # Updating the input volume to put the current next_state
+                # Updating the input volume to put the current state_next (last received frame)
                 state_next = self.refresh_history(np.copy(state), state_next)
                 if self.multi_threading:
                     lock.acquire(blocking=True)
