@@ -46,7 +46,7 @@ Um ponto importante a se ressaltar na abordagem em paralelo é o fato que a mesm
 <p align="center">
  <img src="https://raw.githubusercontent.com/Leonardo-Viana/Reinforcement-Learning/master/docs/images/loss_fps.png" height="100%" width="100%">
 </p>
-*Os testes de performance foram realizado em cpu core i7 4790K e gpu nvidia geforce gtx 970*
+*Os testes de performance foram realizados em cpu core i7 4790K e gpu nvidia geforce gtx 970*
 
 
 
