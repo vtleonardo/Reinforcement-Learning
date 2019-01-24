@@ -12,7 +12,7 @@ OpenAI Gym
 ViZDoom
 ````
 
-Para a instalação das bibliotecas acima recomenda-se criar um [ambiente virtual](https://conda.io/docs/user-guide/tasks/manage-environments.html) com o [miniconda](https://conda.io/docs/user-guide/install/index.html). Com o ambiente virtual ativado, a instalação das bibliotecas com o miniconda pode ser feita com os seguintes comandos:
+Para a instalação das bibliotecas acima recomenda-se criar um [ambiente virtual](https://docs.conda.io/projects/conda/en/latest/user-guide/getting-started.html#managing-environments) com o [miniconda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html). Com o ambiente virtual ativado, a instalação das bibliotecas com o miniconda pode ser feita com os seguintes comandos:
 Versão cpu do tensorflow
 ````
 conda install tensorflow
