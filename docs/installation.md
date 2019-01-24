@@ -1,7 +1,7 @@
 # Instalation
 The entire code was written and tested in python 3.6 on windows 10. To execute the code, the following packages are needed:
 ````
-Tensorflow (cpu ou gpu)
+Tensorflow (cpu or gpu)
 Keras
 Pandas
 Imageio
