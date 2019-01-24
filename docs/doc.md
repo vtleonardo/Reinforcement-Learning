@@ -71,7 +71,7 @@ A opção de **test** é usada para testar um agente que já aprendeu dentro de 
 
 | Terminal command    | `--agent_name <value>`    |
 | :--                 | :--                       |
-| **CFG file **    | **`agent_name = <value>`**|
+| **CFG file**        | **`agent_name = <value>`**|
 | Type                | string                    |
 | **Default value**   | **DQN**                   |
 
@@ -84,7 +84,7 @@ Nome do agente. Além disso, é a identificação que será utilizada para nomea
 
 | Terminal command    | `--env <value>`           |
 | :--                 | :--                       |
-| **CFG file **    | **`env = <value>`**       |
+| **CFG file**        | **`env = <value>`**       |
 | Type                | string                    |
 | **Default value**   | **PongNoFrameskip-v4**    |
 
@@ -101,7 +101,7 @@ Para executar o ambiente VizDoom, basta enviar para a variável env o valor doom
 
 | Terminal command     | `--include_score <value>`    |
 | :--                  | :--                          |
-| **CFG file **     | **`include_score = <value>`**|
+| **CFG file**         | **`include_score = <value>`**|
 | Type                 | bool                         |
 | **Default value**    | **False**                    |
 | Environtment exclusive| ATARI GYM                    |
@@ -115,7 +115,7 @@ Variável **exclusiva dos jogos de atari da biblioteca GYM** que controla se o s
 
 | Terminal command     | `--config_file_path <value>`       |
 | :--                  | :--                                |
-| **CFG file **     | **`config_file_path = <value>`**   |
+| **CFG file**         | **`config_file_path = <value>`**   |
 | Type                 | string (path do sistema)           |
 | **Default value**    | **../DoomScenarios/labyrinth.cfg** |
 | Environtment exclusive| ViZDOOM                            |
@@ -131,7 +131,7 @@ Para mais detalhes sobre os arquivos .cfg usados pela VizDoom, consulte esse [li
 
 | Terminal command     | `--network_model <value>`          |
 | :--                  | :--                                |
-| **CFG file **        | **`network_model = <value>`**      |
+| **CFG file**         | **`network_model = <value>`**      |
 | Type                 | string                             |
 | **Default value**    | **DQN**                            |
 
@@ -143,7 +143,7 @@ Nome da função que define a arquitetura da rede neural dentro do arquivo [Netw
 
 | Terminal command     | `--normalize_input <value>`        |
 | :--                  | :--                                |
-| **CFG file **        | **`normalize_input = <value>`**    |
+| **CFG file**         | **`normalize_input = <value>`**    |
 | Type                 | bool                               |
 | **Default value**    | **True**                           |
 
@@ -155,7 +155,7 @@ Variável que controla se é para normalizar ou não pixels de entrada da rede n
 
 | Terminal command     | `--is_recurrent <value>`        |
 | :--                  | :--                             |
-| **CFG file **     | **`is_recurrent = <value>`**    |
+| **CFG file**         | **`is_recurrent = <value>`**    |
 | Type                 | bool                            |
 | **Default value**    | **False**                       |
 
@@ -167,7 +167,7 @@ Variável que diz ao script principal se a arquitetura de rede neural possui ou 
 
 | Terminal command     | `--frame_skip <value>`        |
 | :--                  | :--                           |
-| **CFG file **        | **`frame_skip = <value>`**    |
+| **CFG file**         | **`frame_skip = <value>`**    |
 | Type                 | int                           |
 | **Default value**    | **4**                         |
 
@@ -179,7 +179,7 @@ Um frame válido será considerado apenas a cada \<frame_skip\> frames. Por exem
 
 | Terminal command     | `--num_simul_frames <value>`        |
 | :--                  | :--                                 |
-| **CFG file **        | **`num_simul_frames = <value>`**    |
+| **CFG file**         | **`num_simul_frames = <value>`**    |
 | Type                 | int                                 |
 | **Default value**    | **10000000**                        |
 
@@ -191,7 +191,7 @@ Número de frames no qual o agente será treinado.
 
 | Terminal command     | `--discount_rate <value>`           |
 | :--                  | :--                                 |
-| **CFG file **        | **`discount_rate = <value>`**       |
+| **CFG file**         | **`discount_rate = <value>`**       |
 | Type                 | float                               |
 | **Default value**    | **0.99**                            |
 
@@ -203,7 +203,7 @@ Fator de desconto (discount rate) gamma.
 
 | Terminal command     | `--lr <value>`           |
 | :--                  | :--                      |
-| **CFG file **        | **`lr = <value>`**       |
+| **CFG file**         | **`lr = <value>`**       |
 | Type                 | float                    |
 | **Default value**    | **0.00025**              |
 
@@ -215,7 +215,7 @@ Taxa de aprendizado das redes neurais.
 
 | Terminal command     | `--epsilon <value>`      |
 | :--                  | :--                      |
-| **CFG file **        | **`epsilon = <value>`**  |
+| **CFG file**         | **`epsilon = <value>`**  |
 | Type                 | float                    |
 | **Default value**    | **1.0**                  |
 
@@ -227,7 +227,7 @@ Taxa de aprendizado das redes neurais.
 
 | Terminal command     | `--e_min <value>`        |
 | :--                  | :--                      |
-| **CFG file **        | **`e_min = <value>`**    |
+| **CFG file**         | **`e_min = <value>`**    |
 | Type                 | float                    |
 | **Default value**    | **0.1**                  |
 
@@ -239,7 +239,7 @@ Taxa de aprendizado das redes neurais.
 
 | Terminal command    | `--decay_mode <value>`    |
 | :--                 | :--                       |
-| **CFG file **       | **`decay_mode = <value>`**|
+| **CFG file**        | **`decay_mode = <value>`**|
 | Type                | string                    |
 | Possible choices    | linear, exponential       |
 | **Default value**   | **linear**                |
@@ -252,7 +252,7 @@ Variável que escolhe o Type de decaimento da variável épsilon. Existem dois m
 
 | Terminal command     | `--e_lin_decay <value>`        |
 | :--                  | :--                            |
-| **CFG file **        | **`e_lin_decay = <value>`**    |
+| **CFG file**         | **`e_lin_decay = <value>`**    |
 | Type                 | int                            |
 | **Default value**    | **1000000**                    |
 
@@ -263,7 +263,7 @@ Número de frames no qual o **decaimento linear** de épsilon chegará ao seu va
 
 | Terminal command     | `--e_exp_decay <value>`        |
 | :--                  | :--                            |
-| **CFG file **        | **`e_exp_decay = <value>`**    |
+| **CFG file**         | **`e_exp_decay = <value>`**    |
 | Type                 | int                            |
 | **Default value**    | **200000**                     |
 
@@ -285,7 +285,7 @@ Assim, em aproximadamente 5 constantes de tempo, o valor de épsilon chega ao se
 
 | Terminal command     | `--target_update <value>`      |
 | :--                  | :--                            |
-| **CFG file **        | **`target_update = <value>`**  |
+| **CFG file**         | **`target_update = <value>`**  |
 | Type                 | int                            |
 | **Default value**    | **10000**                      |
 
@@ -297,7 +297,7 @@ Número de frames no qual os parâmetros da Q-target network serão atualizados 
 
 | Terminal command     | `--num_states_stored <value>`      |
 | :--                  | :--                                |
-| **CFG file **        | **`num_states_stored = <value>`**  |
+| **CFG file**         | **`num_states_stored = <value>`**  |
 | Type                 | int                                |
 | **Default value**    | **1000000**                        |
 
@@ -309,7 +309,7 @@ Número de experiências (estados) que serão armazenadas na replay memory.
 
 | Terminal command     | `--batch_size <value>`      |
 | :--                  | :--                         |
-| **CFG file **        | **`batch_size = <value>`**  |
+| **CFG file**         | **`batch_size = <value>`**  |
 | Type                 | int                         |
 | **Default value**    | **32**                      |
 
@@ -321,7 +321,7 @@ Tamanho do batch que será utilizado para treinar as redes neurais. Em outras pa
 
 | Terminal command     | `--input_shape <value>`      |
 | :--                  | :--                          |
-| **CFG file **        | **`input_shape = <value>`**  |
+| **CFG file**         | **`input_shape = <value>`**  |
 | Type                 | string                       |
 | **Default value**    | **"84,84"**                  |
 
@@ -333,7 +333,7 @@ Dimensões nas quais os frames provindos das bibliotecas GYM/ViZDoom serão redi
 
 | Terminal command     | `--history_size <value>`      |
 | :--                  | :--                           |
-| **CFG file **        | **`history_size = <value>`**  |
+| **CFG file**         | **`history_size = <value>`**  |
 | Type                 | int                           |
 | **Default value**    | **4**                         |
 
@@ -350,7 +350,7 @@ Número de frames em sequência que serão amontoados para formarem uma experiê
 
 | Terminal command     | `--num_random_play <value>`      |
 | :--                  | :--                              |
-| **CFG file **        | **`num_random_play = <value>`**  |
+| **CFG file**         | **`num_random_play = <value>`**  |
 | Type                 | int                              |
 | **Default value**    | **50000**                        |
 
@@ -361,7 +361,7 @@ Número de estados gerados por jogadas aleatórias feitas pelo agente antes de c
 
 | Terminal command    | `--loss_type <value>`     |
 | :--                 | :--                       |
-| **CFG file **       | **`loss_type = <value>`** |
+| **CFG file**        | **`loss_type = <value>`** |
 | Type                | string                    |
 | Possible choices    | huber, MSE                |
 | **Default value**   | **huber**                 |
@@ -373,7 +373,7 @@ Type de loss function que será utilizada para treinar as redes neurais do agent
 
 | Terminal command    | `--optimizer <value>`     |
 | :--                 | :--                       |
-| **CFG file **       | **`optimizer = <value>`** |
+| **CFG file**        | **`optimizer = <value>`** |
 | Type                | string                    |
 | Possible choices    | rmsprop, adam             |
 | **Default value**   | **rmsprop**               |
@@ -385,7 +385,7 @@ Type de optimizer que será utilizado para treinar as redes neurais do agente.
 
 | Terminal command     | `--load_weights <value>`        |
 | :--                  | :--                             |
-| **CFG file **        | **`load_weights = <value>`**    |
+| **CFG file**         | **`load_weights = <value>`**    |
 | Type                 | bool                            |
 | **Default value**    | **False**                       |
 
@@ -397,7 +397,7 @@ Variável que diz ao script principal se é para carregar ou não os pesos de um
 
 | Terminal command     | `--weights_load_path <value>`      |
 | :--                  | :--                                |
-| **CFG file **        | **`weights_load_path = <value>`**  |
+| **CFG file**         | **`weights_load_path = <value>`**  |
 | Type                 | string (path do sistema)           |
 | **Default value**    | **""**                             |
 
@@ -410,7 +410,7 @@ Caminho do sistema operacional (path) para o arquivo .h5 que contêm os parâmet
 
 | Terminal command     | `--steps_save_weights <value>`      |
 | :--                  | :--                                 |
-| **CFG file **        | **`steps_save_weights = <value>`**  |
+| **CFG file**         | **`steps_save_weights = <value>`**  |
 | Type                 | int                                 |
 | **Default value**    | **50000**                           |
 
@@ -421,7 +421,7 @@ A cada \<steps_save_weights\> frames os pesos das redes neurais serão salvos no
 
 | Terminal command     | `--path_save_weights <value>`      |
 | :--                  | :--                                |
-| **CFG file **        | **`path_save_weights = <value>`**  |
+| **CFG file**         | **`path_save_weights = <value>`**  |
 | Type                 | string (path do sistema)           |
 | **Default value**    | **..\Weights**                     |
 
@@ -433,7 +433,7 @@ Caminho do sistema operacional (path) para a pasta no qual serão salvos os peso
 
 | Terminal command     | `--steps_save_plot <value>`      |
 | :--                  | :--                                 |
-| **CFG file **        | **`steps_save_plot = <value>`**  |
+| **CFG file**         | **`steps_save_plot = <value>`**  |
 | Type                 | int                                 |
 | **Default value**    | **10000**                           |
 
@@ -455,7 +455,7 @@ A cada \<steps_save_plot\> frames as variáveis para plot armazenadas por episó
 
 | Terminal command     | `--path_save_plot <value>`         |
 | :--                  | :--                                |
-| **CFG file **        | **`path_save_plot = <value>`**     |
+| **CFG file**         | **`path_save_plot = <value>`**     |
 | Type                 | string (path do sistema)           |
 | **Default value**    | **..\Plot**                        |
 
@@ -468,7 +468,7 @@ Caminho do sistema operacional (path) para a pasta no qual serão salvos as vari
 
 | Terminal command     | `--to_save_episodes <value>`        |
 | :--                  | :--                                 |
-| **CFG file **        | **`to_save_episodes = <value>`**    |
+| **CFG file**         | **`to_save_episodes = <value>`**    |
 | Type                 | bool                                |
 | **Default value**    | **False**                           |
 
@@ -483,7 +483,7 @@ Variável que controla se é para salvar ou não os episódios no disco como um 
 
 | Terminal command     | `--steps_save_episodes <value>`      |
 | :--                  | :--                                  |
-| **CFG file **        | **`steps_save_episodes = <value>`**  |
+| **CFG file**         | **`steps_save_episodes = <value>`**  |
 | Type                 | int                                  |
 | **Default value**    | **50**                               |
 
@@ -495,7 +495,7 @@ Caso o arquivo tenha que salvar os episódios ([to_save_episodes](#to_save_episo
 
 | Terminal command     | `--path_save_episodes <value>`      |
 | :--                  | :--                                |
-| **CFG file **        | **`path_save_episodes = <value>`**  |
+| **CFG file**         | **`path_save_episodes = <value>`**  |
 | Type                 | string (path do sistema)           |
 | **Default value**    | **..\Episodes**                    |
 
@@ -507,7 +507,7 @@ Caminho do sistema operacional (path) para a pasta no qual serão salvos os epis
 
 | Terminal command     | `--silent_mode <value>`             |
 | :--                  | :--                                 |
-| **CFG file **        | **`silent_mode = <value>`**         |
+| **CFG file**         | **`silent_mode = <value>`**         |
 | Type                 | bool                                |
 | **Default value**    | **False**                           |
 
@@ -518,7 +518,7 @@ Caso essa variável seja verdadeira, nenhuma mensagem será exibida ao usuário.
 
 | Terminal command     | `--multi_gpu <value>`               |
 | :--                  | :--                                 |
-| **CFG file **        | **`multi_gpu = <value>`**           |
+| **CFG file**         | **`multi_gpu = <value>`**           |
 | Type                 | bool                                |
 | **Default value**    | **False**                           |
 
@@ -529,7 +529,7 @@ Caso o usuário possua mais de uma gpu disponível e deseje usá-las para o trei
 
 | Terminal command     | `--gpu_device <value>`               |
 | :--                  | :--                                  |
-| **CFG file **        | **`gpu_device = <value>`**           |
+| **CFG file**         | **`gpu_device = <value>`**           |
 | Type                 | int                                  |
 | **Default value**    | **0**                                |
 
@@ -540,7 +540,7 @@ Variável que permite a escolha de qual gpu a ser utilizada para o treinamento d
 
 | Terminal command     | `--multi_threading <value>`         |
 | :--                  | :--                                 |
-| **CFG file **        | **`multi_threading = <value>`**     |
+| **CFG file**         | **`multi_threading = <value>`**     |
 | Type                 | bool                                |
 | **Default value**    | **False**                           |
 
@@ -551,7 +551,7 @@ Se essa variável for ativada, a parte da amostragem de experiências para o tre
 
 | Terminal command     | `--to_render <value>`               |
 | :--                  | :--                                 |
-| **CFG file **        | **`to_render = <value>`**           |
+| **CFG file**         | **`to_render = <value>`**           |
 | Type                 | bool                                |
 | **Default value**    | **False**                           |
 
@@ -561,7 +561,7 @@ Variável que controla se o ambiente será renderizado (mostrado na tela) para o
 
 | Terminal command     | `--random_seed <value>`               |
 | :--                  | :--                                  |
-| **CFG file **        | **`random_seed = <value>`**           |
+| **CFG file**         | **`random_seed = <value>`**           |
 | Type                 | int                                  |
 | **Default value**    | **-1**                                |
 
@@ -572,7 +572,7 @@ Variável que fixa a semente dos métodos (pseudo)estocásticos. Se o valor dess
 
 | Terminal command     | `--to_save_states <value>`          |
 | :--                  | :--                                 |
-| **CFG file **        | **`to_save_states = <value>`**      |
+| **CFG file**         | **`to_save_states = <value>`**      |
 | Type                 | bool                                |
 | **Default value**    | **False**                           |
 | Mode exclusive       | Test                               |
@@ -588,7 +588,7 @@ Variável que controla se é para salvar ou não os estados/experiências no dis
 
 | Terminal command     | `--path_save_states <value>`       |
 | :--                  | :--                                |
-| **CFG file **        | **`path_save_states = <value>`**   |
+| **CFG file**         | **`path_save_states = <value>`**   |
 | Type                 | string (path do sistema)           |
 | **Default value**    | **..\States**                      |
 | Mode exclusive       | Test                               |
