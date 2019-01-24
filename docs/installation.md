@@ -34,8 +34,8 @@ For the installation of the open ai gym together with the games of Atari 2600 on
 pip install gym
 pip install --no-index -f https://github.com/Kojoley/atari-py/releases atari_py
 ````
-Para mais detalhes sobre a execução dos jogos de atari no windows, consultar esse [link](https://stackoverflow.com/questions/42605769/openai-gym-atari-on-windows).
+For more details about the execution of the atari games on windows, see this [link](https://stackoverflow.com/questions/42605769/openai-gym-atari-on-windows).
 
-For more details about the execution of the atari games on windows, see this [link](https://github.com/mwydmuch/ViZDoom/blob/master/doc/Building.md#windows_bin).
+For the installation of ViZDoom on windows see this [link](https://github.com/mwydmuch/ViZDoom/blob/master/doc/Building.md#windows_bin).
 
 Once all packages are installed and the virtual environment is configured, just clone or download this repository and execute the Base_agent.py for the training of an agent with the reinforcement learning algorithms DQN or DRQN.
