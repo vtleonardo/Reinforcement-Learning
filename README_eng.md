@@ -16,14 +16,14 @@ To the developers and interested people, it is important to emphasize that all t
 ## <a name="features"></a> Features
 - [Parallel execution mode for the reinforcement learning algothrims](#performance) (some examples are 30% faster with this mode).
 - Bidimensional ([OpenAi Gym](https://github.com/openai/gym)) and tridimensional environments ([ViZDoom](https://github.com/mwydmuch/ViZDoom)) for training and testing the agent.
-- Two exclusive maps (ViZDoom) simulating a mobile robotics problem.
-- Configuration of the training/testing of an agent via terminal commands or configuration files .cfg (more information in the sections: examples and documentation)
+- [Two exclusive maps (ViZDoom) simulating a mobile robotics problem](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/map.md).
+- Configuration of the training/testing of an agent via terminal commands or configuration files .cfg (more information in the sections: [examples](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/examples.md) and [documentation-parameters](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/doc.md))
 - Storage of training information in .csv files (more details here) and neural network's weights as a .h5 file.
-- Ease and robustness to define the simulation parameters without the need of changing the main code (See section [cfg files]).
-- Ease in the creation of network architecture without the need of changing the main code (See section [Defining our own network achitecture]).
+- Ease and robustness to define the simulation parameters without the need of changing the main code (See section [cfg files](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/cfg.md)).
+- Ease in the creation of network architecture without the need of changing the main code (See section [Defining your own neural network architecture](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/nn.md)).
 - Simulation with colorful or monochromatic frames (more details here).
 - Storage of episodes over the training and states over the testing as animated images .gif.
-- Pre-trained weights for the ViZDoom map *labyrinth* (more details here).
+- Pre-trained weights for the ViZDoom map *labyrinth* (more details [here](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/info-weights.md)).
 
 ## <a name="performance"></a>  Performance 
 During the algorithm development, it was sought the best ways to improve the processing of frames per second. The part that demands the greater amount of time in the processing is the neural networks’ utilization. During the calculation of the neural networks training error, we need the results from both neural networks Q and Q_target for all N samples taken from the replay memory. Thus, this part of the code was thought in a way that it could take full advantage of the vectorized computation, so python *for loops* were replaced by Numpy vectorization, and later changed to Tensorflow vectorization. Thus, if the user has a GPU, the code will take advantage of the massive parallelism provided by the GPU in order to get the faster execution of the algorithm.
@@ -53,7 +53,12 @@ An important point to be emphasized in the parallel approach is the fact that it
 
 ## Documentation
 - [Installation](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/installation.md)
-
+- [Documentation-parameters](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/doc.md)
+- [Configuration files .CFG](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/cfg.md)
+- [Defining your own neural network architecture](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/nn.md)
+- [Information about the exclusive ViZDoom maps](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/map.md)
+- [Information about the pre-trained weights](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/info-weights.md)
+- [Examples](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/examples.md)
 
 ## References 
 If this repository was useful for your research, please consider citing:
