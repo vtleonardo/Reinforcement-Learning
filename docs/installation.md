@@ -21,7 +21,7 @@ To install the GPU version of the Tensorflow
 ````
 conda install tensorflow-gpu
 ````
-For the rest of the packages:
+For the rest of the packages
 ````
 conda install keras
 conda install pandas
