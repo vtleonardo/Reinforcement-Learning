@@ -70,7 +70,7 @@ python Base_agent.py --agent_name "DQNPong30" --num_simul_frames 1000000 --lr 1e
 Both options will train an agent with the hyperparameters specified in the articles above with a random seed fixed in 1 during 1 million frames, as can be seen in the summary presented below.  **Always check the summary presented by the scripts in the begin of the simulation to see if all your desired configuration is right**.
 
 <p align="center">
- <img src="https://raw.githubusercontent.com/Leonardo-Viana/Reinforcement-Learning/master/docs/images/summary-pong30.png" height="90%" width="90%">
+ <img src="https://raw.githubusercontent.com/Leonardo-Viana/Reinforcement-Learning/master/docs/images/summary-pong30.png" height="100%" width="100%">
 </p>
 
 ## Traning an agent with ViZDoom
@@ -102,7 +102,7 @@ python Base_agent.py --env Doom --agent_name grayh4-LSTM --config_file_path ../D
 ````
 With these configurations, the script will train an agent called "gray-LSTM" in the map labyrinth with the DRQN architecture during 5 million frames. This simulation takes advantage of the [multithreading mode](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/README_eng.md#--performance) to speed up the simulation. The summary of this training can be seen below:
 <p align="center">
- <img src="https://raw.githubusercontent.com/Leonardo-Viana/Reinforcement-Learning/master/docs/images/summary-doomDRQN.png" height="70%" width="70%">
+ <img src="https://raw.githubusercontent.com/Leonardo-Viana/Reinforcement-Learning/master/docs/images/summary-doomDRQN.png" height="100%" width="100%">
 </p>
 
 ## Testing a trained agent
@@ -132,7 +132,42 @@ python Base_agent.py --agent_mode test --env Doom --config_file_path ../DoomScen
 
 The simulation summary can be seen below.
 <p align="center">
- <img src="https://raw.githubusercontent.com/Leonardo-Viana/Reinforcement-Learning/master/docs/images/summary-doomDRQN-test.png" height="70%" width="70%">
+ <img src="https://raw.githubusercontent.com/Leonardo-Viana/Reinforcement-Learning/master/docs/images/summary-doomDRQN-test.png" height="100%" width="100%">
 </p>
 
-## 
+## Transfer Learning
+Using the options of configuration possibles to the scripts in this repository, we can apply the transfer learning technique. In other words, we can load an agent that was trained in one environment and see how much time takes to it to master a new environment. The following example shows an agent trained in the map called labyrinth, learning to navigate in another map called labyrinth_test with more constrained hyperparameters.
+```
+agent_mode = train
+env = Doom
+agent_name = grayh4-LSTM
+network_model = DRQN
+is_recurrent = True
+load_weights = True
+weights_load_path = ../Weights/Pretrained/Doom/Labyrinth/grayh4-LSTM-weights-Doom-labyrinth-5000000.h5
+config_file_path = ../DoomScenarios/labyrinth_test.cfg
+optimizer = adam
+lr = 1e-4
+num_random_play = 0
+epsilon = 0.05
+num_states_stored = 50000
+num_simul_frames = 500000
+steps_save_weights = 50000
+history_size = 4
+to_save_episodes = True
+steps_save_episodes = 100
+multi_threading = True
+```
+After we save the file, we just need to execute the Base_agent.py script without any argument:
+````
+python Base_agent.py
+````
+Another option to configure our scripts is to use the terminal commands directly with script execution:
+````
+python Base_agent.py --agent_mode train --env Doom --agent_name grayh4-LSTM --network_model DRQN --is_recurrent True --load_weights True --weights_load_path ../Weights/Pretrained/Doom/Labyrinth/grayh4-LSTM-weights-Doom-labyrinth-5000000.h5 --config_file_path ../DoomScenarios/labyrinth_test.cfg --optimizer adam --lr 1e-4 --num_random_play 0 --epsilon 0.05 --num_states_stored 50000 --num_simul_frames 500000 --steps_save_weights 50000 --history_size 4 --to_save_episodes True --steps_save_episodes 100 --multi_threading True 
+````
+The simulation summary can be seen below.
+<p align="center">
+ <img src="https://raw.githubusercontent.com/Leonardo-Viana/Reinforcement-Learning/master/docs/images/summary-doomDRQN-transfer.png" height="100%" width="100%">
+</p>
+
