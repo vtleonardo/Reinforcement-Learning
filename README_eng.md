@@ -5,9 +5,13 @@ The reinforcement learning's goal is, basically, how to teach artificial intelli
 to map the current state in the environment in actions, in such a way to maximize the total reward at end of the task. 
 In the DQN case, the states are images from the environment's screen. Therefore, the deep neural network is trained while the agent
 interacts with the environment (via reinforcement learning), in such a way to transform these high dimensional data (images) in 
-actions (buttons to be pressed). The Deep Recurrent Q-Network (DRQN) is a version of the DQN introduced by the article [Deep recurrent q-learning 
-for partially observable mdps[2]](#[2]) that replaces the first fully connected layer of the DQN by one of the type recurrent (LSTM). Thereby, the agent trained by this 
-algorithm deals better with partial observable environments, such as the tridimensional maps from ViZDoom.   
+actions (buttons to be pressed). The Deep Recurrent Q-Network (DRQN) is a version of the DQN introduced by the article [Deep recurrent q-learning for partially observable mdps[2]](#[2]) that replaces the first fully connected layer of the DQN by one of the type recurrent (LSTM). Thereby, the agent trained by this algorithm deals better with partial observable environments, such as the tridimensional maps from ViZDoom. 
+
+Although there are numerous scripts that implement the algorithms described above, these implementations are simple and most of the time there is no attention with performance, in other words, how much time that the simulation will take to conclude and consequently the electrical energy spent on the process of training the agent. To optimize the performance of the algorithms, the scripts in this repository take full advantage of vectorized computation by the frameworks Numpy and Tensorflow to reduce the time of simulation spent on training the agents. Furthermore, it was developed a method to reduce considerably the time necessary to the simulation, some examples had concluded the training spending 30% less time. This method consists in doing a simple parallelization of the algorithms DQN and DRQN (more details about the optimizations in performance can be seen in the topic [performance]((#performance))).
+
+## <a name="features"></a> Features
+ 
+## <a name="performance"></a>  Performance 
 
 ## References 
 If this repository was useful for your research, please consider citing:
