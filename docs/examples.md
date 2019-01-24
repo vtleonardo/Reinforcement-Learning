@@ -67,9 +67,9 @@ Another option to configure our scripts is to use the terminal commands directly
 ````
 python Base_agent.py --agent_name "DQNPong30" --num_simul_frames 1000000 --lr 1e-4 --e_min 0.02 --e_lin_decay 100000 --target_update 1000 --num_states_stored 100000 --num_random_play 10000 --optimizer adam  --to_save_episodes True --random_seed 1
 ````
-Both options will train an agent with the hyperparameters specified in the articles above with a random seed fixed in 1 during 1 million frames, as can be seen in the summary presented below.  **Always check the summary presented by the scripts in the begin of the simulation to see if all your desired configuration is set**.
+Both options will train an agent with the hyperparameters specified in the articles above with a random seed fixed in 1 during 1 million frames, as can be seen in the summary presented below.  **Always check the summary presented by the scripts in the begin of the simulation to see if all your desired configuration is right**.
 
 <p align="center">
- <img src="https://raw.githubusercontent.com/Leonardo-Viana/Reinforcement-Learning/master/docs/images/summary-pong30.png" height="70%" width="70%">
+ <img src="https://raw.githubusercontent.com/Leonardo-Viana/Reinforcement-Learning/master/docs/images/summary-pong30.png" height="90%" width="90%">
 </p>
 
