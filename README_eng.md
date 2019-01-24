@@ -11,9 +11,45 @@ Although there are numerous scripts that implement the algorithms described abov
 
 Another important aspect that should be taken into account besides the performance is the user experience. The scripts in this repository were developed in such a way to give more flexibility in the choice of the simulation's parameters, without the need of changing the main code. The user has total control over the simulation, being able to: define his own neural network architectures, simulate with color frames, specify the size of the frames, choose between any of the Atari 2600 environments offered by the framework GYM or any of the tridimensional maps of ViZDoom platform. Besides that,  this repository presents the possibility of visualization the trained agent with the test mode, it is possible to choose to render or not the environment to the user, the continuation of training, transfer learning and others (more details in [features](#features)).
 
+To the developers and interested people, it is important to emphasize that all the codes in this repository - functions, and classes - are commented out to facilitate understanding. 
+
 ## <a name="features"></a> Features
- 
+- Parallel execution mode for the reinforcement learning algothrims is available (some examples are 30% faster with this mode).
+- Bidimensional and tridimensional environments available for training and testing the agent.
+- Two exclusive maps for ViZDoom simulating a mobile robotics problem.
+- Configuration of the training/testing of an agent via terminal commands or configuration files .cfg (more information in the sections: examples and documentation)
+- Storage of training information in .csv files (more details here) and neural network's weights as a .h5 file.
+- Ease and robustness to define the simulation parameters without the need of changing the main code (See section [cfg files]).
+- Ease in the creation of network architecture without the need of changing the main code (See section [Defining our own network achitecture]).
+- Simulation with colorful or monochromatic frames (more details here).
+- Storage of episodes over the training and states over the testing as animated images .gif.
+- Pre-trained weights for the ViZDoom map *labyrinth* (more details here).
+
 ## <a name="performance"></a>  Performance 
+During the algorithm development, it was sought the best ways to improve the processing of frames per second. The part that demands the greater amount of time in the processing is the neural networks’ utilization. During the calculation of the neural networks training error, we need the results from both neural networks Q and Q_target for all N samples taken from the replay memory. Thus, this part of the code was thought in a way that it could take full advantage of the vectorized computation, so python *for loops* were replaced by Numpy vectorization, and later changed to Tensorflow vectorization. Thus, if the user has a GPU, the code will take advantage of the massive parallelism provided by the GPU in order to get the faster execution of the algorithm.
+
+Besides the use of neural networks, the part that uses the most processing resources is the sampling of experiences from the replay memory as the replay memory is fulfilled. For attenuation of this problem, parallel processing (multi-threading) approach was developed for the DQN and DRQN algorithms. The parallel mode basically consists of sampling the experiences from the replay memory in parallel while the decision algorithm is executed. Thus, when we arrive at the training part of the neural network, the computational cost of the samples has already been executed. The following figure demonstrates how the serial (single-threading) and parallel (multi-threading) approaches are performed.
+
+<p align="center">
+ <img src="https://raw.githubusercontent.com/Leonardo-Viana/Reinforcement-Learning/master/docs/images/multi-threading.png" height="100%" width="100%">
+</p>
+
+Following, there are some comparative images between the performances in frames/second of the serial mode and the parallel mode for an agent trained in the game of Atari 2600 Pong with 2 million frames. As can be seen, the parallel version takes 30% less simulation time to conclude the training in comparison to the standard version (serial version).
+
+|Type of processing|Average Frames/second  |Simulation time         |
+| ---              | ---                   | ---                    |
+| Serial           | 94.9                  | 5 hours and 54 minutes |
+| Parallel         | 66.39                 | 8 hours and 23 minutes |   
+
+An important point to be emphasized in the parallel approach is the fact that it introduces a sampling delay of one sample in the algorithm. In other words, the experience of one iteration *t* can only be sampled in the next iteration *t + 1*. This is due to the fact that the sampling will already have occurred at the time the agent is interacting with the environment. However, as we can see from the training images below, the learning process is minimally affected. In fact, as all experiments are sampled evenly from the replay memory, with a full memory with 100000 experiences, we have that the probability of an experience to be chosen is 0.001%. Thus, it can be concluded that the learning process of the DQN and DRQN algorithms is robust enough so it can’t be affected by this delay of one sampling. Thus, multi-threading mode is recommended for simulations performed using the scripts in this repository due to their faster processing.
+
+<p align="center">
+ <img src="https://raw.githubusercontent.com/Leonardo-Viana/Reinforcement-Learning/master/docs/images/rewards_q.png" height="100%" width="100%">
+</p>
+<p align="center">
+ <img src="https://raw.githubusercontent.com/Leonardo-Viana/Reinforcement-Learning/master/docs/images/loss_fps.png" height="100%" width="100%">
+</p>
+* Performance tests were performed on a i7 4790K cpu with gpu nvidia geforce gtx 970 * 
 
 ## References 
 If this repository was useful for your research, please consider citing:
