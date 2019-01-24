@@ -74,7 +74,7 @@ Both options will train an agent with the hyperparameters specified in the artic
 </p>
 
 ## Traning an agent with ViZDoom
-This repository has in its dependencies two maps for the game Doom, labyrinth, and labyrinth test, that have the goal to teach the agent the tridimensional navigation (more detail in the topic [exclusive ViZDoom maps](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/map.md)). To train the agent in the map labyrinth using the DRQN neural network architecture (proposed by [Deep recurrent q-learning for partially observable mdps](https://arxiv.org/abs/1507.06527)[[2]](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/README_eng.md#[2]))) we can use the following code in the .cfg file:
+This repository has in its dependencies two maps for the game Doom, labyrinth, and labyrinth test, that have the goal to teach the agent the tridimensional navigation (more detail in the topic [exclusive ViZDoom maps](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/map.md)). To train the agent in the map labyrinth using the DRQN neural network architecture (proposed by [Deep recurrent q-learning for partially observable mdps](https://arxiv.org/abs/1507.06527)[[2]](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/README_eng.md#[2])) we can use the following code in the .cfg file:
 ````
 env = Doom
 config_file_path = ../DoomScenarios/labyrinth.cfg
