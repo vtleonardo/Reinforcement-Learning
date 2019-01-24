@@ -14,8 +14,8 @@ Another important aspect that should be taken into account besides the performan
 To the developers and interested people, it is important to emphasize that all the codes in this repository - functions, and classes - are commented out to facilitate understanding. 
 
 ## <a name="features"></a> Features
-- Parallel execution mode for the reinforcement learning algothrims is available (some examples are 30% faster with this mode).
-- Bidimensional and tridimensional environments available for training and testing the agent.
+- [Parallel execution mode for the reinforcement learning algothrims is available](#performance) (some examples are 30% faster with this mode).
+- Bidimensional ([OpenAi Gym](https://github.com/openai/gym)) and tridimensional environments ([ViZDoom](https://github.com/mwydmuch/ViZDoom)) available for training and testing the agent.
 - Two exclusive maps for ViZDoom simulating a mobile robotics problem.
 - Configuration of the training/testing of an agent via terminal commands or configuration files .cfg (more information in the sections: examples and documentation)
 - Storage of training information in .csv files (more details here) and neural network's weights as a .h5 file.
@@ -50,6 +50,10 @@ An important point to be emphasized in the parallel approach is the fact that it
  <img src="https://raw.githubusercontent.com/Leonardo-Viana/Reinforcement-Learning/master/docs/images/loss_fps.png" height="100%" width="100%">
 </p>
 * Performance tests were performed on a i7 4790K cpu with gpu nvidia geforce gtx 970 * 
+
+## Documentation
+
+
 
 ## References 
 If this repository was useful for your research, please consider citing:
