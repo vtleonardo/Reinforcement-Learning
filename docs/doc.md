@@ -1,5 +1,5 @@
 # Documentation
-### initial configurations
+### Initial configurations
 * [agent_mode](#agent_mode)
 * [agent_name](#agent_name)
 * [env](#env)
