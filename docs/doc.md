@@ -56,7 +56,7 @@
 | :--                 | :--                       |
 | **CFG     file**    | **`agent_mode = <value>`**|
 | Type                | string                    |
-| possible choices    | train, test               |
+| Possible choices    | train, test               |
 | **Default value**   | **train**                 |
 
 Variável que escolhe o modo de execução do algoritmo de reinforcement learning. Existem duas opções disponíveis: train e test. 
@@ -71,9 +71,9 @@ A opção de **test** é usada para testar um agente que já aprendeu dentro de 
 
 | Terminal command    | `--agent_name <value>`    |
 | :--                 | :--                       |
-| **Arquivo .cfg**    | **`agent_name = <value>`**|
-| Tipo                | string                    |
-| **Valor default**   | **DQN**                   |
+| **CFG file **    | **`agent_name = <value>`**|
+| Type                | string                    |
+| **Default value**   | **DQN**                   |
 
 
 Nome do agente. Além disso, é a identificação que será utilizada para nomear os arquivos que serão salvos (Weights, Plot, Episódios, Estados).
@@ -84,9 +84,9 @@ Nome do agente. Além disso, é a identificação que será utilizada para nomea
 
 | Terminal command    | `--env <value>`           |
 | :--                 | :--                       |
-| **Arquivo .cfg**    | **`env = <value>`**       |
-| Tipo                | string                    |
-| **Valor default**   | **PongNoFrameskip-v4**    |
+| **CFG file **    | **`env = <value>`**       |
+| Type                | string                    |
+| **Default value**   | **PongNoFrameskip-v4**    |
 
 
 Nome do ambiente (environment) a ser executado. Atualmente são suportados todos os jogos de atari disponíveis pela biblioteca OpenAi gym e o ambiente tridimensional ViZDoom.
@@ -101,10 +101,10 @@ Para executar o ambiente VizDoom, basta enviar para a variável env o valor doom
 
 | Terminal command     | `--include_score <value>`    |
 | :--                  | :--                          |
-| **Arquivo .cfg**     | **`include_score = <value>`**|
-| Tipo                 | bool                         |
-| **Valor default**    | **False**                    |
-| Exclusivo do ambiente| ATARI GYM                    |
+| **CFG file **     | **`include_score = <value>`**|
+| Type                 | bool                         |
+| **Default value**    | **False**                    |
+| Environtment exclusive| ATARI GYM                    |
 
 
 Variável **exclusiva dos jogos de atari da biblioteca GYM** que controla se o score dos jogos de atari será incluído ou não nos frames/estados enviados pela biblioteca open ai gym. Por exemplo no jogo Pong, o score (pontuação) é localizado na parte superior da tela do jogo de atari.
@@ -115,13 +115,13 @@ Variável **exclusiva dos jogos de atari da biblioteca GYM** que controla se o s
 
 | Terminal command     | `--config_file_path <value>`       |
 | :--                  | :--                                |
-| **Arquivo .cfg**     | **`config_file_path = <value>`**   |
-| Tipo                 | string (path do sistema)           |
-| **Valor default**    | **../DoomScenarios/labyrinth.cfg** |
-| Exclusivo do ambiente| ViZDOOM                            |
+| **CFG file **     | **`config_file_path = <value>`**   |
+| Type                 | string (path do sistema)           |
+| **Default value**    | **../DoomScenarios/labyrinth.cfg** |
+| Environtment exclusive| ViZDOOM                            |
 
 
-Caminho do sistema operacional (path) para o arquivo que carrega a fase de escolha do VizDoom. A configuração da fase do VizDoom no qual o agente será treinado é feita por um arquivo .cfg, cada fase do VizDoom deverá possuir um arquivo .cfg correspondente. Portanto, para treinarmos os agentes em uma fase específica do VizDoom devemos carregar seu arquivo .cfg enviando para essa variável o seu caminho dentro do sistema operacional.
+Caminho do sistema operacional (path) para o arquivo que carrega a fase de escolha do VizDoom. A configuração da fase do VizDoom no qual o agente será treinado é feita por um CFG file , cada fase do VizDoom deverá possuir um CFG file  correspondente. Portanto, para treinarmos os agentes em uma fase específica do VizDoom devemos carregar seu CFG file  enviando para essa variável o seu caminho dentro do sistema operacional.
 
 Para mais detalhes sobre os arquivos .cfg usados pela VizDoom, consulte esse [link](https://github.com/mwydmuch/ViZDoom/blob/master/doc/ConfigFile.md)
 
@@ -131,9 +131,9 @@ Para mais detalhes sobre os arquivos .cfg usados pela VizDoom, consulte esse [li
 
 | Terminal command     | `--network_model <value>`          |
 | :--                  | :--                                |
-| **Arquivo .cfg**     | **`network_model = <value>`**      |
-| Tipo                 | string                             |
-| **Valor default**    | **DQN**                            |
+| **CFG file **        | **`network_model = <value>`**      |
+| Type                 | string                             |
+| **Default value**    | **DQN**                            |
 
 Nome da função que define a arquitetura da rede neural dentro do arquivo [Networks.py](Networks.py). Para mais detalhes sobre a implementação de sua própria arquitetura de rede neural consultar o tópico: [Definindo a arquitetura da rede neural](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/ptbr/nn_ptbr.md)
 
@@ -143,9 +143,9 @@ Nome da função que define a arquitetura da rede neural dentro do arquivo [Netw
 
 | Terminal command     | `--normalize_input <value>`        |
 | :--                  | :--                                |
-| **Arquivo .cfg**     | **`normalize_input = <value>`**    |
-| Tipo                 | bool                               |
-| **Valor default**    | **True**                           |
+| **CFG file **        | **`normalize_input = <value>`**    |
+| Type                 | bool                               |
+| **Default value**    | **True**                           |
 
 Variável que controla se é para normalizar ou não pixels de entrada da rede neural.
 
@@ -155,21 +155,21 @@ Variável que controla se é para normalizar ou não pixels de entrada da rede n
 
 | Terminal command     | `--is_recurrent <value>`        |
 | :--                  | :--                             |
-| **Arquivo .cfg**     | **`is_recurrent = <value>`**    |
-| Tipo                 | bool                            |
-| **Valor default**    | **False**                       |
+| **CFG file **     | **`is_recurrent = <value>`**    |
+| Type                 | bool                            |
+| **Default value**    | **False**                       |
 
-Variável que diz ao script principal se a arquitetura de rede neural possui ou não camadas do tipo recorrente. Logo, se o seu modelo possuir camadas deste tipo, essa variável tem que ser enviada com o valor **True** em conjunto com a variável **network_model**, se não o script jogará uma exceção. Caso seu modelo não possua camadas do tipo recorrente, essa variável não precisa ser mandada, já que seu valor padrão é False.
+Variável que diz ao script principal se a arquitetura de rede neural possui ou não camadas do Type recorrente. Logo, se o seu modelo possuir camadas deste Type, essa variável tem que ser enviada com o valor **True** em conjunto com a variável **network_model**, se não o script jogará uma exceção. Caso seu modelo não possua camadas do Type recorrente, essa variável não precisa ser mandada, já que seu valor padrão é False.
 
 ---
 
 ### <a name="frame_skip"></a> `frame_skip`
 
-| Comando de Terminal  | `--frame_skip <value>`        |
+| Terminal command     | `--frame_skip <value>`        |
 | :--                  | :--                           |
-| **Arquivo .cfg**     | **`frame_skip = <value>`**    |
-| Tipo                 | int                           |
-| **Valor default**    | **4**                         |
+| **CFG file **        | **`frame_skip = <value>`**    |
+| Type                 | int                           |
+| **Default value**    | **4**                         |
 
 Um frame válido será considerado apenas a cada \<frame_skip\> frames. Por exemplo, com um frame_skip igual a 4, somente o último frame de uma sequência de 4 frames renderizados será enviado ao código para a criação do estado. Os outros 3 frames são "descartados". Uma excelente discussão esclarecendo as ambiguidades do artigo do DQN em relação as variáveis frame_skip e [history_size](#history_size) pode ser vista [aqui](https://danieltakeshi.github.io/2016/11/25/frame-skipping-and-preprocessing-for-deep-q-networks-on-atari-2600-games/)[[4]](https://github.com/Leonardo-Viana/Reinforcement-Learning#%5B4%5D). O termo frame em outros tópicos se refere exclusivamente aos frames válidos que são considerados pelo script.
 
@@ -177,11 +177,11 @@ Um frame válido será considerado apenas a cada \<frame_skip\> frames. Por exem
 
 ### <a name="num_simul_frames"></a> `num_simul_frames`
 
-| Comando de Terminal  | `--num_simul_frames <value>`        |
+| Terminal command     | `--num_simul_frames <value>`        |
 | :--                  | :--                                 |
-| **Arquivo .cfg**     | **`num_simul_frames = <value>`**    |
-| Tipo                 | int                                 |
-| **Valor default**    | **10000000**                        |
+| **CFG file **        | **`num_simul_frames = <value>`**    |
+| Type                 | int                                 |
+| **Default value**    | **10000000**                        |
 
 Número de frames no qual o agente será treinado. 
 
@@ -189,11 +189,11 @@ Número de frames no qual o agente será treinado.
 
 ### <a name="discount_rate"></a> `discount_rate`
 
-| Comando de Terminal  | `--discount_rate <value>`           |
+| Terminal command     | `--discount_rate <value>`           |
 | :--                  | :--                                 |
-| **Arquivo .cfg**     | **`discount_rate = <value>`**       |
-| Tipo                 | float                               |
-| **Valor default**    | **0.99**                            |
+| **CFG file **        | **`discount_rate = <value>`**       |
+| Type                 | float                               |
+| **Default value**    | **0.99**                            |
 
 Fator de desconto (discount rate) gamma. 
 
@@ -201,11 +201,11 @@ Fator de desconto (discount rate) gamma.
 
 ### <a name="lr"></a> `lr`
 
-| Comando de Terminal  | `--lr <value>`           |
+| Terminal command     | `--lr <value>`           |
 | :--                  | :--                      |
-| **Arquivo .cfg**     | **`lr = <value>`**       |
-| Tipo                 | float                    |
-| **Valor default**    | **0.00025**              |
+| **CFG file **        | **`lr = <value>`**       |
+| Type                 | float                    |
+| **Default value**    | **0.00025**              |
 
 Taxa de aprendizado das redes neurais. 
 
@@ -213,11 +213,11 @@ Taxa de aprendizado das redes neurais.
 
 ### <a name="epsilon"></a> `epsilon`
 
-| Comando de Terminal  | `--epsilon <value>`      |
+| Terminal command     | `--epsilon <value>`      |
 | :--                  | :--                      |
-| **Arquivo .cfg**     | **`epsilon = <value>`**  |
-| Tipo                 | float                    |
-| **Valor default**    | **1.0**                  |
+| **CFG file **        | **`epsilon = <value>`**  |
+| Type                 | float                    |
+| **Default value**    | **1.0**                  |
 
 **Valor inicial** da variável épsilon da política de aprendizado e-greedy (epsilon-greedy). Essa variável balanceia o quanto de exploração de novos conhecimentos vs exploração de conhecimentos prévios o agente deve realizar. Essa variável decai ao longo da simulação. 
 
@@ -225,11 +225,11 @@ Taxa de aprendizado das redes neurais.
 
 ### <a name="e_min"></a> `e_min`
 
-| Comando de Terminal  | `--e_min <value>`        |
+| Terminal command     | `--e_min <value>`        |
 | :--                  | :--                      |
-| **Arquivo .cfg**     | **`e_min = <value>`**    |
-| Tipo                 | float                    |
-| **Valor default**    | **0.1**                  |
+| **CFG file **        | **`e_min = <value>`**    |
+| Type                 | float                    |
+| **Default value**    | **0.1**                  |
 
 **Valor final** da variável épsilon da política de aprendizado e-greedy (épsilon-greedy) após o decaimento.
 
@@ -237,35 +237,35 @@ Taxa de aprendizado das redes neurais.
 
 ### <a name="decay_mode"></a> `decay_mode`
 
-| Comando de Terminal | `--decay_mode <value>`    |
+| Terminal command    | `--decay_mode <value>`    |
 | :--                 | :--                       |
-| **Arquivo .cfg**    | **`decay_mode = <value>`**|
-| Tipo                | string                    |
-| Escolhas possíveis  | linear, exponential       |
-| **Valor default**   | **linear**                |
+| **CFG file **       | **`decay_mode = <value>`**|
+| Type                | string                    |
+| Possible choices    | linear, exponential       |
+| **Default value**   | **linear**                |
 
-Variável que escolhe o tipo de decaimento da variável épsilon. Existem dois modos possíveis de decaimento da variável épsilon nesse repositório, o modo linear e exponencial.
+Variável que escolhe o Type de decaimento da variável épsilon. Existem dois modos possíveis de decaimento da variável épsilon nesse repositório, o modo linear e exponencial.
 
 ---
 
 ### <a name="e_lin_decay"></a> `e_lin_decay`
 
-| Comando de Terminal  | `--e_lin_decay <value>`        |
+| Terminal command     | `--e_lin_decay <value>`        |
 | :--                  | :--                            |
-| **Arquivo .cfg**     | **`e_lin_decay = <value>`**    |
-| Tipo                 | int                            |
-| **Valor default**    | **1000000**                    |
+| **CFG file **        | **`e_lin_decay = <value>`**    |
+| Type                 | int                            |
+| **Default value**    | **1000000**                    |
 
 Número de frames no qual o **decaimento linear** de épsilon chegará ao seu valor final. Usando os valores padrão, a variável épsilon decairá linearmente de 1.0 (100% de jogadas aleatórias) para 0.1 (10% de jogadas aleatórias) em 1 milhão de frames.
 
 ---
 ### <a name="e_exp_decay"></a> `e_exp_decay`
 
-| Comando de Terminal  | `--e_exp_decay <value>`        |
+| Terminal command     | `--e_exp_decay <value>`        |
 | :--                  | :--                            |
-| **Arquivo .cfg**     | **`e_exp_decay = <value>`**    |
-| Tipo                 | int                            |
-| **Valor default**    | **200000**                     |
+| **CFG file **        | **`e_exp_decay = <value>`**    |
+| Type                 | int                            |
+| **Default value**    | **200000**                     |
 
 Constante de tempo do **decaimento exponencial** de épsilon, em outras palavras, em uma constante de tempo o valor de épsilon terá decaído em 63.2% do seu valor inicial. O decaimento exponencial se dará da seguinte forma:
 
@@ -283,11 +283,11 @@ Assim, em aproximadamente 5 constantes de tempo, o valor de épsilon chega ao se
 
 ### <a name="target_update"></a> `target_update`
 
-| Comando de Terminal  | `--target_update <value>`      |
+| Terminal command     | `--target_update <value>`      |
 | :--                  | :--                            |
-| **Arquivo .cfg**     | **`target_update = <value>`**  |
-| Tipo                 | int                            |
-| **Valor default**    | **10000**                      |
+| **CFG file **        | **`target_update = <value>`**  |
+| Type                 | int                            |
+| **Default value**    | **10000**                      |
 
 Número de frames no qual os parâmetros da Q-target network serão atualizados com os valores da Q-network.
 
@@ -295,11 +295,11 @@ Número de frames no qual os parâmetros da Q-target network serão atualizados 
 
 ### <a name="num_states_stored"></a> `num_states_stored`
 
-| Comando de Terminal  | `--num_states_stored <value>`      |
+| Terminal command     | `--num_states_stored <value>`      |
 | :--                  | :--                                |
-| **Arquivo .cfg**     | **`num_states_stored = <value>`**  |
-| Tipo                 | int                                |
-| **Valor default**    | **1000000**                        |
+| **CFG file **        | **`num_states_stored = <value>`**  |
+| Type                 | int                                |
+| **Default value**    | **1000000**                        |
 
 Número de experiências (estados) que serão armazenadas na replay memory.
 
@@ -307,11 +307,11 @@ Número de experiências (estados) que serão armazenadas na replay memory.
 
 ### <a name="batch_size"></a> `batch_size`
 
-| Comando de Terminal  | `--batch_size <value>`      |
+| Terminal command     | `--batch_size <value>`      |
 | :--                  | :--                         |
-| **Arquivo .cfg**     | **`batch_size = <value>`**  |
-| Tipo                 | int                         |
-| **Valor default**    | **32**                      |
+| **CFG file **        | **`batch_size = <value>`**  |
+| Type                 | int                         |
+| **Default value**    | **32**                      |
 
 Tamanho do batch que será utilizado para treinar as redes neurais. Em outras palavras, o número de experiências (estados) que serão amostrados da replay memory e usados para treinar a rede neural.
 
@@ -319,11 +319,11 @@ Tamanho do batch que será utilizado para treinar as redes neurais. Em outras pa
 
 ### <a name="input_shape"></a> `input_shape`
 
-| Comando de Terminal  | `--input_shape <value>`      |
+| Terminal command     | `--input_shape <value>`      |
 | :--                  | :--                          |
-| **Arquivo .cfg**     | **`input_shape = <value>`**  |
-| Tipo                 | string                       |
-| **Valor default**    | **"84,84"**                  |
+| **CFG file **        | **`input_shape = <value>`**  |
+| Type                 | string                       |
+| **Default value**    | **"84,84"**                  |
 
 Dimensões nas quais os frames provindos das bibliotecas GYM/ViZDoom serão redimensionados e então amontoados para formarem as experiências/estados que serão utilizados pelo algoritmo de reinforcement learning. Os valores devem ser colocados entre aspas e com cada dimensão separada por vírgula ou espaço, seguindo o template: **"Largura, Altura, Número de canal de cores"**. Caso apenas Largura e Altura sejam enviados, é assumido que a imagem será em escala de cinza (número de canal de cores = 1). Por exemplo, para treinar o algoritmo com estados coloridos de tamanho 64 x 64 devemos enviar a essa variável o seguinte valor: "64,64,3".  
 
@@ -331,11 +331,11 @@ Dimensões nas quais os frames provindos das bibliotecas GYM/ViZDoom serão redi
 
 ### <a name="history_size"></a> `history_size`
 
-| Comando de Terminal  | `--history_size <value>`      |
+| Terminal command     | `--history_size <value>`      |
 | :--                  | :--                           |
-| **Arquivo .cfg**     | **`history_size = <value>`**  |
-| Tipo                 | int                           |
-| **Valor default**    | **4**                         |
+| **CFG file **        | **`history_size = <value>`**  |
+| Type                 | int                           |
+| **Default value**    | **4**                         |
 
 Número de frames em sequência que serão amontoados para formarem uma experiência/estado. Desta forma, o agente possuirá uma "memória", e conseguirá por exemplo saber a direção, velocidade e aceleração de objetos no ambiente. No caso da arquitetura DQN, os estados serão um volume único com formato de "Largura, Altura, Número de canal de cores * History Size". Já na arquitetura DRQN, os estados serão uma sequência de 4 volumes com formato "Largura, Altura, Número de canal de cores". Por exemplo, considere um batch de 32 amostras colhidas da replay memory, no qual cada estado é formado de frames em escala de cinza com tamanho de 84x84 pixels. A tabela a seguir mostra o formato dos tensores que serão enviados às devidas redes neurais.
 
@@ -348,46 +348,46 @@ Número de frames em sequência que serão amontoados para formarem uma experiê
 
 ### <a name="num_random_play"></a> `num_random_play`
 
-| Comando de Terminal  | `--num_random_play <value>`      |
+| Terminal command     | `--num_random_play <value>`      |
 | :--                  | :--                              |
-| **Arquivo .cfg**     | **`num_random_play = <value>`**  |
-| Tipo                 | int                              |
-| **Valor default**    | **50000**                        |
+| **CFG file **        | **`num_random_play = <value>`**  |
+| Type                 | int                              |
+| **Default value**    | **50000**                        |
 
 Número de estados gerados por jogadas aleatórias feitas pelo agente antes de começar o treinamento das redes neurais com o propósito de preencher a replay memory.
 
 ---
 ### <a name="loss_type"></a> `loss_type`
 
-| Comando de Terminal | `--loss_type <value>`     |
+| Terminal command    | `--loss_type <value>`     |
 | :--                 | :--                       |
-| **Arquivo .cfg**    | **`loss_type = <value>`** |
-| Tipo                | string                    |
-| Escolhas possíveis  | huber, MSE                |
-| **Valor default**   | **huber**                 |
+| **CFG file **       | **`loss_type = <value>`** |
+| Type                | string                    |
+| Possible choices    | huber, MSE                |
+| **Default value**   | **huber**                 |
 
-Tipo de loss function que será utilizada para treinar as redes neurais do agente.
+Type de loss function que será utilizada para treinar as redes neurais do agente.
 
 ---
 ### <a name="optimizer"></a> `optimizer`
 
-| Comando de Terminal | `--optimizer <value>`     |
+| Terminal command    | `--optimizer <value>`     |
 | :--                 | :--                       |
-| **Arquivo .cfg**    | **`optimizer = <value>`** |
-| Tipo                | string                    |
-| Escolhas possíveis  | rmsprop, adam             |
-| **Valor default**   | **rmsprop**               |
+| **CFG file **       | **`optimizer = <value>`** |
+| Type                | string                    |
+| Possible choices    | rmsprop, adam             |
+| **Default value**   | **rmsprop**               |
 
-Tipo de optimizer que será utilizado para treinar as redes neurais do agente.
+Type de optimizer que será utilizado para treinar as redes neurais do agente.
 
 ---
 ### <a name="load_weights"></a> `load_weights`
 
-| Comando de Terminal  | `--load_weights <value>`        |
+| Terminal command     | `--load_weights <value>`        |
 | :--                  | :--                             |
-| **Arquivo .cfg**     | **`load_weights = <value>`**    |
-| Tipo                 | bool                            |
-| **Valor default**    | **False**                       |
+| **CFG file **        | **`load_weights = <value>`**    |
+| Type                 | bool                            |
+| **Default value**    | **False**                       |
 
 Variável que diz ao script principal se é para carregar ou não os pesos de um rede neural de um arquivo externo .h5.
 
@@ -395,11 +395,11 @@ Variável que diz ao script principal se é para carregar ou não os pesos de um
 
 ### <a name="weights_load_path"></a> `weights_load_path`
 
-| Comando de Terminal  | `--weights_load_path <value>`      |
+| Terminal command     | `--weights_load_path <value>`      |
 | :--                  | :--                                |
-| **Arquivo .cfg**     | **`weights_load_path = <value>`**  |
-| Tipo                 | string (path do sistema)           |
-| **Valor default**    | **""**                             |
+| **CFG file **        | **`weights_load_path = <value>`**  |
+| Type                 | string (path do sistema)           |
+| **Default value**    | **""**                             |
 
 
 Caminho do sistema operacional (path) para o arquivo .h5 que contêm os parâmetros das redes neurais a serem carregados. O valor padrão é uma string vazia. **Um parâmetro obrigatório para o TEST MODE**
@@ -408,22 +408,22 @@ Caminho do sistema operacional (path) para o arquivo .h5 que contêm os parâmet
 
 ### <a name="steps_save_weights"></a> `steps_save_weights`
 
-| Comando de Terminal  | `--steps_save_weights <value>`      |
+| Terminal command     | `--steps_save_weights <value>`      |
 | :--                  | :--                                 |
-| **Arquivo .cfg**     | **`steps_save_weights = <value>`**  |
-| Tipo                 | int                                 |
-| **Valor default**    | **50000**                           |
+| **CFG file **        | **`steps_save_weights = <value>`**  |
+| Type                 | int                                 |
+| **Default value**    | **50000**                           |
 
 A cada \<steps_save_weights\> frames os pesos das redes neurais serão salvos no disco em um arquivo .h5.
 
 ---
 ### <a name="path_save_weights"></a> `path_save_weights`
 
-| Comando de Terminal  | `--path_save_weights <value>`      |
+| Terminal command     | `--path_save_weights <value>`      |
 | :--                  | :--                                |
-| **Arquivo .cfg**     | **`path_save_weights = <value>`**  |
-| Tipo                 | string (path do sistema)           |
-| **Valor default**    | **..\Weights**                     |
+| **CFG file **        | **`path_save_weights = <value>`**  |
+| Type                 | string (path do sistema)           |
+| **Default value**    | **..\Weights**                     |
 
 
 Caminho do sistema operacional (path) para a pasta no qual serão salvos os pesos das redes neurais em arquivos de extensão .h5.
@@ -431,11 +431,11 @@ Caminho do sistema operacional (path) para a pasta no qual serão salvos os peso
 ---
 ### <a name="steps_save_plot"></a> `steps_save_plot`
 
-| Comando de Terminal  | `--steps_save_plot <value>`      |
+| Terminal command     | `--steps_save_plot <value>`      |
 | :--                  | :--                                 |
-| **Arquivo .cfg**     | **`steps_save_plot = <value>`**  |
-| Tipo                 | int                                 |
-| **Valor default**    | **10000**                           |
+| **CFG file **        | **`steps_save_plot = <value>`**  |
+| Type                 | int                                 |
+| **Default value**    | **10000**                           |
 
 A cada \<steps_save_plot\> frames as variáveis para plot armazenadas por episódio serão salvas no disco em arquivo .csv. As variáveis por episódio salvas são:
 
@@ -453,11 +453,11 @@ A cada \<steps_save_plot\> frames as variáveis para plot armazenadas por episó
 
 ### <a name="path_save_plot"></a> `path_save_plot`
 
-| Comando de Terminal  | `--path_save_plot <value>`         |
+| Terminal command     | `--path_save_plot <value>`         |
 | :--                  | :--                                |
-| **Arquivo .cfg**     | **`path_save_plot = <value>`**     |
-| Tipo                 | string (path do sistema)           |
-| **Valor default**    | **..\Plot**                        |
+| **CFG file **        | **`path_save_plot = <value>`**     |
+| Type                 | string (path do sistema)           |
+| **Default value**    | **..\Plot**                        |
 
 
 Caminho do sistema operacional (path) para a pasta no qual serão salvos as variáveis a serem plotadas em arquivo .csv.
@@ -466,11 +466,11 @@ Caminho do sistema operacional (path) para a pasta no qual serão salvos as vari
 
 ### <a name="to_save_episodes"></a> `to_save_episodes`
 
-| Comando de Terminal  | `--to_save_episodes <value>`        |
+| Terminal command     | `--to_save_episodes <value>`        |
 | :--                  | :--                                 |
-| **Arquivo .cfg**     | **`to_save_episodes = <value>`**    |
-| Tipo                 | bool                                |
-| **Valor default**    | **False**                           |
+| **CFG file **        | **`to_save_episodes = <value>`**    |
+| Type                 | bool                                |
+| **Default value**    | **False**                           |
 
 Variável que controla se é para salvar ou não os episódios no disco como um arquivo .gif. A seguir temos um exemplo de um episódio salvo do mapa labyrinth:
 
@@ -481,11 +481,11 @@ Variável que controla se é para salvar ou não os episódios no disco como um 
 ---
 ### <a name="steps_save_episodes"></a> `steps_save_episodes`
 
-| Comando de Terminal  | `--steps_save_episodes <value>`      |
+| Terminal command     | `--steps_save_episodes <value>`      |
 | :--                  | :--                                  |
-| **Arquivo .cfg**     | **`steps_save_episodes = <value>`**  |
-| Tipo                 | int                                  |
-| **Valor default**    | **50**                               |
+| **CFG file **        | **`steps_save_episodes = <value>`**  |
+| Type                 | int                                  |
+| **Default value**    | **50**                               |
 
 Caso o arquivo tenha que salvar os episódios ([to_save_episodes](#to_save_episodes)), eles serão salvos a cada \<steps_save_episodes\> episódios como um arquivo de imagem animada .gif.
 
@@ -493,11 +493,11 @@ Caso o arquivo tenha que salvar os episódios ([to_save_episodes](#to_save_episo
 
 ### <a name="path_save_episodes"></a> `path_save_episodes`
 
-| Comando de Terminal  | `--path_save_episodes <value>`      |
+| Terminal command     | `--path_save_episodes <value>`      |
 | :--                  | :--                                |
-| **Arquivo .cfg**     | **`path_save_episodes = <value>`**  |
-| Tipo                 | string (path do sistema)           |
-| **Valor default**    | **..\Episodes**                    |
+| **CFG file **        | **`path_save_episodes = <value>`**  |
+| Type                 | string (path do sistema)           |
+| **Default value**    | **..\Episodes**                    |
 
 
 Caminho do sistema operacional (path) para a pasta no qual serão salvos os episódios como uma imagem animada em formato .gif.
@@ -505,77 +505,77 @@ Caminho do sistema operacional (path) para a pasta no qual serão salvos os epis
 ---
 ### <a name="silent_mode"></a> `silent_mode`
 
-| Comando de Terminal  | `--silent_mode <value>`             |
+| Terminal command     | `--silent_mode <value>`             |
 | :--                  | :--                                 |
-| **Arquivo .cfg**     | **`silent_mode = <value>`**         |
-| Tipo                 | bool                                |
-| **Valor default**    | **False**                           |
+| **CFG file **        | **`silent_mode = <value>`**         |
+| Type                 | bool                                |
+| **Default value**    | **False**                           |
 
 Caso essa variável seja verdadeira, nenhuma mensagem será exibida ao usuário.
 
 ---
 ### <a name="multi_gpu"></a> `multi_gpu`
 
-| Comando de Terminal  | `--multi_gpu <value>`               |
+| Terminal command     | `--multi_gpu <value>`               |
 | :--                  | :--                                 |
-| **Arquivo .cfg**     | **`multi_gpu = <value>`**           |
-| Tipo                 | bool                                |
-| **Valor default**    | **False**                           |
+| **CFG file **        | **`multi_gpu = <value>`**           |
+| Type                 | bool                                |
+| **Default value**    | **False**                           |
 
 Caso o usuário possua mais de uma gpu disponível e deseje usá-las para o treinamento do agente, o valor verdadeiro tem que ser atribuído a essa variável. (O gerenciamento das gpus em paralelo é feito pela biblioteca Keras)
 
 ---
 ### <a name="gpu_device"></a> `gpu_device`
 
-| Comando de Terminal  | `--gpu_device <value>`               |
+| Terminal command     | `--gpu_device <value>`               |
 | :--                  | :--                                  |
-| **Arquivo .cfg**     | **`gpu_device = <value>`**           |
-| Tipo                 | int                                  |
-| **Valor default**    | **0**                                |
+| **CFG file **        | **`gpu_device = <value>`**           |
+| Type                 | int                                  |
+| **Default value**    | **0**                                |
 
 Variável que permite a escolha de qual gpu a ser utilizada para o treinamento das redes neurais dos agentes. Assim, caso o usuário possua mais que uma gpu e não deseje utilizar todas elas em apenas um treinamento, é possível escolher com essa variável qual gpu utilizar, bastando atribuir o ID da gpu a essa variável e o valor False para a variável [multi_gpu](#multi_gpu). Desta forma é possível, caso haja recursos computacionais suficientes (memória, processamento), simular vários agentes simultaneamente. **Enviar o gpu_device igual -1 e a variável [multi_gpu](#multi_gpu) False fará o treinamento da rede neural rodar no processador.**
 
 ---
 ### <a name="multi_threading"></a> `multi_threading`
 
-| Comando de Terminal  | `--multi_threading <value>`         |
+| Terminal command     | `--multi_threading <value>`         |
 | :--                  | :--                                 |
-| **Arquivo .cfg**     | **`multi_threading = <value>`**     |
-| Tipo                 | bool                                |
-| **Valor default**    | **False**                           |
+| **CFG file **        | **`multi_threading = <value>`**     |
+| Type                 | bool                                |
+| **Default value**    | **False**                           |
 
 Se essa variável for ativada, a parte da amostragem de experiências para o treinamento da rede neural é feita paralelamente com o restante do algoritmo de aprendizagem, reduzindo, dessa forma, o tempo necessário de processamento de cada episódio. Para mais detalhes consultar o tópico [Performance](https://github.com/Leonardo-Viana/Reinforcement-Learning#performance).
 
 ---
 ### <a name="to_render"></a> `to_render`
 
-| Comando de Terminal  | `--to_render <value>`               |
+| Terminal command     | `--to_render <value>`               |
 | :--                  | :--                                 |
-| **Arquivo .cfg**     | **`to_render = <value>`**           |
-| Tipo                 | bool                                |
-| **Valor default**    | **False**                           |
+| **CFG file **        | **`to_render = <value>`**           |
+| Type                 | bool                                |
+| **Default value**    | **False**                           |
 
 Variável que controla se o ambiente será renderizado (mostrado na tela) para o usuário ou não, durante o treinamento ou teste. Ao renderizar o ambiente, o treinamento sofrerá uma queda enorme de processamento por episódio.
 
 ### <a name="random_seed"></a> `random_seed`
 
-| Comando de Terminal  | `--random_seed <value>`               |
+| Terminal command     | `--random_seed <value>`               |
 | :--                  | :--                                  |
-| **Arquivo .cfg**     | **`random_seed = <value>`**           |
-| Tipo                 | int                                  |
-| **Valor default**    | **-1**                                |
+| **CFG file **        | **`random_seed = <value>`**           |
+| Type                 | int                                  |
+| **Default value**    | **-1**                                |
 
 Variável que fixa a semente dos métodos (pseudo)estocásticos. Se o valor dessa variável é -1, nenhuma semente é fixada.
 
 ---
 ### <a name="to_save_states"></a> `to_save_states`
 
-| Comando de Terminal  | `--to_save_states <value>`          |
+| Terminal command     | `--to_save_states <value>`          |
 | :--                  | :--                                 |
-| **Arquivo .cfg**     | **`to_save_states = <value>`**      |
-| Tipo                 | bool                                |
-| **Valor default**    | **False**                           |
-| Exclusivo do modo    | Test                               |
+| **CFG file **        | **`to_save_states = <value>`**      |
+| Type                 | bool                                |
+| **Default value**    | **False**                           |
+| Mode exclusive       | Test                               |
 
 Variável que controla se é para salvar ou não os estados/experiências no disco como um arquivo .gif durante o modo TEST. Os estados salvos podem ser utilizados para o plot de zonas de máxima ativação para cada camada de convolução. A seguir, temos um exemplo de um estado salvo do jogo Pong (treinado com estados coloridos):
 
@@ -586,12 +586,12 @@ Variável que controla se é para salvar ou não os estados/experiências no dis
 ---
 ### <a name="path_save_states"></a> `path_save_states`
 
-| Comando de Terminal  | `--path_save_states <value>`       |
+| Terminal command     | `--path_save_states <value>`       |
 | :--                  | :--                                |
-| **Arquivo .cfg**     | **`path_save_states = <value>`**   |
-| Tipo                 | string (path do sistema)           |
-| **Valor default**    | **..\States**                      |
-| Exclusivo do modo    | Test                               |
+| **CFG file **        | **`path_save_states = <value>`**   |
+| Type                 | string (path do sistema)           |
+| **Default value**    | **..\States**                      |
+| Mode exclusive       | Test                               |
 
 
 Caminho do sistema operacional (path) para a pasta no qual serão salvos os estados como uma imagem animada em formato .gif.
