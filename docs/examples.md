@@ -100,7 +100,7 @@ Another option to configure our scripts is to use the terminal commands directly
 ````
 python Base_agent.py --env Doom --agent_name grayh4-LSTM --config_file_path ../DoomScenarios/labyrinth_test.cfg --network_model DRQN --is_recurrent True --optimizer adam --lr 1e-4 --num_random_play 50000 --num_states_stored 250000 --e_lin_decay 250000 --num_simul_frames 5000000 --steps_save_weights 50000 --to_save_episodes True --steps_save_episodes 100 --multi_threading True
 ````
-With these configurations, the script will train an agent called "gray-LSTM" in the map labyrinth with the DRQN architecture during 5 million frames. This simulation takes advantage of the [multithreading mode](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/README_eng.md#--performance) to speed up the simulation. The summary of this training can be seen below:
+With these configurations, the script will train an agent called "grayh4-LSTM" in the map labyrinth with the DRQN architecture during 5 million frames. This simulation takes advantage of the [multithreading mode](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/README_eng.md#--performance) to speed up the simulation. The summary of this training can be seen below:
 <p align="center">
  <img src="https://raw.githubusercontent.com/Leonardo-Viana/Reinforcement-Learning/master/docs/images/summary-doomDRQN.png" height="100%" width="100%">
 </p>
