@@ -1,1 +1,2 @@
-
+# Defining your own neural network architecture
+You can define your own neural network architecture to train your agent. To do this, you just need to create within Networks.py file your own neural network as a function using the Keras library (The architecture can be created with the functional or sequential API). This way, you can quickly and easily experience the effects of different architectures such as recurrent layers, regularization  methods (dropout L2 distance), normalization, batch normalization in the agent learning process. After defining its architecture, the function name must be sent as an argument via the terminal command with the command:
