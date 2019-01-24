@@ -26,4 +26,4 @@ The modeling for both maps as an MDP (Markov Decision Process) can be seen below
   - \+10 when reaching the main goal (battery recharging platform).
  - **End of episode:** When the agent reaches the battery recharging platform or time runs out (3000 game frames).
  
-   **Each [frame_skip] number of game frame is equal to one simulation frame. For example, 3000 game frames are equal to 750 simulation frames using the frame skip equals 4, this is because the same action is executed 4 times (4 game frames) inside the algorithm.**
+   **Each [frame_skip] number of game frames is equal to one simulation frame. For example, 3000 game frames are equal to 750 simulation frames using the frame skip equals 4, this is because the same action is executed 4 times (4 game frames) inside the algorithm.**
