@@ -18,7 +18,7 @@ The modeling for both maps as an MDP (Markov Decision Process) can be seen below
 - **States/Observations:** The sequence of images obtained from the ViZDoom platform concatenated to create a volume.
 - **Actions**: 
   - Move Forward
-  - Turn the camera toright and left
+  - Turn the camera right and left
 - **Rewards:**
   - \-0.001 for each lived game frame, encouraging the agent to locate the battery recharging platform as fast as possible.
   - \-0.01 for every 5 game frames that the agent stays in the same position, encouraging the agent not to stand still performing actions and consequently spending battery in vain, in the same location.
