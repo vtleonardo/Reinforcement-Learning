@@ -1,5 +1,5 @@
 
-The learning parameters of each simulation are described below:
+The learning parameters used for each of the simulations of the pre-trained weights are described below:
 
 # <a name="common_labyrinth"></a> ViZDoom with the map: Labyrinth
 The parameters in common between all the simulations with this map are:
