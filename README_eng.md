@@ -52,7 +52,7 @@ An important point to be emphasized in the parallel approach is the fact that it
 * Performance tests were performed on a i7 4790K cpu with gpu nvidia geforce gtx 970 * 
 
 ## Documentation
-
+- [Installation](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/installation.md)
 
 
 ## References 
