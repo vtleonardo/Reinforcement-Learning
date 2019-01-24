@@ -16,7 +16,7 @@ To the developers and interested people, it is important to emphasize that all t
 ## <a name="features"></a> Features
 - [Parallel execution mode for the reinforcement learning algothrims](#performance) (some examples are 30% faster with this mode).
 - Bidimensional ([OpenAi Gym](https://github.com/openai/gym)) and tridimensional environments ([ViZDoom](https://github.com/mwydmuch/ViZDoom)) for training and testing the agent.
-- [Two exclusive maps (ViZDoom) simulating a mobile robotics problem](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/map.md).
+- [Two exclusive maps, for ViZDoom, simulating a mobile robotics problem](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/map.md).
 - Configuration of the training/testing of an agent via terminal commands or configuration files .cfg (more information in the sections: [examples](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/examples.md) and [documentation-parameters](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/doc.md))
 - Storage of training information in .csv files (more details here) and neural network's weights as a .h5 file.
 - Ease and robustness to define the simulation parameters without the need of changing the main code (See section [cfg files](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/cfg.md)).
