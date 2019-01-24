@@ -7,6 +7,6 @@ The files with extension .cfg are files that have configurations to the executio
 - The lines are case insensitive
 - Each line should have only one pair of key = value.
 - If an argument is not specified in the file .cfg and is necessary to the execution of the desired task, its default value will be assigned. This is done to avoid the necessity of constantly have to write the parameters that have their values used often in the simulation. For default values of each variable
-see the [Documentation]   and for examples see the section [Examples].
+see the [Documentation](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/doc.md) and for examples see the section [Examples](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/examples.md).
 - Relative paths in relation the main directory can be inserted using **..** before the path. For example, to access the DoomScenarios directory we can use "../DoomScenarios".
 - The commands are read in sequence, thus, in case of repeated commands, only the last will be valid. 
