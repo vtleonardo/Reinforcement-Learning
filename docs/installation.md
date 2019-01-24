@@ -13,11 +13,11 @@ ViZDoom
 
 For the installation of the packages listed above, it is recommended to create a [virtual environment](https://docs.conda.io/projects/conda/en/latest/user-guide/getting-started.html#managing-environments) with [miniconda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html). With the virtual environment activated, the installation of the packages can be done with the following commands in the terminal:
 
-To install the CPU vertion of the Tensorflow
+To install the CPU version of the Tensorflow
 ````
 conda install tensorflow
 ````
-To install the GPU vertion of the Tensorflow
+To install the GPU version of the Tensorflow
 ````
 conda install tensorflow-gpu
 ````
