@@ -1,19 +1,19 @@
 # Defining your own neural network architecture
 You can define your own neural network architecture to train your agent. To do this, you just need to create within Networks.py file your own neural network as a function using the Keras library (The architecture can be created with the functional or sequential API). This way, you can quickly and easily experience the effects of different architectures such as recurrent layers, regularization  methods (dropout L2 distance), normalization, batch normalization in the agent learning process. After defining its architecture, the function name must be sent as an argument via the terminal command with the command:
 ````
-python Base_agent.py --network_model "<nome_da_sua_funcao>"
+python Base_agent.py --network_model "<function_name>"
 ````
 Or written in the file Base_agent.cfg as:
 ````
-network_model = <nome_da_sua_funcao>
+network_model = <function_name>
 ````
 If the architecture has recurrent  layers, it is necessary to assign the true value to the variable is_recurrent at the time of execution of the main script. This way, if your architecture is recurrent the command will be:
 ````
-python Base_agent.py --network_model "<nome_da_sua_funcao_recorrente> --is_recurrent True"
+python Base_agent.py --network_model "<function_name_recurrent> --is_recurrent True"
 ````
 Or written in the file Base_agent.cfg as:
 ````
-network_model = <nome_da_sua_funcao_recorrente>
+network_model = <function_name_recurrent>
 is_recurrent = True
 ````
 
