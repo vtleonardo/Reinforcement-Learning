@@ -486,7 +486,8 @@ The variable that controls if it to save or not the episodes on the disk as an a
 | Type                 | int                                  |
 | **Default value**    | **50**                               |
 
-Caso o arquivo tenha que salvar os episódios ([to_save_episodes](#to_save_episodes)), eles serão salvos a cada \<steps_save_episodes\> episódios como um arquivo de imagem animada .gif.
+If it is told to the algorithm to save the episodes ([to_save_episodes](#to_save_episodes)), they are going to be saved every 
+\<steps_save_episodes\> episodes as an animated image with extension .gif.
 
 ---
 
@@ -499,7 +500,7 @@ Caso o arquivo tenha que salvar os episódios ([to_save_episodes](#to_save_episo
 | **Default value**    | **..\Episodes**                    |
 
 
-Caminho do sistema operacional (path) para a pasta no qual serão salvos os episódios como uma imagem animada em formato .gif.
+The path to the folder in which will be saved the episodes as an animated image with extension .gif.
 
 ---
 ### <a name="silent_mode"></a> `silent_mode`
@@ -510,7 +511,7 @@ Caminho do sistema operacional (path) para a pasta no qual serão salvos os epis
 | Type                 | bool                                |
 | **Default value**    | **False**                           |
 
-Caso essa variável seja verdadeira, nenhuma mensagem será exibida ao usuário.
+If this variable is true, no message will be displayed to the user.
 
 ---
 ### <a name="multi_gpu"></a> `multi_gpu`
@@ -521,7 +522,7 @@ Caso essa variável seja verdadeira, nenhuma mensagem será exibida ao usuário.
 | Type                 | bool                                |
 | **Default value**    | **False**                           |
 
-Caso o usuário possua mais de uma gpu disponível e deseje usá-las para o treinamento do agente, o valor verdadeiro tem que ser atribuído a essa variável. (O gerenciamento das gpus em paralelo é feito pela biblioteca Keras)
+If the user has more than one gpu available and he wishes to use all of them for the training of **one** agent, the value True has to be assigned to this variable. (The management of the parallel execution of the GPUs is done by Keras)
 
 ---
 ### <a name="gpu_device"></a> `gpu_device`
@@ -532,7 +533,7 @@ Caso o usuário possua mais de uma gpu disponível e deseje usá-las para o trei
 | Type                 | int                                  |
 | **Default value**    | **0**                                |
 
-Variável que permite a escolha de qual gpu a ser utilizada para o treinamento das redes neurais dos agentes. Assim, caso o usuário possua mais que uma gpu e não deseje utilizar todas elas em apenas um treinamento, é possível escolher com essa variável qual gpu utilizar, bastando atribuir o ID da gpu a essa variável e o valor False para a variável [multi_gpu](#multi_gpu). Desta forma é possível, caso haja recursos computacionais suficientes (memória, processamento), simular vários agentes simultaneamente. **Enviar o gpu_device igual -1 e a variável [multi_gpu](#multi_gpu) False fará o treinamento da rede neural rodar no processador.**
+The variable that allows the choice of what GPU will be used for the agent neural network's training. Therefore, if the user has more than one GPU available and he doesn't wish to use all of them in only one training, it is possible to choose with this variable what GPU to use. To do this, the GPU ID should be sent to this variable and value False should be assigned to the variable [multi_gpu](#multi_gpu). Thus, it is possible, in case there are enough computational resources (memory, processing), simulate various agents simultaneously. **If you assign the value -1 to this variable and False to variable [multi_gpu](#multi_gpu) will run the training on the CPU.**
 
 ---
 ### <a name="multi_threading"></a> `multi_threading`
@@ -543,7 +544,7 @@ Variável que permite a escolha de qual gpu a ser utilizada para o treinamento d
 | Type                 | bool                                |
 | **Default value**    | **False**                           |
 
-Se essa variável for ativada, a parte da amostragem de experiências para o treinamento da rede neural é feita paralelamente com o restante do algoritmo de aprendizagem, reduzindo, dessa forma, o tempo necessário de processamento de cada episódio. Para mais detalhes consultar o tópico [Performance](https://github.com/Leonardo-Viana/Reinforcement-Learning#performance).
+If this variable is activated, the sampling part of the reinforcement learning algorithm will be done in parallel with the rest of the algorithm, thus, reducing the time needed to process each episode. For more details see:[Performance](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/README_eng.md#--performance).
 
 ---
 ### <a name="to_render"></a> `to_render`
@@ -554,17 +555,17 @@ Se essa variável for ativada, a parte da amostragem de experiências para o tre
 | Type                 | bool                                |
 | **Default value**    | **False**                           |
 
-Variável que controla se o ambiente será renderizado (mostrado na tela) para o usuário ou não, durante o treinamento ou teste. Ao renderizar o ambiente, o treinamento sofrerá uma queda enorme de processamento por episódio.
+The variable that controls if the environment will be rendered or not to the user during the training/testing. When you render the environment in the training mode, the frames processed per episode will decrease harshly.
 
 ### <a name="random_seed"></a> `random_seed`
 
-| Terminal command     | `--random_seed <value>`               |
+| Terminal command     | `--random_seed <value>`              |
 | :--                  | :--                                  |
-| **CFG file**         | **`random_seed = <value>`**           |
+| **CFG file**         | **`random_seed = <value>`**          |
 | Type                 | int                                  |
-| **Default value**    | **-1**                                |
+| **Default value**    | **-1**                               |
 
-Variável que fixa a semente dos métodos (pseudo)estocásticos. Se o valor dessa variável é -1, nenhuma semente é fixada.
+The variable that set the random seed. If this variable is -1, no seed is fixed.
 
 ---
 ### <a name="to_save_states"></a> `to_save_states`
@@ -574,9 +575,9 @@ Variável que fixa a semente dos métodos (pseudo)estocásticos. Se o valor dess
 | **CFG file**         | **`to_save_states = <value>`**      |
 | Type                 | bool                                |
 | **Default value**    | **False**                           |
-| Mode exclusive       | Test                               |
+| Mode exclusive       | Test                                |
 
-Variável que controla se é para salvar ou não os estados/experiências no disco como um arquivo .gif durante o modo TEST. Os estados salvos podem ser utilizados para o plot de zonas de máxima ativação para cada camada de convolução. A seguir, temos um exemplo de um estado salvo do jogo Pong (treinado com estados coloridos):
+The variable that controls if it is to save or not the states on the disk as an animated image with extension .gif during the **TEST MODE**. The saved states can be used to plot activation maps, zones of maximum activation for each convolution layer. The following example shows a state saved from the game Pong (trained with colorful states):
 
   <p align="center">
    <img src="https://raw.githubusercontent.com/Leonardo-Viana/Reinforcement-Learning/master/docs/images/pong-color-state.gif" height="84" width="84">
@@ -593,7 +594,7 @@ Variável que controla se é para salvar ou não os estados/experiências no dis
 | Mode exclusive       | Test                               |
 
 
-Caminho do sistema operacional (path) para a pasta no qual serão salvos os estados como uma imagem animada em formato .gif.
+The path to the folder where will be saved the states as an animated image with extension .gif.
 
 ---
 
