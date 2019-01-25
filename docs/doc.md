@@ -170,7 +170,7 @@ The variable that tells to main script if the architecture is recurrent or not. 
 | Type                 | int                           |
 | **Default value**    | **4**                         |
 
-A valid frame will be considered only every <frame_skip> frames. For example, with a frame_skip equals 4, only the last frames of a sequence of four will be sent to the code for the creation of the environment state. The other 3 frames will be "discarted". An excellent discussion about the ambiguities of the DQN article in relation to the variables frame_skip and [history_size](#history_size)  can be seen [here](https://danieltakeshi.github.io/2016/11/25/frame-skipping-and-preprocessing-for-deep-q-networks-on-atari-2600-games/)[[4]](https://github.com/Leonardo-Viana/Reinforcement-Learning#%5B4%5D). The term frame in the other topics refers exclusively to the valid frame that is considered by the script.
+A valid frame will be considered only every <frame_skip> frames. For example, with a frame_skip equals 4, only the last frames of a sequence of four will be sent to the code for the creation of the environment state. The other 3 frames will be "discarted". An excellent discussion about the ambiguities of the DQN article in relation to the variables frame_skip and [history_size](#history_size)  can be seen [here](https://danieltakeshi.github.io/2016/11/25/frame-skipping-and-preprocessing-for-deep-q-networks-on-atari-2600-games/)[[4]](https://github.com/Leonardo-Viana/Reinforcement-Learning#bibliography). The term frame in the other topics refers exclusively to the valid frame that is considered by the script.
 
 ---
 
