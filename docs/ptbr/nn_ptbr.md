@@ -38,4 +38,4 @@ def DQN(state_input_shape, actions_num, name, normalize):
     model = Model(inputs=input, outputs=output)
     return model
 ````
-Essa é a arquitetura padrão executada caso nenhuma outra seja especificada na execução do agente. Dentro do arquivo [Networks.py](Networks.py) há outras arquiteturas de redes neurais (com camadadas recorrentes e métodos de normalização) que servem como exemplo.
+Essa é a arquitetura padrão executada caso nenhuma outra seja especificada na execução do agente. Dentro do arquivo [Networks.py](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/Networks.py) há outras arquiteturas de redes neurais (com camadadas recorrentes e métodos de normalização) que servem como exemplo.
