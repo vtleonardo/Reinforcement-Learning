@@ -546,7 +546,7 @@ Variável que permite a escolha de qual gpu a ser utilizada para o treinamento d
 | Tipo                 | bool                                |
 | **Valor default**    | **False**                           |
 
-Se essa variável for ativada, a parte da amostragem de experiências para o treinamento da rede neural é feita paralelamente com o restante do algoritmo de aprendizagem, reduzindo, dessa forma, o tempo necessário de processamento de cada episódio. Para mais detalhes consultar o tópico [Performance](https://github.com/Leonardo-Viana/Reinforcement-Learning#performance).
+Se essa variável for ativada, a parte da amostragem de experiências para o treinamento da rede neural é feita paralelamente com o restante do algoritmo de aprendizagem, reduzindo, dessa forma, o tempo necessário de processamento de cada episódio. Para mais detalhes consultar o tópico [Performance](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/README_ptbr.md#--performance).
 
 ---
 ### <a name="to_render"></a> `to_render`
