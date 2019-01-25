@@ -1,3 +1,6 @@
+A versão em português pode ser vista neste [link](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/README_ptbr.md).
+
+---
 # Reinforcement-Learning
 This repository implements of the deep reinforcement learning algothrims DQN and DRQN in python. The Deep Q-Network (DQN) 
 introduced by the article [Human-level control through deep reinforcement learning[1]](#[1]) is an algorithm that applies deep neural networks to the problem of reinforcement learning. 
