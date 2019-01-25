@@ -93,7 +93,7 @@ Nome do agente. Além disso, é a identificação que será utilizada para nomea
 
 Nome do ambiente (environment) a ser executado. Atualmente são suportados todos os jogos de atari disponíveis pela biblioteca OpenAi gym e o ambiente tridimensional ViZDoom.
 
-Os nomes dos jogos de atari deverão seguir o seguinte template \<nome do jogo de atari\>NoFrameSkip-v4. É possível ver todos os jogos de atari disponíveis no seguinte [link](https://gym.openai.com/envs/#atari). Assim, para treinar o agente no ambiente breakout, devemos enviar para a variável env o valor BreakoutNoFrameSkip-v4 (env = BreakoutNoFrameSkip-v4 ou --env BreakoutNoFrameSkip-v4). Com a parte do "NoFrameSkip" especificamos à biblioteca que não queremos que a mesma realize o frame skipping. Desta forma temos mais controle para realizar esta etapa em nosso código (dentro do arquivo [WrapperGym.py](Environments/WrapperGym.py)).
+Os nomes dos jogos de atari deverão seguir o seguinte template \<nome do jogo de atari\>NoFrameSkip-v4. É possível ver todos os jogos de atari disponíveis no seguinte [link](https://gym.openai.com/envs/#atari). Assim, para treinar o agente no ambiente breakout, devemos enviar para a variável env o valor BreakoutNoFrameSkip-v4 (env = BreakoutNoFrameSkip-v4 ou --env BreakoutNoFrameSkip-v4). Com a parte do "NoFrameSkip" especificamos à biblioteca que não queremos que a mesma realize o frame skipping. Desta forma temos mais controle para realizar esta etapa em nosso código (dentro do arquivo [WrapperGym.py](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/Environments/WrapperGym.py)).
  
 Para executar o ambiente VizDoom, basta enviar para a variável env o valor doom (env = Doom ou --env Doom). 
 
@@ -137,7 +137,7 @@ Para mais detalhes sobre os arquivos .cfg usados pela VizDoom, consulte esse [li
 | Tipo                 | string                             |
 | **Valor default**    | **DQN**                            |
 
-Nome da função que define a arquitetura da rede neural dentro do arquivo [Networks.py](Networks.py). Para mais detalhes sobre a implementação de sua própria arquitetura de rede neural consultar o tópico: [Definindo a arquitetura da rede neural](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/ptbr/nn_ptbr.md)
+Nome da função que define a arquitetura da rede neural dentro do arquivo [Networks.py](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/Networks.py). Para mais detalhes sobre a implementação de sua própria arquitetura de rede neural consultar o tópico: [Definindo a arquitetura da rede neural](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/ptbr/nn_ptbr.md)
 
 ---
 
