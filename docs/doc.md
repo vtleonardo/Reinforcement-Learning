@@ -134,7 +134,7 @@ For more details about the CFG files used by ViZDoom, see this [link](https://gi
 | Type                 | string                             |
 | **Default value**    | **DQN**                            |
 
-Nome da função que define a arquitetura da rede neural dentro do arquivo [Networks.py](Networks.py). Para mais detalhes sobre a implementação de sua própria arquitetura de rede neural consultar o tópico: [Definindo a arquitetura da rede neural](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/ptbr/nn_ptbr.md)
+Function's name that defines the neural network architecture within the file [Networks.py](Networks.py). For more details see the section [Defining your own neural network architecture](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/nn.md).
 
 ---
 
@@ -146,7 +146,7 @@ Nome da função que define a arquitetura da rede neural dentro do arquivo [Netw
 | Type                 | bool                               |
 | **Default value**    | **True**                           |
 
-Variável que controla se é para normalizar ou não pixels de entrada da rede neural.
+The variable that controls if it is to normalize or not the input pixels of the neural network. 
 
 ---
 
@@ -158,7 +158,7 @@ Variável que controla se é para normalizar ou não pixels de entrada da rede n
 | Type                 | bool                            |
 | **Default value**    | **False**                       |
 
-Variável que diz ao script principal se a arquitetura de rede neural possui ou não camadas do Type recorrente. Logo, se o seu modelo possuir camadas deste Type, essa variável tem que ser enviada com o valor **True** em conjunto com a variável **network_model**, se não o script jogará uma exceção. Caso seu modelo não possua camadas do Type recorrente, essa variável não precisa ser mandada, já que seu valor padrão é False.
+The variable that tells to main script if the architecture is recurrent or not. Thus, if your models have recurrent layers, this variable has to be assigned the value True and should be sent jointly with the [network_model](#network_model) variable. If there is not any recurrent layer in your model, this variable can be ignored, since its default value is False.
 
 ---
 
@@ -170,7 +170,7 @@ Variável que diz ao script principal se a arquitetura de rede neural possui ou 
 | Type                 | int                           |
 | **Default value**    | **4**                         |
 
-Um frame válido será considerado apenas a cada \<frame_skip\> frames. Por exemplo, com um frame_skip igual a 4, somente o último frame de uma sequência de 4 frames renderizados será enviado ao código para a criação do estado. Os outros 3 frames são "descartados". Uma excelente discussão esclarecendo as ambiguidades do artigo do DQN em relação as variáveis frame_skip e [history_size](#history_size) pode ser vista [aqui](https://danieltakeshi.github.io/2016/11/25/frame-skipping-and-preprocessing-for-deep-q-networks-on-atari-2600-games/)[[4]](https://github.com/Leonardo-Viana/Reinforcement-Learning#%5B4%5D). O termo frame em outros tópicos se refere exclusivamente aos frames válidos que são considerados pelo script.
+A valid frame will be considered only every <frame_skip> frames. For example, with a frame_skip equals 4, only the last frames of a sequence of four will be sent to the code for the creation of the environment state. The other 3 frames will be "discarted". An excellent discussion about the ambiguities of the DQN article in relation to the variables frame_skip and [history_size](#history_size)  can be seen [here](https://danieltakeshi.github.io/2016/11/25/frame-skipping-and-preprocessing-for-deep-q-networks-on-atari-2600-games/)[[4]](https://github.com/Leonardo-Viana/Reinforcement-Learning#%5B4%5D). The term frame in the other topics refers exclusively to the valid frame that is considered by the script.
 
 ---
 
@@ -182,7 +182,7 @@ Um frame válido será considerado apenas a cada \<frame_skip\> frames. Por exem
 | Type                 | int                                 |
 | **Default value**    | **10000000**                        |
 
-Número de frames no qual o agente será treinado. 
+The number of frames that the agent will be trained on.
 
 ---
 
@@ -194,7 +194,7 @@ Número de frames no qual o agente será treinado.
 | Type                 | float                               |
 | **Default value**    | **0.99**                            |
 
-Fator de desconto (discount rate) gamma. 
+Discount factor gamma. 
 
 ---
 
@@ -206,7 +206,7 @@ Fator de desconto (discount rate) gamma.
 | Type                 | float                    |
 | **Default value**    | **0.00025**              |
 
-Taxa de aprendizado das redes neurais. 
+Neural networks learning rate
 
 ---
 
