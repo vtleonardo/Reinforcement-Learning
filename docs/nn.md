@@ -36,4 +36,4 @@ def DQN(state_input_shape, actions_num, name, normalize):
     model = Model(inputs=input, outputs=output)
     return model
 ````
-This is the default architecture executed if no other is specified in the agent execution. Inside the Networks.py file, there are other neural network architectures (with recurrent layers and normalization methods) that serve as examples.
+This is the default architecture executed if no other is specified in the agent execution. Inside the [Networks.py](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/Networks.py) file, there are other neural network architectures (with recurrent layers and normalization methods) that serve as examples.
