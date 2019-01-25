@@ -544,7 +544,7 @@ The variable that allows the choice of what GPU will be used for the agent neura
 | Type                 | bool                                |
 | **Default value**    | **False**                           |
 
-If this variable is activated, the sampling part of the reinforcement learning algorithm will be done in parallel with the rest of the algorithm, thus, reducing the time needed to process each episode. For more details see: [Performance](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/README_eng.md#--performance).
+If this variable is activated, the sampling part of the reinforcement learning algorithm will be done in parallel with the rest of the algorithm, thus, reducing the time needed to process each episode. For more details see: [Performance](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/README.md#--performance).
 
 ---
 ### <a name="to_render"></a> `to_render`
