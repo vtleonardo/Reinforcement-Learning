@@ -90,7 +90,7 @@ Agent's name. Besides that, it is the identification that will be used to name f
 
 Environment's name to be executed. Currently, this repository supports all atari games available by the OpenAI Gym and the tridimensional environments of ViZDoom.
 
-The name of the atari games should follow the following template <Game's name>NoFrameSkip-v4. It is possible to see all atari games available in this [link](https://gym.openai.com/envs/#atari). Thus, to train an agent in the game **breakout**, we should send to the variable env the value BreakoutNoFrameSkip-v4 (env = BreakoutNoFrameSkip-v4 or --env BreakoutNoFrameSkip-v4). The part "NoFrameSkip" tells to the openAI that we don't want it to do the frame skipping for us. Thus, we have more control over this in the algorithm (within [WrapperGym.py](Environments/WrapperGym.py)).
+The name of the atari games should follow the following template <Game's name>NoFrameSkip-v4. It is possible to see all atari games available in this [link](https://gym.openai.com/envs/#atari). Thus, to train an agent in the game **breakout**, we should send to the variable env the value BreakoutNoFrameSkip-v4 (env = BreakoutNoFrameSkip-v4 or --env BreakoutNoFrameSkip-v4). The part "NoFrameSkip" tells to the openAI that we don't want it to do the frame skipping for us. Thus, we have more control over this in the algorithm (within [WrapperGym.py](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/Environments/WrapperGym.py)).
 
 To run the ViZDoom environment, send to the variable env the value doom (env = Doom or --env Doom). 
 
@@ -134,7 +134,7 @@ For more details about the CFG files used by ViZDoom, see this [link](https://gi
 | Type                 | string                             |
 | **Default value**    | **DQN**                            |
 
-Function's name that defines the neural network architecture within the file [Networks.py](Networks.py). For more details see the section [Defining your own neural network architecture](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/nn.md).
+Function's name that defines the neural network architecture within the file [Networks.py](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/Networks.py). For more details see the section [Defining your own neural network architecture](https://github.com/Leonardo-Viana/Reinforcement-Learning/blob/master/docs/nn.md).
 
 ---
 
