@@ -85,5 +85,4 @@ observable mdps](https://arxiv.org/abs/1507.06527). CoRR, abs/1507.06527, 2015.
 https://medium.com/mlreview/speeding-up-dqn-on-pytorch-solving-pong-in-30-minutes-81a1bd2dff55. 
 Accessed: November 07, 2018.
 - <a name = "[4]"></a>[4] Daniel Seita. Frame Skipping and Pre-Processing for Deep Q-Networks on Atari 2600 Games. 
-November 25, 2016. Available at: https://danieltakeshi.github.io/2016/11/25/frame-skipping-and-preprocessing-for-deep-q-networks-
-on-atari-2600-games. Accessed: January 04, 2019.
+November 25, 2016. Available at: https://danieltakeshi.github.io/2016/11/25/frame-skipping-and-preprocessing-for-deep-q-networks-on-atari-2600-games. Accessed: January 04, 2019.
