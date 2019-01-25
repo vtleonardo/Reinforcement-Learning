@@ -59,11 +59,11 @@
 | Possible choices    | train, test               |
 | **Default value**   | **train**                 |
 
-Variável que escolhe o modo de execução do algoritmo de reinforcement learning. Existem duas opções disponíveis: train e test. 
+The variable that chooses the reinforcement learning's execution mode. There are two options available: train and test.
 
-A opção de **train** treina um agente com base no algoritmo de reinforcement learning DQN ou em suas variantes. Ou seja, o agente irá aprender a otimizar os pesos de sua rede neural com base em suas experiências vividas dentro do ambiente para maximizar sua premiação final. Logo, neste modo o algoritmo armazena as experiências passadas e otimiza a rede neural com os hiperparâmetros de aprendizagem.
+The **train** option trains an agent using the reinforcement learning algorithms. In other words, the agent will learn how to optimize its neural network parameters based on its experiences lived inside the environment to maximize its final reward. Therefore, in this mode, the algorithm stores the past experiences and optimize the neural network with the learning hyperparameters.
 
-A opção de **test** é usada para testar um agente que já aprendeu dentro de um ambiente. Essa opção é basicamente para o programador avaliar o desempenho do agente, gravar episódios e armazenar estados para plot.
+The **test** option is used to test an agent that was already trained. This option is basically to evaluate visually the agent performance, record the episodes and store the states to future plots.
 
 ---
 
@@ -76,7 +76,7 @@ A opção de **test** é usada para testar um agente que já aprendeu dentro de 
 | **Default value**   | **DQN**                   |
 
 
-Nome do agente. Além disso, é a identificação que será utilizada para nomear os arquivos que serão salvos (Weights, Plot, Episódios, Estados).
+Agent's name. Besides that, it is the identification that will be used to name that files that will be saved by the main algorithm (Weights, Plot, Episodes, States).
 
 ---
 
@@ -88,12 +88,11 @@ Nome do agente. Além disso, é a identificação que será utilizada para nomea
 | Type                | string                    |
 | **Default value**   | **PongNoFrameskip-v4**    |
 
+Environment's name to be executed. Currently, this repository supports all atari games available by the OpenAI Gym and the tridimensional environments of ViZDoom.
 
-Nome do ambiente (environment) a ser executado. Atualmente são suportados todos os jogos de atari disponíveis pela biblioteca OpenAi gym e o ambiente tridimensional ViZDoom.
+The name fo the atari games should follow the following template <\Game's name\>NoFrameSkip-v4. It is possible to see all atari games available in this [link](https://gym.openai.com/envs/#atari). Thus, to train an agent in the game **breakout**, we should send to the variable end the value BreakoutNoFrameSkip-v4 (env = BreakoutNoFrameSkip-v4 or --env BreakoutNoFrameSkip-v4). The part "NoFrameSkip" tells to the openAI that we don't want it to do the frame skipping. Thus, we have more control over this in the algorithm (within (WrapperGym.py)[Environments/WrapperGym.py]).
 
-Os nomes dos jogos de atari deverão seguir o seguinte template \<nome do jogo de atari\>NoFrameSkip-v4. É possível ver todos os jogos de atari disponíveis no seguinte [link](https://gym.openai.com/envs/#atari). Assim, para treinar o agente no ambiente breakout, devemos enviar para a variável env o valor BreakoutNoFrameSkip-v4 (env = BreakoutNoFrameSkip-v4 ou --env BreakoutNoFrameSkip-v4). Com a parte do "NoFrameSkip" especificamos à biblioteca que não queremos que a mesma realize o frame skipping. Desta forma temos mais controle para realizar esta etapa em nosso código (dentro do arquivo (WrapperGym.py)[Environments/WrapperGym.py]).
- 
-Para executar o ambiente VizDoom, basta enviar para a variável env o valor doom (env = Doom ou --env Doom). 
+To run the ViZDoom environment, send to the variable env the value doom (env = Doom or --env Doom). 
 
 ---
 
@@ -107,7 +106,7 @@ Para executar o ambiente VizDoom, basta enviar para a variável env o valor doom
 | Environtment exclusive| ATARI GYM                    |
 
 
-Variável **exclusiva dos jogos de atari da biblioteca GYM** que controla se o score dos jogos de atari será incluído ou não nos frames/estados enviados pela biblioteca open ai gym. Por exemplo no jogo Pong, o score (pontuação) é localizado na parte superior da tela do jogo de atari.
+**Exclusive variable for the atari games from openAi Gym**. This variable controls if the game score will be present or not in the frames sent by the GYM package. For example, in the game Pong, the score is located in the upper part of the game screen.
 
 ---
 
@@ -121,9 +120,9 @@ Variável **exclusiva dos jogos de atari da biblioteca GYM** que controla se o s
 | Environtment exclusive| ViZDOOM                            |
 
 
-Caminho do sistema operacional (path) para o arquivo que carrega a fase de escolha do VizDoom. A configuração da fase do VizDoom no qual o agente será treinado é feita por um CFG file , cada fase do VizDoom deverá possuir um CFG file  correspondente. Portanto, para treinarmos os agentes em uma fase específica do VizDoom devemos carregar seu CFG file  enviando para essa variável o seu caminho dentro do sistema operacional.
+**Exclusive variable for the ViZDoom environment**. This variable receives a system path to the file that loads the chosen map. The map configurations in ViZDoom is done by a .cfg file, each map should have its own CFG file.  Therefore, to train an agent in a specific map in ViZDoom, we should load its CFG file sending to this variable its path.
 
-Para mais detalhes sobre os arquivos .cfg usados pela VizDoom, consulte esse [link](https://github.com/mwydmuch/ViZDoom/blob/master/doc/ConfigFile.md)
+For more details about the CFG files used by ViZDoom, see this [link](https://github.com/mwydmuch/ViZDoom/blob/master/doc/ConfigFile.md)
 
 ---
 
