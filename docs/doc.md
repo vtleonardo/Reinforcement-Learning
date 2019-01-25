@@ -76,7 +76,7 @@ The **test** option is used to test an agent that was already trained. This opti
 | **Default value**   | **DQN**                   |
 
 
-Agent's name. Besides that, it is the identification that will be used to name that files that will be saved by the main algorithm (Weights, Plot, Episodes, States).
+Agent's name. Besides that, it is the identification that will be used to name files that will be saved by the main algorithm (Weights, Plot, Episodes, States).
 
 ---
 
