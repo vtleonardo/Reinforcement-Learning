@@ -72,6 +72,11 @@ If this repository was useful for your research, please consider citing:
   url = {https://github.com/Leonardo-Viana/Reinforcement-Learning},
 }
 ```
+## Acknowledgements
+To [Caio Vinícios Juvêncio da Silva](http://buscatextual.cnpq.br/buscatextual/visualizacv.do?id=K4646835U2) for helping me out with the english translation.
+
+## Contributions
+Since this project is maintained and developed in my free time. All bug fixes (including grammar and spelling errors), new examples, ideias of new features and design suggestions and other contributions are welcome!
 
 ## Bibliography
 
