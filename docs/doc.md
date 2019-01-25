@@ -206,7 +206,7 @@ Discount factor gamma.
 | Type                 | float                    |
 | **Default value**    | **0.00025**              |
 
-Neural networks learning rate
+Learning rate of the neural networks.
 
 ---
 
@@ -218,7 +218,7 @@ Neural networks learning rate
 | Type                 | float                    |
 | **Default value**    | **1.0**                  |
 
-**Valor inicial** da variável épsilon da política de aprendizado e-greedy (epsilon-greedy). Essa variável balanceia o quanto de exploração de novos conhecimentos vs exploração de conhecimentos prévios o agente deve realizar. Essa variável decai ao longo da simulação. 
+**Initial value** of the variable epsilon from the e-greedy policy. This variable balances the exploration vs exploitation trade-off that the agent will do. This variable decays during the training.
 
 ---
 
@@ -230,7 +230,7 @@ Neural networks learning rate
 | Type                 | float                    |
 | **Default value**    | **0.1**                  |
 
-**Valor final** da variável épsilon da política de aprendizado e-greedy (épsilon-greedy) após o decaimento.
+**Final value** of the variable epsilon from the e-greedy policy after its full decay.
 
 ---
 
@@ -243,7 +243,7 @@ Neural networks learning rate
 | Possible choices    | linear, exponential       |
 | **Default value**   | **linear**                |
 
-Variável que escolhe o Type de decaimento da variável épsilon. Existem dois modos possíveis de decaimento da variável épsilon nesse repositório, o modo linear e exponencial.
+The variable that chooses the type of decay that will be applied to the variable epsilon. There are two decay modes available: linear and exponential.
 
 ---
 
@@ -255,7 +255,7 @@ Variável que escolhe o Type de decaimento da variável épsilon. Existem dois m
 | Type                 | int                            |
 | **Default value**    | **1000000**                    |
 
-Número de frames no qual o **decaimento linear** de épsilon chegará ao seu valor final. Usando os valores padrão, a variável épsilon decairá linearmente de 1.0 (100% de jogadas aleatórias) para 0.1 (10% de jogadas aleatórias) em 1 milhão de frames.
+The number of frames in which the **linear decay** of the variable epsilon will reach its final value. Using the default values, the variable epsilon will decay linearly of 1.0 (100% of exploration) to 0.1 (10% of exploration) in 1 million frames.
 
 ---
 ### <a name="e_exp_decay"></a> `e_exp_decay`
@@ -266,9 +266,9 @@ Número de frames no qual o **decaimento linear** de épsilon chegará ao seu va
 | Type                 | int                            |
 | **Default value**    | **200000**                     |
 
-Constante de tempo do **decaimento exponencial** de épsilon, em outras palavras, em uma constante de tempo o valor de épsilon terá decaído em 63.2% do seu valor inicial. O decaimento exponencial se dará da seguinte forma:
+The time constant of the **exponential decay** of the variable epsilon. In other words, in one time constant the value of epsilon will be decayed 63.2% of its initial value. The following table shows how the exponential decay will happen:
 
-|Número de constantes de tempo|Decaimento do valor total|
+|Number of time constants     |Total decay              |
 |---                          |---                      |
 |1                            |63.2%                    |
 |2                            |86.5%                    |
@@ -276,7 +276,7 @@ Constante de tempo do **decaimento exponencial** de épsilon, em outras palavras
 |4                            |98.2%                    |
 |5                            |99.3%                    |
 
-Assim, em aproximadamente 5 constantes de tempo, o valor de épsilon chega ao seu valor mínimo.
+Thus, in approximately 5-time constants, the value of epsilon will reach its final value.
 
 ---
 
@@ -288,7 +288,7 @@ Assim, em aproximadamente 5 constantes de tempo, o valor de épsilon chega ao se
 | Type                 | int                            |
 | **Default value**    | **10000**                      |
 
-Número de frames no qual os parâmetros da Q-target network serão atualizados com os valores da Q-network.
+The number of frames in which the Q-target network parameters will be updated with the values of the Q-network.
 
 ---
 
@@ -300,7 +300,7 @@ Número de frames no qual os parâmetros da Q-target network serão atualizados 
 | Type                 | int                                |
 | **Default value**    | **1000000**                        |
 
-Número de experiências (estados) que serão armazenadas na replay memory.
+The number of experiences that will be stored in the replay memory.
 
 ---
 
@@ -312,7 +312,7 @@ Número de experiências (estados) que serão armazenadas na replay memory.
 | Type                 | int                         |
 | **Default value**    | **32**                      |
 
-Tamanho do batch que será utilizado para treinar as redes neurais. Em outras palavras, o número de experiências (estados) que serão amostrados da replay memory e usados para treinar a rede neural.
+The batch size that will be used to train the neural networks.
 
 ---
 
