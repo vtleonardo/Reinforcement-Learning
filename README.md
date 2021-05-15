@@ -72,7 +72,7 @@ If this repository was useful for your research, please consider citing:
   year = {2018},
   publisher = {GitHub},
   journal = {GitHub repository},
-  url = {https://github.com/Leonardo-Viana/Reinforcement-Learning},
+  url = {https://github.com/vtleonardo/Reinforcement-Learning},
 }
 ```
 ## Acknowledgements
